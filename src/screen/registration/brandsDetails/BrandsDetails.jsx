@@ -8,7 +8,11 @@ import RegistrationProgress from "../../../components/registrationProgress/Regis
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
+import { useNavigate } from 'react-router-dom';
+
 const BrandsDetails = () => {
+
+    const navigate=useNavigate();
 
     const brands = [
         "Brand 1", "Brand 2", "Brand 3", "Brand 4", "Brand 5",
@@ -194,7 +198,7 @@ const BrandsDetails = () => {
                         <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
                             <button className="back-btn">Back</button>
                             <button className="save-btn">Save</button>
-                            <button className="next-btn">Next</button>
+                            <button className="next-btn" onClick={()=>navigate("/review-status")}>Next</button>
                         </div>
                     </div>
 
