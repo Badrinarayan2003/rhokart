@@ -142,13 +142,13 @@
 
 .add-business-add-title {
     font-weight: 500;
-    font-size: 17px;
+    font-size: 18px;
     display: flex;
     align-items: center;
 }
 
 .add-business-add-title-message {
-    font-size: 13px;
+    font-size: 15px;
     margin-left: 5px;
 }
 
@@ -171,6 +171,14 @@
 
     .next-btn {
         padding: 5px 25px;
+    }
+
+    .add-business-add-title {
+        font-size: 17px;
+    }
+
+    .add-business-add-title-message {
+        font-size: 13px;
     }
 
 }
