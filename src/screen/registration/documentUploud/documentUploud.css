@@ -1,0 +1,155 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.document-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+
+.document-uploud-button {
+    outline: none;
+    border: none;
+}
+
+.document-name-box {
+    width: 65%;
+    padding: 6px 10px;
+    border: 1px solid #7d7d7d;
+    border-radius: 5px;
+}
+
+.document-uploud-button {
+    width: 22%;
+    background-color: #40444C;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.document-details-input-container label {
+    font-weight: 500;
+}
+
+.document-name-box-active {
+    background-color: #DAEDD5;
+    border: 1px solid #1F8505;
+}
+
+.document-name-box p {
+    font-weight: 500;
+}
+
+#agree {
+    width: 18px;
+    height: 15px;
+}
+
+.acknowledge {
+    font-weight: 500;
+    color: #5a5a5c;
+}
+
+.back-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #000000;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.save-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.next-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.custom-select {
+    width: 100%;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+
+.custom-select select {
+    width: 100%;
+    padding: 7px 0px;
+    border: 1px solid #1F8505;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+.custom-select select:hover,
+.custom-select select:focus {
+    border-color: #1F8505;
+}
+
+
+
+@media (max-width: 768px) {
+
+    .back-btn {
+        padding: 5px 25px;
+    }
+
+    .save-btn {
+        padding: 5px 25px;
+    }
+
+    .next-btn {
+        padding: 5px 25px;
+    }
+}
+
+@media (max-width: 425px) {
+    .document-details-input-container label {
+        font-size: 14px;
+    }
+
+    .document-name-box p {
+        font-size: 13px;
+    }
+
+    .document-uploud-button {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 375px) {
+    .back-btn {
+        padding: 5px 18px;
+    }
+
+    .save-btn {
+        padding: 5px 18px;
+    }
+
+    .next-btn {
+        padding: 5px 18px;
+    }
+}

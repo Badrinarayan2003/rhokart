@@ -1,0 +1,22 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.reg-review-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+.review-business-detail-title-box{
+    font-weight: 600;
+}
+
+.review-business-detail-title-value{
+    font-size: 12px;
+    font-weight: 600;
+}

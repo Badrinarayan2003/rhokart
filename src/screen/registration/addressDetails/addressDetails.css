@@ -1,0 +1,191 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.address-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+.address-details-business {
+    width: 100%;
+    padding: 10px;
+    /* background-color: aquamarine; */
+    border: 1.6px solid grey;
+    border-radius: 3px;
+}
+
+.address-sub-heading {
+    font-weight: 600;
+}
+
+.address-details-billing-add {
+    width: 100%;
+    padding: 10px;
+    /* background-color: aquamarine; */
+    border: 1.6px solid grey;
+    border-radius: 3px;
+}
+
+/* .address-details-billing-add-input-box-one {
+    width: 60%;
+} */
+
+.address-details-billing-add-input-box-one label {
+    font-weight: 500;
+}
+
+.billing-add-input {
+    padding: 5px 9px;
+    border-radius: 5px;
+    border: 1.5px solid #403f3f;
+}
+
+.address-details-billing-add-input-box-one label {
+    font-weight: 500;
+}
+
+/* .address-details-billing-add-input-box-two {
+    width: 35%;
+} */
+
+.address-details-billing-add-input-box-two label {
+    font-weight: 500;
+}
+
+.billing-add-input {
+    padding: 5px 9px;
+    border-radius: 5px;
+    border: 1.5px solid #403f3f;
+}
+
+.billing-add-input-active {
+    border: 1.4px solid #1F8505;
+}
+
+
+.top-add-near {
+    margin-bottom: 0.7rem;
+}
+
+
+#matchone {
+    width: 18px;
+    height: 15px;
+}
+
+#matchtwo {
+    width: 18px;
+    height: 15px;
+}
+
+.acknowledge {
+    font-weight: 500;
+    color: #5a5a5c;
+}
+
+.add-location-container-label {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.add-location-container {
+    cursor: pointer;
+}
+
+.add-pickup-btn {
+    background-color: #1F8505;
+    color: #fff;
+    outline: none;
+    border: none;
+    padding: 6px 11px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+
+.back-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #000000;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.save-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.next-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.add-business-add-title {
+    font-weight: 500;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+}
+
+.add-business-add-title-message {
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .top-add-near {
+        margin-bottom: 0;
+    }
+
+    .add-location-container {
+        margin-top: 10px;
+    }
+
+    .back-btn {
+        padding: 5px 25px;
+    }
+
+    .save-btn {
+        padding: 5px 25px;
+    }
+
+    .next-btn {
+        padding: 5px 25px;
+    }
+
+}
+
+
+@media (max-width: 375px) {
+    .back-btn {
+        padding: 5px 18px;
+    }
+
+    .save-btn {
+        padding: 5px 18px;
+    }
+
+    .next-btn {
+        padding: 5px 18px;
+    }
+}

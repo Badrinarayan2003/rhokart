@@ -1,0 +1,173 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.business-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+.business-detail-input-one {
+    outline: none;
+    border: 1px solid #1F8505;
+    padding: 6px 18px;
+    border-radius: 5px;
+}
+
+.business-detail-phone-input {
+    width: 75%;
+}
+
+.business-detail-input-box label {
+    font-weight: 500;
+}
+
+.business-detail-input-box {
+    width: 80%;
+}
+
+.business-detail-otp-input {
+    padding: 4px 5px;
+    border-radius: 5px;
+    outline: none;
+    border: 1.5px solid green;
+    width: 25%;
+}
+
+.otp-send-btn {
+    outline: none;
+    border: none;
+    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    background-color: #40444C;
+    color: #fff;
+    font-weight: 500;
+}
+
+.otp-verify-btn {
+    outline: none;
+    border: none;
+    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+}
+
+.otp-verified-btn {
+    outline: none;
+    border: none;
+    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+}
+
+.business-detail-main-otp-box {
+    justify-content: flex-start;
+}
+
+.verified-symbol {
+    position: absolute;
+    top: 31px;
+    right: 16px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.save-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    /* background-color: #1F8505; */
+    background-color: #7e7e7e;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.next-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    /* background-color: #7e7e7e; */
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.business-detail-otp-input::placeholder {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.business-detail-select-option {
+    width: 20%;
+}
+
+@media (max-width: 1440px) {
+    .business-detail-input-box {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .business-detail-input-box {
+        width: 70%;
+    }
+
+    .business-detail-main-otp-box {
+        justify-content: center;
+    }
+
+    .save-btn {
+        padding: 5px 25px;
+    }
+
+    .next-btn {
+        padding: 5px 25px;
+    }
+}
+
+@media (max-width: 499px) {
+    .business-detail-input-box {
+        width: 90%;
+    }
+}
+
+@media (max-width: 425px) {
+    .otp-send-btn {
+        font-size: 12px;
+        padding: 5px 7px;
+    }
+
+    .otp-verify-btn {
+        font-size: 12px;
+        padding: 5px 7px;
+    }
+
+    .business-detail-otp-input {
+        padding: 2px 5px;
+    }
+}
+
+@media (max-width: 375px) {
+
+    .save-btn {
+        padding: 5px 18px;
+    }
+
+    .next-btn {
+        padding: 5px 18px;
+    }
+}

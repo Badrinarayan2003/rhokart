@@ -1,0 +1,169 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.brand-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+.brand-details-top-heading-box {
+    /* margin: 0 1.7rem; */
+    justify-content: center;
+}
+
+.brand-details-text {
+    font-size: 25px;
+    /* margin-left: 10px; */
+}
+
+.brand-details-top-heading-box p {
+    font-weight: 600;
+}
+
+.brand-details-skip {
+    position: absolute;
+    color: #1F8505;
+    right: 40px;
+}
+
+.brand-custom-select {
+    width: 100%;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+
+.brand-custom-select select {
+    width: 100%;
+    padding: 12px 0px;
+    border: 1px solid #1F8505;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.brand-custom-select select:hover,
+.brand-custom-select select:focus {
+    border-color: #1F8505;
+}
+
+.brand-detail-headers {
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.brand-pickup-btn {
+    background-color: #1F8505;
+    color: #fff;
+    outline: none;
+    border: none;
+    padding: 6px 11px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.back-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #000000;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.save-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.next-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .brand-details-top-heading-box p {
+        font-size: 14px;
+    }
+
+    .brand-details-top-heading-box {
+        justify-content: start;
+    }
+
+    .brand-details-container {
+        overflow-x: auto;
+    }
+
+    .brand-detail-headers {
+        font-size: 16px;
+    }
+
+    .back-btn {
+        padding: 5px 25px;
+    }
+
+    .save-btn {
+        padding: 5px 25px;
+    }
+
+    .next-btn {
+        padding: 5px 25px;
+    }
+}
+
+@media (max-width: 475px) {
+    .brand-details-skip {
+        right: 13px;
+        top: 20px;
+    }
+}
+
+@media (max-width: 425px) {
+    .brand-details-top-heading-box p {
+        font-size: 13px;
+    }
+
+    .brand-detail-headers {
+        font-size: 14px;
+    }
+
+    .brand-pickup-btn {
+        font-size: 13px;
+    }
+
+    .brand-custom-select select {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 375px) {
+    .back-btn {
+        padding: 5px 18px;
+    }
+
+    .save-btn {
+        padding: 5px 18px;
+    }
+
+    .next-btn {
+        padding: 5px 18px;
+    }
+}

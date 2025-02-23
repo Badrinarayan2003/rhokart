@@ -1,0 +1,123 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.bank-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    /* border-top-left-radius: 8rem;
+    border-top-right-radius: 8rem;
+    box-shadow: 0px -6px 1px #000; */
+}
+
+.bank-detail-input-box label {
+    font-weight: 500;
+}
+
+.bank-detail-input-box {
+    width: 80%;
+}
+
+.bank-detail-input-one {
+    outline: none;
+    border: 1px solid #1F8505;
+    padding: 6px 18px;
+    border-radius: 5px;
+}
+
+.custom-select-one select {
+    /* width: 100%; */
+    padding: 8px 0px;
+    border: 1px solid #1F8505;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.custom-select-one select:hover,
+.custom-select-one select:focus {
+    border-color: #1F8505;
+}
+
+.back-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #000000;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.save-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #7e7e7e;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.next-btn {
+    outline: none;
+    border: none;
+    padding: 6px 50px;
+    background-color: #1F8505;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+@media (max-width: 1440px) {
+    .bank-detail-input-box {
+        width: 80%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .bank-detail-input-box {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .bank-detail-input-box {
+        width: 70%;
+    }
+
+    .back-btn {
+        padding: 5px 25px;
+    }
+
+    .save-btn {
+        padding: 5px 25px;
+    }
+
+    .next-btn {
+        padding: 5px 25px;
+    }
+}
+
+@media (max-width: 499px) {
+    .bank-detail-input-box {
+        width: 90%;
+    }
+}
+
+@media (max-width: 375px) {
+    .back-btn {
+        padding: 5px 18px;
+    }
+
+    .save-btn {
+        padding: 5px 18px;
+    }
+
+    .next-btn {
+        padding: 5px 18px;
+    }
+}

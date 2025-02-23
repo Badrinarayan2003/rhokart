@@ -1,0 +1,34 @@
+.reg-progress-horizontal-line {
+    top: 25%;
+    border-bottom: 3px dotted black;
+}
+
+.circle-main-box {
+    width: 130px;
+}
+
+.round-circle {
+    width: 30px;
+    height: 30px;
+    color: #1F8505;
+    background-color: #c4c4c4;
+}
+
+.progress-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1F8505;
+
+}
+
+
+@media (max-width: 609px) {
+    .round-circle {
+        width: 25px;
+        height: 25px;
+    }
+
+    .progress-text {
+        font-size: 10px;
+    }
+}
