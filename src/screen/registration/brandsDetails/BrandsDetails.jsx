@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import './brandsDetails.css';
 import RegistrationHeader from "../../../components/registrationHeader/RegistrationHeader";
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
+import { brands, categories } from '../../../constants/data';
 
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -12,19 +13,8 @@ import { useNavigate } from 'react-router-dom';
 
 const BrandsDetails = () => {
 
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
-    const brands = [
-        "Brand 1", "Brand 2", "Brand 3", "Brand 4", "Brand 5",
-        "Brand 6", "Brand 7", "Brand 8", "Brand 9", "Brand 10",
-        "Brand 11", "Brand 12", "Brand 13", "Brand 14", "Brand 15",
-    ];
-
-    const categories = [
-        { id: "1", name: "Trader / Wholesaler (No document required)" },
-        { id: "2", name: "Authorized Dealer / Distributor (Attach brand certificate)" },
-        { id: "3", name: "Brand owner (Attach brand ownership / trademark certificate)" },
-    ];
 
 
     // State for 6 groups
@@ -198,7 +188,7 @@ const BrandsDetails = () => {
                         <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
                             <button className="back-btn">Back</button>
                             <button className="save-btn">Save</button>
-                            <button className="next-btn" onClick={()=>navigate("/review-status")}>Next</button>
+                            <button className="next-btn" onClick={() => navigate("/review-status")}>Next</button>
                         </div>
                     </div>
 

@@ -5,7 +5,6 @@ import RegistrationHeader from '../../../components/registrationHeader/Registrat
 import RegistrationProgress from '../../../components/registrationProgress/RegistrationProgress';
 
 import { FaLocationDot } from "react-icons/fa6";
-import { IoIosAddCircleOutline } from "react-icons/io";
 
 const AddressDetails = () => {
 
@@ -43,7 +42,6 @@ const AddressDetails = () => {
                         <div className="address-details-business">
                             <h5 className="text-center address-sub-heading fw-bold">Business Address</h5>
                             <div className="row">
-                                <div className='col-lg-2'></div>
                                 <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
                                     <p className="add-business-add-title">Address: <span className="add-business-add-title-message">this is address</span></p>
                                 </div>
@@ -53,17 +51,12 @@ const AddressDetails = () => {
                                 <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
                                     <p className="add-business-add-title">City: <span className="add-business-add-title-message">this is City</span></p>
                                 </div>
-                                <div className='col-lg-1 col-md-1'></div>
-                            </div>
-                            <div className="row">
-                                <div className="col-lg-2"></div>
                                 <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
                                     <p className="add-business-add-title">State: <span className="add-business-add-title-message">this is State</span></p>
                                 </div>
                                 <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
                                     <p className="add-business-add-title">Country: <span className="add-business-add-title-message">this is Country</span></p>
                                 </div>
-                                <div className='col-lg-4 col-md-4 col-sm-4'></div>
                             </div>
                         </div>
                     </div>

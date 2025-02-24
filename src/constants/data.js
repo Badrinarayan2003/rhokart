@@ -14,4 +14,14 @@ export const codes = [
     { value: "12", label: "36" },
 ];
 
+export const brands = [
+    "Brand 1", "Brand 2", "Brand 3", "Brand 4", "Brand 5",
+    "Brand 6", "Brand 7", "Brand 8", "Brand 9", "Brand 10",
+    "Brand 11", "Brand 12", "Brand 13", "Brand 14", "Brand 15",
+];
 
+export const categories = [
+    { id: "1", name: "Trader / Wholesaler (No document required)" },
+    { id: "2", name: "Authorized Dealer / Distributor (Attach brand certificate)" },
+    { id: "3", name: "Brand owner (Attach brand ownership / trademark certificate)" },
+];
