@@ -1,13 +1,15 @@
 import './businessDetails.css';
 import RegistrationHeader from "../../../components/registrationHeader/RegistrationHeader";
 import RegistrationProgress from '../../../components/registrationProgress/RegistrationProgress';
+import BusinessDetailCountryCode from '../../../components/businessDetailCountryCode/BusinessDetailCountryCode';
 
 import { MdVerified } from "react-icons/md";
-import BusinessDetailCountryCode from '../../../components/businessDetailCountryCode/BusinessDetailCountryCode';
+
+import { useSelector } from "react-redux";
 
 const BusinessDetails = () => {
 
-
+    const sellerEmail = useSelector((state) => state.auth.sellerEmail);
 
     return (
         <div className="business-details-section overflow-x-hidden overflow-y-auto vh-100">
@@ -95,7 +97,7 @@ const BusinessDetails = () => {
                             <input type="text" placeholder="Enter your Address" value="" name="business_address" className="business-detail-input-one" />
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div className="row">
@@ -127,19 +129,21 @@ const BusinessDetails = () => {
                             <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                 <div className="business-detail-input-box position-relative d-flex flex-column">
                                     <label className="mb-1">Email id: </label>
-                                    <input type="text" placeholder="Enter phone" value="" name="email" className="business-detail-input-one" />
+                                    <input type="text" placeholder="Enter phone" value={sellerEmail} name="email" className="business-detail-input-one" />
                                     <span className="verified-symbol">
-                                        <MdVerified color='green' size={18} />
+                                        {sellerEmail && <MdVerified color='green' size={18} />}
                                     </span>
                                 </div>
                             </div>
 
                             <div className="col-lg-6 col-md-6 business-detail-main-otp-box d-flex align-items-end mb-3">
-                                <div className="business-detail-otp-box d-flex justify-content-center">
-                                    <button className="otp-send-btn">Send OTP</button>
-                                    <input type="number" placeholder="Enter OTP" value="" name="email_otp" className="mx-2 business-detail-otp-input" />
-                                    <button className="otp-verify-btn">Verify</button>
-                                </div>
+                                {sellerEmail ? "" :
+                                    <div className="business-detail-otp-box d-flex justify-content-center">
+                                        <button className="otp-send-btn">Send OTP</button>
+                                        <input type="number" placeholder="Enter OTP" value="" name="email_otp" className="mx-2 business-detail-otp-input" />
+                                        <button className="otp-verify-btn">Verify</button>
+                                    </div>
+                                }
                             </div>
 
                             <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">

@@ -9,12 +9,17 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import { store, persistor } from './redux/store/store.js'
 
+import { ToastContainer, Slide } from 'react-toastify'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <App />
+        <ToastContainer
+          position="top-center"
+          theme="colored"
+        />
       </PersistGate>
     </Provider>
   </StrictMode>

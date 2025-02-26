@@ -116,6 +116,7 @@
     border-radius: 7px;
     border: 2px solid #d1f1c9;
     background: #F4FFF1;
+    text-align: center;
 }
 
 
@@ -172,6 +173,7 @@
     #back-btn {
         padding: 5px 0;
     }
+
     .otp-input {
         width: 16%;
     }

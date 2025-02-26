@@ -3,7 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     token: localStorage.getItem("token") || null,
     isAuthenticated: !!localStorage.getItem("token"),
-    isApproved: false, // Stores approval status after review
+    isApproved: false,
+    accessLevel: localStorage.getItem("accessLevel") || null, // Store access level
+    sellerEmail: localStorage.getItem("sellerEmail") || null, // Store seller email
 };
 
 const authSlice = createSlice({
@@ -11,15 +13,28 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         loginSuccess: (state, action) => {
-            state.token = action.payload;
+            const { accessToken, refreshToken, accessLevel, sellerEmail } = action.payload;
+            state.token = accessToken;
             state.isAuthenticated = true;
-            localStorage.setItem("token", action.payload); // Persist token
+            state.accessLevel = accessLevel;
+            state.sellerEmail = sellerEmail;
+
+            localStorage.setItem("token", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("accessLevel", accessLevel);
+            localStorage.setItem("sellerEmail", sellerEmail);
         },
         logout: (state) => {
             state.token = null;
             state.isAuthenticated = false;
             state.isApproved = false;
-            localStorage.removeItem("token"); // Clear token on logout
+            state.accessLevel = null;
+            state.sellerEmail = null;
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("accessLevel");
+            localStorage.removeItem("sellerEmail");
         },
         setApprovalStatus: (state, action) => {
             state.isApproved = action.payload;

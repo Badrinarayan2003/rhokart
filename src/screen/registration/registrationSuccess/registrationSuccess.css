@@ -1,0 +1,54 @@
+.registration-header {
+    height: 12vh;
+    background-color: #1F8505;
+    border-bottom: 1.3px solid #ababab;
+}
+
+.reg-success-details-main-section {
+    /* background-color: red; */
+    padding: 20px 18px 15px 18px;
+    height: 78vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reg-success-para {
+    font-weight: 600;
+}
+
+.reg-success-para a {
+    text-decoration: none;
+}
+
+.reg-success-msg {
+    color: #1F8505;
+}
+
+.reg-success-box {
+    padding: 1rem 25rem;
+}
+
+@media (max-width: 1440px) {
+    .reg-success-box {
+        padding: 1rem 15rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .reg-success-box {
+        padding: 1rem 7rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .reg-success-box {
+        padding: 0;
+    }
+}
+
+@media (max-width: 425px) {
+    .reg-success-box {
+        padding: 1rem 0rem;
+    }
+}

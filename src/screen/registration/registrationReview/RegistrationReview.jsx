@@ -2,11 +2,12 @@ import RegistrationHeader from "../../../components/registrationHeader/Registrat
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
 import './registrationReview.css';
 
+import { useNavigate } from "react-router-dom";
 
 import { FaLocationDot } from "react-icons/fa6";
 
 const RegistrationReview = () => {
-
+    const navigate = useNavigate();
 
     return (
         <div className="reg-review-details-section overflow-y-auto overflow-x-hidden vh-100">
@@ -830,7 +831,7 @@ const RegistrationReview = () => {
                 <div className="row my-5">
                     <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
                         <button className="back-btn">Back</button>
-                        <button className="save-btn">Submit</button>
+                        <button className="save-btn" onClick={() => navigate("/registration-success")}>Submit</button>
                     </div>
                 </div>
 

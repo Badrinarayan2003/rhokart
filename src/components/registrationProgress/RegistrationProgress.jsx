@@ -24,7 +24,7 @@ const RegistrationProgress = ({ color, active, step }) => {
                     {/* Circles with Text */}
                     <div className="d-flex justify-content-between position-relative">
                         {/* Step 1 */}
-                        <div className="text-center position-relative d-flex justify-content-center flex-column align-items-center circle-main-box"
+                        <div className="text-center position-relative d-flex justify-content-center flex-column align-items-start circle-main-box"
                             onClick={handleLogout}
                         >
                             <div
@@ -92,7 +92,7 @@ const RegistrationProgress = ({ color, active, step }) => {
                         </div>
 
                         {/* Step 5 */}
-                        <div className="text-center position-relative d-flex justify-content-center flex-column align-items-center circle-main-box"
+                        <div className="text-center position-relative d-flex justify-content-center flex-column align-items-end circle-main-box"
                             onClick={() => navigate("/registration/brand-details")}
                         >
                             <div
