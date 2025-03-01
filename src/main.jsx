@@ -7,20 +7,25 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
 
-import { store, persistor } from './redux/store/store.js'
+import { store, persistor } from './redux/store/store.js';
 
-import { ToastContainer, Slide } from 'react-toastify'
+import { ToastContainer } from 'react-toastify';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+import { GOOGLE_CLIENT_ID } from './api/config.js'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <App />
-        <ToastContainer
-          position="top-center"
-          theme="colored"
-        />
-      </PersistGate>
-    </Provider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+          <ToastContainer
+            position="top-center"
+            theme="colored"
+          />
+        </PersistGate>
+      </Provider>
+    </GoogleOAuthProvider>
   </StrictMode>
 )
