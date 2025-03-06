@@ -115,6 +115,13 @@
     width: 20%;
 }
 
+.gstin-error-msg {
+    font-size: 13px;
+    margin-bottom: 2px;
+    font-weight: 500;
+    color: red;
+}
+
 @media (max-width: 1440px) {
     .business-detail-input-box {
         width: 80%;

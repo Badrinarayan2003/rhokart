@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
 
-import { GOOGLE_USER_INFO, BASE_URL } from "./config";
+import { GOOGLE_USER_INFO, BASE_URL } from "../config/urls";
 
 export const handleGoogleLogin = async (tokenResponse, setLoading) => {
     try {

@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import './login.css';
 import { google_icon, logo2, logo1 } from '../../assets/assets';
 import Loader from '../../components/loader/Loader';
-import { BASE_URL } from '../../api/config';
+import { BASE_URL } from '../../config/urls';
 import { handleGoogleLogin } from '../../api/googleLoginApi';
 import { loginSuccess } from '../../redux/reducers/authSlice';
 

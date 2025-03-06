@@ -12,7 +12,8 @@ import { store, persistor } from './redux/store/store.js';
 import { ToastContainer } from 'react-toastify';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import { GOOGLE_CLIENT_ID } from './api/config.js'
+
+import { GOOGLE_CLIENT_ID } from './config/urls.js'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -118,7 +118,10 @@
     background: #F4FFF1;
     text-align: center;
 }
-
+.resend-message{
+    font-weight: 500;
+    color: #605c5c;
+}
 
 @media (max-width: 992px) {
     .logo-one {

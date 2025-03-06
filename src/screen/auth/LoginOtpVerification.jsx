@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -10,11 +10,14 @@ import { loginSuccess } from '../../redux/reducers/authSlice';
 import './LoginOtpVerification.css';
 import { logo2, logo1 } from '../../assets/assets';
 import Loader from '../../components/loader/Loader';
-import { BASE_URL } from '../../api/config';
+import { BASE_URL } from '../../config/urls';
+import useOtpTimer from '../../utils/useOtpTimer';
 
 const LoginOtpVerification = () => {
     const location = useLocation();
     const { email } = location.state || {}; // Extract data safely
+
+    const timer = useOtpTimer(120);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -128,7 +131,11 @@ const LoginOtpVerification = () => {
                         </div>
                     </div>
                     <div className='resend-timer-box w-75 mb-3'>
-                        <p className='resend-timer text-start'><span className='resend-timer-span'>Resend</span> 60 sec</p>
+                        {
+                            timer > 0 ? (<p className='resend-timer text-start'><span className='resend-timer-span'>Resend</span> {timer}sec</p>)
+                                :
+                                (<p className="resend-message text-start mb-2" onClick={() => navigate("/login")}>Time expired! Click to resend.</p>)
+                        }
                     </div>
                     <div className='d-flex justify-content-center w-75 gap-3'>
                         <button className="btn w-50" id='back-btn' onClick={() => navigate("/login")}>Back</button>
