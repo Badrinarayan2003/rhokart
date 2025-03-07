@@ -128,7 +128,7 @@
 
 @media (max-width: 425px) {
     .document-details-input-container label {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .document-name-box p {
@@ -137,6 +137,14 @@
 
     .document-uploud-button {
         font-size: 13px;
+    }
+
+    .reg-progress-horizontal-line {
+        top: 43%;
+    }
+
+    .progress-text {
+        display: none;
     }
 }
 

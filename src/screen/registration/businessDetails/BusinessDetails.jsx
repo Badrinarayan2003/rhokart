@@ -25,6 +25,7 @@ const BusinessDetails = () => {
     // const sellerPhone = useSelector((state) => state.auth.sellerPhone);
 
     const business_details = useSelector((state) => state.registration?.businessDetails)
+    console.log(business_details, "business_details this is from store");
     if (business_details?.alternateEmailVerified) {
         console.log(business_details, "this is from store");
     }
@@ -56,6 +57,7 @@ const BusinessDetails = () => {
     const [gstinValidateError, setGstinValidateError] = useState("");
 
     const [loading, setLoading] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
     const [altEmailOtp, setAltEmailOtp] = useState("");
 
     const validateGSTIN = (gst) => {
@@ -143,14 +145,11 @@ const BusinessDetails = () => {
 
 
 
-    const handleFormSubmit = async (navigateNext = false) => {
+    const handleFormSubmit = async () => {
         if (!validateForm()) {
             return;
         }
-        if (business_details && navigateNext) {
-            navigate('/registration/bank-details', { state: { email: formData?.email } });
-            return;
-        }
+
 
         try {
             setLoading(true);
@@ -162,12 +161,10 @@ const BusinessDetails = () => {
 
                 if (responseData?.response?.rcode === 0 && responseData?.response?.coreData?.responseData) {
                     const responseSellerData = responseData?.response?.coreData?.responseData;
-                    console.log(responseSellerData, "response Seller Data ");
+                    console.log(responseSellerData, "response business Seller Data ");
                     dispatch(setBusinessDetails(responseSellerData));
                     toast.success(responseData?.response?.rmessage || "Business details saved successfully");
-                    if (navigateNext) {
-                        navigate('/registration/bank-details', { state: { email: formData?.email } }); // Change to your actual route
-                    }
+                    setIsSaved(true);
                 } else {
                     toast.error(responseData?.response?.rmessage || "Oops something went wrong");
                 }
@@ -184,6 +181,16 @@ const BusinessDetails = () => {
                 toast.error(error?.message);
             }
         }
+    };
+
+
+    // Handle Next button click
+    const handleNext = () => {
+        if (!isSaved) {
+            toast.error("Please save the business details before proceeding.");
+            return;
+        }
+        navigate('/registration/bank-details', { state: { email: formData?.email } });
     };
 
 
@@ -381,8 +388,10 @@ const BusinessDetails = () => {
 
                     <div className="row my-4">
                         <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-center gap-5">
-                            <button className="save-btn" onClick={() => handleFormSubmit(false)}>Save</button>
-                            <button className="next-btn" onClick={() => handleFormSubmit(true)}>Next</button>
+                            <button className="save-btn" style={isSaved ? { background: "#7e7e7e", cursor: "not-allowed" } : {}} onClick={handleFormSubmit} disabled={loading || isSaved}>
+                                {loading ? "Saving..." : isSaved ? "Saved" : "Save"}
+                            </button>
+                            <button className="next-btn" onClick={handleNext}>Next</button>
                         </div>
                     </div>
 

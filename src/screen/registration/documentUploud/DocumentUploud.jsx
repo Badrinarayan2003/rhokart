@@ -7,7 +7,7 @@ import RegistrationProgress from '../../../components/registrationProgress/Regis
 const DocumentUploud = () => {
 
     const allowedExtensions = ["pdf", "jpeg", "jpg", "png"];
-    const [isAcknowledge, setIsAcknowledge] = useState(false);
+    // const [isAcknowledge, setIsAcknowledge] = useState(false);
 
     const [files, setFiles] = useState({
         panCard: null,
@@ -47,10 +47,10 @@ const DocumentUploud = () => {
         }
     };
 
-    const handleCheckboxChange = () => {
-        setIsAcknowledge(!isAcknowledge);
-        console.log("Checkbox value:", !isAcknowledge); // Logs the updated value
-    };
+    // const handleCheckboxChange = () => {
+    //     setIsAcknowledge(!isAcknowledge);
+    //     console.log("Checkbox value:", !isAcknowledge); // Logs the updated value
+    // };
 
     return (
         <div className="document-uploud-section overflow-y-auto overflow-x-hidden vh-100">
@@ -154,14 +154,14 @@ const DocumentUploud = () => {
                     <div className="col-lg-3 col-md-3"></div>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-lg-1 col-md-1"></div>
                     <div className="col-lg-10 col-md-10 d-flex align-items-center">
                         <input type="checkbox" id="agree" checked={isAcknowledge} onChange={handleCheckboxChange} />
                         <label htmlFor="agree" className="acknowledge">I Acknowledge</label>
                     </div>
                     <div className="col-lg-1 col-md-1"></div>
-                </div>
+                </div> */}
 
                 <div className="row my-4">
                     <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">

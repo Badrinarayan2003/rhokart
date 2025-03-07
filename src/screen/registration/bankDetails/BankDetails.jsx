@@ -5,6 +5,8 @@ import RegistrationProgress from "../../../components/registrationProgress/Regis
 import Loader from "../../../components/loader/Loader";
 
 import { useSelector, useDispatch } from "react-redux";
+import { setBankDetails } from "../../../redux/reducers/registrationSlice";
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 
@@ -21,6 +23,9 @@ const BankDetails = () => {
 
     const businessDetails = useSelector((state) => state.registration.businessDetails);
     // console.log(businessDetails, "getting from redux store"); // This will log the stored business details
+    const bankDetailsFromStore = useSelector((state) => state.registration.bankDetails)
+    console.log(bankDetailsFromStore, "bank details from store")
+
 
     const [loading, setLoading] = useState(false);
     const [isSaved, setIsSaved] = useState(false); // Track if data is saved
@@ -79,7 +84,7 @@ const BankDetails = () => {
             const responesData = await submitBankDetails(formData, location?.state?.email);
             if (responesData?.response?.rcode === 0 && responesData?.response?.coreData?.responseData) {
                 const responseSellerBankData = responesData?.response?.coreData?.responseData;
-
+                dispatch(setBankDetails(responseSellerBankData));
                 toast.success(responesData?.response?.rmessage || "Bank details saved successfully");
                 setIsSaved(true); // Mark data as saved
                 console.log(responesData, "bank respones");

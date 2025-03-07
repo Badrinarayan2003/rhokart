@@ -11,7 +11,7 @@ import registrationReducer from "../reducers/registrationSlice";
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["auth"], // Only persist auth state, not everything
+    whitelist: ["auth","registration"], // Only persist auth state, not everything
 };
 
 // Combine reducers
