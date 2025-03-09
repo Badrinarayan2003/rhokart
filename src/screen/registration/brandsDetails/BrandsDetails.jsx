@@ -21,6 +21,9 @@ const BrandsDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const businessDetails = useSelector((state) => state.registration?.businessDetails);
+    console.log(businessDetails, "business details in brands detail");
+
     const [groups, setGroups] = useState([
         { brand: "", category: "", file: null, certificationUrl: "" },
         { brand: "", category: "", file: null, certificationUrl: "" },
@@ -136,7 +139,7 @@ const BrandsDetails = () => {
 
             // Send Data to Backend
             const serverResponse = await axios.post(
-                `${BASE_URL}/test/onboarding/branddetails?email=rkt@gmail.com`,
+                `${BASE_URL}/test/onboarding/branddetails?email=${businessDetails?.email}`,
                 { brands: formattedData },
                 { headers: { "Content-Type": "application/json" } }
             );
