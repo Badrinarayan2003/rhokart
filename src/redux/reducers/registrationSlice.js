@@ -4,10 +4,7 @@ const initialState = {
     businessDetails: null,  // Stores business-related info
     bankDetails: null,      // Stores bank details
     addressDetails: null,   // Stores vendor's address details
-    brandsDetails: {
-        data: null,         // Stores brand-related details
-        documents: []       // Stores metadata of uploaded documents
-    },
+    brandsDetails: [],      // Stores brand-related details
     documentUpload: [],     // Stores other general uploaded documents
     isSubmitted: false,     // Tracks if the registration is completed
 };
@@ -26,15 +23,7 @@ const registrationSlice = createSlice({
             state.addressDetails = action.payload;
         },
         setBrandsDetails: (state, action) => {
-            state.brandsDetails.data = action.payload;
-        },
-        addBrandDocument: (state, action) => {
-            state.brandsDetails.documents.push(action.payload);
-        },
-        removeBrandDocument: (state, action) => {
-            state.brandsDetails.documents = state.brandsDetails.documents.filter(
-                (doc) => doc.id !== action.payload
-            );
+            state.brandsDetails = action.payload;
         },
         setDocumentUpload: (state, action) => {
             state.documentUpload = action.payload;
@@ -51,8 +40,6 @@ export const {
     setBankDetails,
     setAddressDetails,
     setBrandsDetails,
-    addBrandDocument,
-    removeBrandDocument,
     setDocumentUpload,
     submitRegistration,
     resetRegistration

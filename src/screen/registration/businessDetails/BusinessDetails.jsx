@@ -36,6 +36,7 @@ const BusinessDetails = () => {
         entityName: "",
         contactName: "",
         tradeName: "",
+        address: "",
         country: "",
         pincode: "",
         state: "",
@@ -108,7 +109,7 @@ const BusinessDetails = () => {
     };
 
     const validateForm = () => {
-        const requiredFields = ["gstin", "entityName", "contactName", "tradeName", "country", "pincode", "state", "city", "phoneNo", "email", "tan"];
+        const requiredFields = ["gstin", "entityName", "contactName", "address", "tradeName", "country", "pincode", "state", "city", "phoneNo", "email", "tan"];
         for (let field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} field is required`);
@@ -281,12 +282,12 @@ const BusinessDetails = () => {
                                 <input type="text" placeholder="Enter PAN" name="pan" className="business-detail-input-one" value={formData.pan} onChange={handleChange} disabled />
                             </div>
                         </div>
-                        {/* <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
-                        <div className="business-detail-input-box d-flex flex-column">
-                            <label className="mb-1">Address: </label>
-                            <input type="text" placeholder="Enter your Address" value="" name="business_address" className="business-detail-input-one" />
+                        <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
+                            <div className="business-detail-input-box d-flex flex-column">
+                                <label className="mb-1">Address: </label>
+                                <input type="text" placeholder="Enter your Address" className="business-detail-input-one" name="address" value={formData.address} onChange={handleChange} />
+                            </div>
                         </div>
-                    </div> */}
 
                     </div>
 

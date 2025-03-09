@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setAddressDetails } from '../../../redux/reducers/registrationSlice';
 
 import './addressDetails.css';
 import RegistrationHeader from '../../../components/registrationHeader/RegistrationHeader';
@@ -13,6 +14,7 @@ import { FaLocationDot } from "react-icons/fa6";
 
 const AddressDetails = () => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const uploadedDocs = useSelector((state) => state.registration?.documentUpload);
@@ -20,6 +22,9 @@ const AddressDetails = () => {
 
     const businessDetails = useSelector((state) => state.registration?.businessDetails);
     console.log(businessDetails, "business details in address");
+
+    const addressDetails = useSelector((state) => state.registration?.addressDetails);
+    console.log(addressDetails, "address details in address");
 
     const [sameAsBusinessAddOne, setSameAsBusinessAddOne] = useState(false);
     const [sameAsBusinessAddTwo, setSameAsBusinessAddTwo] = useState(false);
@@ -99,8 +104,9 @@ const AddressDetails = () => {
             console.log("API Response:", response);
 
             if (response?.data?.response?.rcode === 0 && response?.data?.response?.coreData?.responseData) {
-                const addressData = response?.data?.response?.coreDta?.responseData;
+                const addressData = response?.data?.response?.coreData?.responseData;
                 console.log(addressData, "actual data from server");
+                dispatch(setAddressDetails(addressData));
                 toast.success(response?.data?.response?.rmessage || "Seller address store successfully")
                 setIsSaved(true);
             } else {
@@ -154,7 +160,7 @@ const AddressDetails = () => {
                                 <h5 className="text-center address-sub-heading fw-bold">Business Address</h5>
                                 <div className="row">
                                     <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
-                                        <p className="add-business-add-title">Address: <span className="add-business-add-title-message">address</span></p>
+                                        <p className="add-business-add-title">Address: <span className="add-business-add-title-message">{businessDetails?.address}</span></p>
                                     </div>
                                     <div className="col-lg-3 col-md-4 col-sm-4 d-flex justify-content-center">
                                         <p className="add-business-add-title">Pincode: <span className="add-business-add-title-message">{businessDetails?.pincode}</span></p>
@@ -248,12 +254,12 @@ const AddressDetails = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="row mt-2">
+                                        {/* <div className="row mt-2">
                                             <div className="col-12 d-flex align-items-center ms-3">
                                                 <input type="checkbox" id="matchone" checked={sameAsBusinessAddOne} onChange={handleSameAsBusinessAddOne} />
                                                 <label htmlFor="matchone" className="acknowledge">Same as Business Address</label>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className="col-lg-2">
 
@@ -339,12 +345,12 @@ const AddressDetails = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="row mt-2">
+                                        {/* <div className="row mt-2">
                                             <div className="col-12 d-flex align-items-center ms-3">
                                                 <input type="checkbox" id="matchtwo" checked={sameAsBusinessAddTwo} onChange={handleSameAsBusinessAddTwo} />
                                                 <label htmlFor="matchtwo" className="acknowledge">Same as Business Address</label>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className="col-lg-2 d-flex align-items-center justify-content-center">
                                         <div className="add-location-container d-flex flex-column align-items-center">

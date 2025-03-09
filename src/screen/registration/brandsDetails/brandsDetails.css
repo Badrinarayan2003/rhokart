@@ -99,6 +99,28 @@
     border-radius: 5px;
 }
 
+.association-type {
+    padding: 10px 10px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.brand-type {
+    padding: 10px 10px;
+    border: 1px solid #000;
+    border-radius: 6px;
+}
+
+.upload-button {
+    border: none;
+    outline: none;
+    padding: 8px 19px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
 @media (max-width: 768px) {
     .brand-details-top-heading-box p {
         font-size: 14px;
@@ -150,6 +172,21 @@
     }
 
     .brand-custom-select select {
+        font-size: 12px;
+    }
+
+    .upload-button {
+        padding: 7px 19px;
+        font-size: 12px;
+    }
+
+    .brand-type {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .association-type {
+        padding: 7px 10px;
         font-size: 12px;
     }
 }

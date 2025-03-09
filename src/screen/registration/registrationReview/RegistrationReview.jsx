@@ -3,11 +3,15 @@ import RegistrationProgress from "../../../components/registrationProgress/Regis
 import './registrationReview.css';
 
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { FaLocationDot } from "react-icons/fa6";
 
 const RegistrationReview = () => {
     const navigate = useNavigate();
+
+    const brandDetails = useSelector((state) => state.registration?.brandsDetails);
+    console.log(brandDetails, "brand details from store!")
 
     return (
         <div className="reg-review-details-section overflow-y-auto overflow-x-hidden vh-100">

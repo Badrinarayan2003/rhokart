@@ -1,106 +1,202 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
-
-import './brandsDetails.css';
+import "./brandsDetails.css";
 import RegistrationHeader from "../../../components/registrationHeader/RegistrationHeader";
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
-import { brands, categories } from '../../../constants/data';
+import Loader from "../../../components/loader/Loader";
+
 
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
-import { useNavigate } from 'react-router-dom';
+import { AWS_MULTIPART_DOC_UPLOAD_URL, BASE_URL } from "../../../config/urls";
+import { brands, categories } from "../../../constants/data";
+import { setBrandsDetails } from "../../../redux/reducers/registrationSlice";
 
 const BrandsDetails = () => {
-
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-
-
-    // State for 6 groups
     const [groups, setGroups] = useState([
-        { brand: "", category: "", file: null },
-        { brand: "", category: "", file: null },
-        { brand: "", category: "", file: null },
-        { brand: "", category: "", file: null },
-        { brand: "", category: "", file: null },
-        { brand: "", category: "", file: null },
+        { brand: "", category: "", file: null, certificationUrl: "" },
+        { brand: "", category: "", file: null, certificationUrl: "" },
+        { brand: "", category: "", file: null, certificationUrl: "" },
+        { brand: "", category: "", file: null, certificationUrl: "" },
+        { brand: "", category: "", file: null, certificationUrl: "" },
+        { brand: "", category: "", file: null, certificationUrl: "" },
     ]);
 
-    // Handle brand selection
+    const handleAddMoreBrands = () => {
+        setGroups([...groups, { brand: "", category: "", file: null, certificationUrl: "" }]);
+    };
+
+    const [loading, setLoading] = useState(false);
+    const [fileLoading, setFileLoading] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+
+    // Handle Brand Selection
     const handleBrandChange = (index, value) => {
         const newGroups = [...groups];
         newGroups[index].brand = value;
         setGroups(newGroups);
     };
 
-    // Handle category selection
+    // Handle Category Selection
     const handleCategoryChange = (index, value) => {
         const newGroups = [...groups];
         newGroups[index].category = value;
-        newGroups[index].file = null; // Reset file when category changes
+        newGroups[index].file = null; // Reset file if category changes
+        newGroups[index].certificationUrl = ""; // Reset file URL
         setGroups(newGroups);
     };
 
-    // Handle file selection
-    const handleFileChange = (index, event) => {
+    // Handle File Upload to AWS
+    const handleFileUpload = async (index, event) => {
         const uploadedFile = event.target.files[0];
-        if (uploadedFile && uploadedFile.type === "application/pdf") {
-            const newGroups = [...groups];
-            newGroups[index].file = uploadedFile;
-            setGroups(newGroups);
-        } else {
-            alert("Please upload a valid PDF file.");
-        }
-    };
 
-    // Handle Save button click
-    const handleSave = () => {
-        // Check if all required fields are filled
-        for (const group of groups) {
-            if (group.category === "2" || group.category === "3") {
-                if (!group.file) {
-                    alert("Please upload a PDF file for all required categories.");
-                    return;
+        if (!uploadedFile || uploadedFile.type !== "application/pdf") {
+            toast.warning("Please upload a valid PDF file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("files", uploadedFile);
+
+        try {
+            setFileLoading(true);
+
+            const response = await axios.post(AWS_MULTIPART_DOC_UPLOAD_URL, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            if (response?.data?.response?.rcode === 0) {
+                const uploadedFiles = response.data.response.coreData.responseData.uploadedFiles;
+                const fileUrl = uploadedFiles[0]?.url || "";
+
+                if (fileUrl) {
+                    // Update the state with the uploaded file URL
+                    const newGroups = [...groups];
+                    newGroups[index].file = uploadedFile;
+                    newGroups[index].certificationUrl = fileUrl;
+                    setGroups(newGroups);
+
+                    toast.success("File uploaded successfully!");
                 }
+            } else {
+                toast.error("File upload failed. Please try again.");
             }
+        } catch (error) {
+            toast.error("Error uploading document. Try again later.");
+        } finally {
+            setFileLoading(false);
         }
+    };
 
-        // Debugging output (Replace this with API logic)
-        console.log("Saving Data:", groups);
-        alert("Data saved successfully!");
+    // Validate Fields Before Save
+    const validateFields = () => {
+        for (const group of groups) {
+            // if (group.brand.trim() === "" || group.category.trim() === "") {
+            //     toast.error("Please select both brand and category for all fields.");
+            //     return false;
+            // }
+            if ((group.category === "2" || group.category === "3") && !group.certificationUrl) {
+                toast.error("Please upload a document for required categories.");
+                return false;
+            }
+
+        }
+        return true;
+    };
+
+    // Handle Save
+    const handleSave = async () => {
+        if (!validateFields()) return;
+
+        setLoading(true);
+        try {
+            // Prepare Data
+            // const formattedData = groups.map((group) => ({
+            //     brandName: group.brand,
+            //     associationType: categories.find((cat) => cat.id === group.category)?.name || "",
+            //     certificationUrl: group.certificationUrl || "",
+            // }));
+            const formattedData = groups
+                .filter(group => group.brand.trim() !== "" && group.category.trim() !== "") // Only keep filled groups
+                .map(group => ({
+                    brandName: group.brand,
+                    associationType: categories.find(cat => cat.id === group.category)?.name || "",
+                    certificationUrl: group.certificationUrl || "",
+                }));
+
+            console.log("Formatted Data:", formattedData);
+
+            // Send Data to Backend
+            const serverResponse = await axios.post(
+                `${BASE_URL}/test/onboarding/branddetails?email=rkt@gmail.com`,
+                { brands: formattedData },
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            if (serverResponse?.data?.response?.rcode === 0) {
+                const brandResMainData = serverResponse?.data?.response?.coreData?.responseData?.brands;
+                dispatch(setBrandsDetails(brandResMainData));
+                toast.success("Brand details saved successfully!");
+                console.log(brandResMainData, "backend server res final main data")
+                setIsSaved(true);
+            } else {
+                toast.error(serverResponse?.data?.response?.rmessage || "Failed to save data.");
+            }
+        } catch (error) {
+            toast.error("Server error. Try again later.");
+        } finally {
+            setLoading(false);
+        }
     };
 
 
-
+    // Handle Next button click
+    const handleNext = () => {
+        if (!isSaved) {
+            toast.error("Please upload the documents before proceeding.");
+            return;
+        }
+        navigate('/review-status');
+    };
 
     return (
-        <div className="brand-details-section overflow-y-auto overflow-x-hidden vh-100">
-            <div className="registration-header overflow-hidden">
-                <RegistrationHeader />
-            </div>
-            <div className="registration-progress">
-                <RegistrationProgress color="#1F8505" active="#fff" step={5} />
-            </div>
-            <div className="brand-details-main-section mt-5">
+        <>
+            {loading && <Loader />}
+            {fileLoading && <Loader message="Uploading File..." />}
 
-                <div className="row mb-3">
-                    <div className="col-12 d-flex position-relative brand-details-top-heading-box">
-                        <p className="brand-details-text">Select the brands that you would like to sell here:</p>
-                        <p className="brand-details-skip">Skip <span><MdKeyboardArrowRight size={20} color='#1F8505' /></span></p>
-                    </div>
+            <div className="brand-details-section overflow-y-auto overflow-x-hidden vh-100">
+                <div className="registration-header overflow-hidden">
+                    <RegistrationHeader />
                 </div>
-                <div className="brand-details-container">
-
+                <div className="registration-progress">
+                    <RegistrationProgress color="#1F8505" active="#fff" step={5} />
+                </div>
+                <div className="brand-details-main-section mt-5 overflow-x-auto">
+                    <div className="row mb-3">
+                        <div className="col-12 d-flex position-relative brand-details-top-heading-box">
+                            <p className="brand-details-text">Select the brands that you would like to sell here:</p>
+                            <p className="brand-details-skip">
+                                Skip <MdKeyboardArrowRight size={20} color="#1F8505" />
+                            </p>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className='col-lg-2 col-md-1'></div>
                         <div className="col-lg-2 col-md-2 col-sm-3 col-3">
                             <p className="brand-detail-headers">Brand:</p>
                         </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-5">
+                        <div className="col-lg-4 col-md-4 col-sm-6 col-5">
                             <p className="brand-detail-headers">Type of association with the brand:</p>
                         </div>
-                        <div className="col-lg-4 col-md-4 col-sm-3 col-4">
+                        <div className="col-lg-3 col-md-4 col-sm-3 col-4">
                             <p className="brand-detail-headers">Upload required document:</p>
                         </div>
                         <div className="col-lg-1 col-md-1"></div>
@@ -112,90 +208,72 @@ const BrandsDetails = () => {
                         return (
                             <div key={index} className="row mt-2">
                                 <div className="col-lg-2 col-md-1"></div>
-                                {/* Brand Selection */}
                                 <div className="col-lg-2 col-md-2 col-sm-3 col-3">
-                                    <div className="brand-custom-select">
-                                        <select value={group.brand} onChange={(e) => handleBrandChange(index, e.target.value)}>
-                                            <option value="">Brand</option>
-                                            {brands.map((brand, i) => (
-                                                <option key={i} value={brand}>{brand}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                    <select className="brand-type" value={group.brand} onChange={(e) => handleBrandChange(index, e.target.value)}>
+                                        <option value="">Brand</option>
+                                        {brands.map((brand, i) => (
+                                            <option key={i} value={brand}>{brand}</option>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                {/* Category Selection */}
-                                <div className="col-lg-3 col-md-4 col-sm-6 col-5">
-                                    <div className="brand-custom-select">
-                                        <select value={group.category} className="w-100" onChange={(e) => handleCategoryChange(index, e.target.value)}>
-                                            <option value="" >Choose Type of association</option>
-                                            {categories.map((category) => (
-                                                <option key={category.id} value={category.id}>{category.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                <div className="col-lg-4 col-md-4 col-sm-6 col-5">
+                                    <select className="association-type" value={group.category} onChange={(e) => handleCategoryChange(index, e.target.value)}>
+                                        <option value="">Choose Type of association</option>
+                                        {categories.map((category) => (
+                                            <option key={category.id} value={category.id}>{category.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                {/* Custom Upload Button */}
-                                <div className="col-lg-4 col-md-4 col-sm-3 col-4 d-flex gap-4">
+                                <div className="col-lg-3 col-md-4 col-sm-3 col-4 d-flex gap-4">
                                     <button
                                         onClick={() => document.getElementById(`fileInput-${index}`).click()}
                                         disabled={!isUploadAllowed}
-                                        style={{
-                                            backgroundColor: isUploadAllowed ? "#40444C" : "#ccc",
-                                            color: "white",
-                                            padding: "8px",
-                                            border: "none",
-                                            cursor: isUploadAllowed ? "pointer" : "not-allowed",
-                                            borderRadius: "5px",
-                                        }}
+                                        style={{ backgroundColor: isUploadAllowed ? "#40444C" : "#ccc", color: isUploadAllowed ? "#fff" : "#000" }}
+                                        className="upload-button"
                                     >
-                                        Uploud
+                                        Upload
                                     </button>
 
-                                    {/* Display Selected File Name */}
-                                    <div style={{ marginTop: "10px" }}>
-                                        {group.file && <p className="mb-0">{group.file.name}</p>}
-                                    </div>
+                                    {group.file && <p className="mb-0">{group.file.name}</p>}
                                 </div>
 
-                                {/* Hidden File Input */}
                                 <input
                                     id={`fileInput-${index}`}
                                     type="file"
                                     accept=".pdf"
                                     style={{ display: "none" }}
-                                    onChange={(e) => handleFileChange(index, e)}
+                                    onChange={(e) => handleFileUpload(index, e)}
                                     disabled={!isUploadAllowed}
                                 />
                                 <div className="col-lg-1 col-md-1"></div>
-
                             </div>
                         );
                     })}
-
                     <div className="row my-3">
-                        <div className='col-2'></div>
-                        <div className="col-10 d-flex justify-content-start">
-                            <button className="brand-pickup-btn ms-3">
+                        <div className='col-xxl-2 col-xl-2 col-lg-2 col-md-1 col-sm-12 col-12'></div>
+                        <div className="col-xxl-10 col-xl-10 col-lg-10 col-md-11 col-sm-12 col-12 d-flex justify-content-start">
+                            <button className="brand-pickup-btn" onClick={handleAddMoreBrands}>
                                 <span><IoIosAddCircleOutline size={19} color='#fff' /></span>
                                 Add more brands </button>
                         </div>
                     </div>
 
-
                     <div className="row my-4">
-                        <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
+                        <div className="col-lg-12 d-flex justify-content-evenly">
                             <button className="back-btn">Back</button>
-                            <button className="save-btn">Save</button>
-                            <button className="next-btn" onClick={() => navigate("/review-status")}>Next</button>
+                            <button className="save-btn" style={isSaved ? { background: "#7e7e7e", cursor: "not-allowed" } : {}} onClick={handleSave} disabled={loading || isSaved}>
+                                {loading ? "Saving..." : isSaved ? "Saved" : "Save"}
+                            </button>
+                            <button className="next-btn" onClick={handleNext}>Next</button>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </div>
-    )
-}
+        </>
+    );
+};
 
 export default BrandsDetails;
