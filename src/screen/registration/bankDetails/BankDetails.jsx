@@ -7,7 +7,7 @@ import Loader from "../../../components/loader/Loader";
 import { useSelector, useDispatch } from "react-redux";
 import { setBankDetails } from "../../../redux/reducers/registrationSlice";
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 import { submitBankDetails } from "../../../api/bankDetailService";
@@ -15,14 +15,13 @@ import { submitBankDetails } from "../../../api/bankDetailService";
 
 const BankDetails = () => {
 
-    const location = useLocation();
-    // console.log(location?.state?.email);
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const businessDetails = useSelector((state) => state.registration.businessDetails);
-    // console.log(businessDetails, "getting from redux store"); // This will log the stored business details
+    console.log(businessDetails, "businessDetails getting from redux store"); // This will log the stored business details
+
+
     const bankDetailsFromStore = useSelector((state) => state.registration.bankDetails)
     console.log(bankDetailsFromStore, "bank details from store")
 
@@ -81,7 +80,7 @@ const BankDetails = () => {
 
         setLoading(true);
         try {
-            const responesData = await submitBankDetails(formData, location?.state?.email);
+            const responesData = await submitBankDetails(formData, businessDetails?.email);
             if (responesData?.response?.rcode === 0 && responesData?.response?.coreData?.responseData) {
                 const responseSellerBankData = responesData?.response?.coreData?.responseData;
                 dispatch(setBankDetails(responseSellerBankData));

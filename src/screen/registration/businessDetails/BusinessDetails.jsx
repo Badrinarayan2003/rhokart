@@ -190,7 +190,7 @@ const BusinessDetails = () => {
             toast.error("Please save the business details before proceeding.");
             return;
         }
-        navigate('/registration/bank-details', { state: { email: formData?.email } });
+        navigate('/registration/bank-details');
     };
 
 
