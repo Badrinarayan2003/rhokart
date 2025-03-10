@@ -53,6 +53,9 @@ const BusinessDetails = () => {
         emailVerified: !!sellerEmail,
         phoneNoVerified: false
     });
+    const [altEmailLoader, setAltEmailLoader] = useState(false);
+    const [altEmailVerifyLoader, setAltEmailVerifyLoader] = useState(false);
+
 
     // for gstin error message
     const [gstinValidateError, setGstinValidateError] = useState("");
@@ -130,17 +133,25 @@ const BusinessDetails = () => {
 
     // Function to send OTP
     const handleRequestOTP = async () => {
+        setAltEmailLoader(true);
         const success = await requestOTP(formData.alternateEmail);
         if (success) {
             toast.success("OTP sent. Please check your email.");
+            setAltEmailLoader(false);
+        } else {
+            setAltEmailLoader(false);
         }
     };
 
     // Function to verify OTP
     const handleVerifyOTP = async () => {
+        setAltEmailVerifyLoader(true);
         const success = await verifyOTP(formData.alternateEmail, altEmailOtp);
         if (success) {
             setFormData({ ...formData, alternateEmailVerified: true }); // ✅ Set email verified
+            setAltEmailVerifyLoader(false);
+        } else {
+            setAltEmailVerifyLoader(false);
         }
     };
 
@@ -187,7 +198,7 @@ const BusinessDetails = () => {
 
     // Handle Next button click
     const handleNext = () => {
-        if (!isSaved) {
+        if (!isSaved && !business_details) {
             toast.error("Please save the business details before proceeding.");
             return;
         }
@@ -255,7 +266,7 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Pincode: </label>
-                                <input type="text" placeholder="Enter pincode" name="pincode" className="business-detail-input-one" value={formData.pincode} onChange={handleChange} />
+                                <input type="number" placeholder="Enter pincode" name="pincode" className="business-detail-input-one" value={formData.pincode} onChange={handleChange} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
@@ -363,7 +374,7 @@ const BusinessDetails = () => {
                                 <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                     <div className="business-detail-input-box position-relative d-flex flex-column">
                                         <label className="mb-1">Alt Email id: </label>
-                                        <input type="email" placeholder="Enter Email" name="alternateEmail" className="business-detail-input-one" value={formData.alternateEmail} onChange={handleChange} />
+                                        <input type="email" placeholder="Enter Email" name="alternateEmail" className="business-detail-input-one" value={formData.alternateEmail || business_details?.alternateEmail} onChange={handleChange} />
                                         <span className="verified-symbol">
                                             {(business_details?.alternateEmailVerified || formData.alternateEmailVerified) && (
                                                 <MdVerified color="green" size={18} />
@@ -375,9 +386,9 @@ const BusinessDetails = () => {
                                 <div className="col-lg-6 col-md-6 business-detail-main-otp-box d-flex align-items-end mb-3">
                                     {formData.alternateEmail && !formData.alternateEmailVerified && (
                                         <div className="business-detail-otp-box d-flex justify-content-center">
-                                            <button className="otp-send-btn" onClick={handleRequestOTP}>Send OTP</button>
+                                            <button className="otp-send-btn" onClick={handleRequestOTP}>{altEmailLoader ? "Sending..." : "Send OTP"}</button>
                                             <input type="number" placeholder="Enter OTP" name="alt_email_otp" className="mx-2 business-detail-otp-input" value={altEmailOtp} onChange={(e) => setAltEmailOtp(e.target.value)} />
-                                            <button className="otp-verify-btn" onClick={handleVerifyOTP}>Verify</button>
+                                            <button className="otp-verify-btn" onClick={handleVerifyOTP}>{altEmailVerifyLoader ? "Verifing" : "Verify"}</button>
                                         </div>
                                     )}
                                 </div>

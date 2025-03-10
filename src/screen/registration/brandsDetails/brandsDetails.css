@@ -149,6 +149,10 @@
     .next-btn {
         padding: 5px 25px;
     }
+
+    .brand-type {
+        width: 100%;
+    }
 }
 
 @media (max-width: 475px) {

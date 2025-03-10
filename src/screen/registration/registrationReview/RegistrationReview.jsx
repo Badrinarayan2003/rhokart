@@ -2,16 +2,43 @@ import RegistrationHeader from "../../../components/registrationHeader/Registrat
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
 import './registrationReview.css';
 
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { FaLocationDot } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const RegistrationReview = () => {
     const navigate = useNavigate();
 
     const brandDetails = useSelector((state) => state.registration?.brandsDetails);
-    console.log(brandDetails, "brand details from store!")
+    console.log(brandDetails, "brand details from store!");
+
+
+    const [checkboxes, setCheckboxes] = useState({
+        acceptPrivacyPolicy: false,
+        receiveInfo: false,
+    });
+
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target;
+        setCheckboxes((prev) => ({
+            ...prev,
+            [name]: checked,
+        }));
+    };
+
+
+    const handleSubmit = () => {
+        if (!checkboxes.acceptPrivacyPolicy) {
+            toast.error("You must accept the Privacy Policy to continue.");
+            return;
+        }
+
+        // If the required checkbox is checked, navigate to the success page
+        navigate("/registration-success");
+    };
 
     return (
         <div className="reg-review-details-section overflow-y-auto overflow-x-hidden vh-100">
@@ -832,10 +859,41 @@ const RegistrationReview = () => {
 
                 </div>
 
+                <div className="row mt-3">
+                    <div className="col-12">
+                        <div className="form-group checkbox-group review-check-box">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="acceptPrivacyPolicy"
+                                    checked={checkboxes.acceptPrivacyPolicy}
+                                    onChange={handleCheckboxChange}
+                                    required
+                                />
+                                I accept the{" "}
+                                <a href="https://www.rhokart.com/privacy-policy" target="_blank" rel="noopener noreferrer">
+                                    Privacy Policy for Rhokart
+                                </a>.
+                            </label>
+
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="receiveInfo"
+                                    checked={checkboxes.receiveInfo}
+                                    onChange={handleCheckboxChange}
+                                />
+                                I want to receive personalized information from Rhokart.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="row my-5">
                     <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
                         <button className="back-btn">Back</button>
-                        <button className="save-btn" onClick={() => navigate("/registration-success")}>Submit</button>
+                        <button className="save-btn" onClick={handleSubmit}>Submit</button>
                     </div>
                 </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 import { AWS_MULTIPART_DOC_UPLOAD_URL, BASE_URL } from "../../../config/urls";
-import { brands, categories } from "../../../constants/data";
+import { categories } from "../../../constants/data";
 import { setBrandsDetails } from "../../../redux/reducers/registrationSlice";
 
 const BrandsDetails = () => {
@@ -23,6 +23,30 @@ const BrandsDetails = () => {
 
     const businessDetails = useSelector((state) => state.registration?.businessDetails);
     console.log(businessDetails, "business details in brands detail");
+
+    const brandDetails = useSelector((state) => state.registration?.brandsDetails);
+    console.log(brandDetails, "brandDetails details in brands detail");
+
+    const [brands, setBrands] = useState([]); // State to store API brands
+    // Fetch brands from API
+    useEffect(() => {
+        const fetchBrands = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/test/onboarding/brandlist`);
+                if (response) {
+                    setBrands(response?.data);
+                    console.log(response?.data, "brand list ")
+                } else {
+                    toast.error("Failed to fetch brands.");
+                }
+            } catch (error) {
+                toast.error("Error fetching brands. Try again later.");
+            }
+        };
+
+        fetchBrands();
+    }, []);
+
 
     const [groups, setGroups] = useState([
         { brand: "", category: "", file: null, certificationUrl: "" },
@@ -163,7 +187,7 @@ const BrandsDetails = () => {
 
     // Handle Next button click
     const handleNext = () => {
-        if (!isSaved) {
+        if (!isSaved && !brandDetails || brandDetails.length === 0) {
             toast.error("Please upload the documents before proceeding.");
             return;
         }
@@ -192,17 +216,17 @@ const BrandsDetails = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className='col-lg-2 col-md-1'></div>
-                        <div className="col-lg-2 col-md-2 col-sm-3 col-3">
+                        <div className='col-xxl-2 col-xl-2 col-lg-2 col-md-1'></div>
+                        <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-3 col-3">
                             <p className="brand-detail-headers">Brand:</p>
                         </div>
-                        <div className="col-lg-4 col-md-4 col-sm-6 col-5">
+                        <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-5">
                             <p className="brand-detail-headers">Type of association with the brand:</p>
                         </div>
-                        <div className="col-lg-3 col-md-4 col-sm-3 col-4">
+                        <div className="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-4">
                             <p className="brand-detail-headers">Upload required document:</p>
                         </div>
-                        <div className="col-lg-1 col-md-1"></div>
+                        <div className="col-xxl-1 col-xl-1 col-lg-1 col-md-1"></div>
                     </div>
 
                     {groups.map((group, index) => {
@@ -210,8 +234,8 @@ const BrandsDetails = () => {
 
                         return (
                             <div key={index} className="row mt-2">
-                                <div className="col-lg-2 col-md-1"></div>
-                                <div className="col-lg-2 col-md-2 col-sm-3 col-3">
+                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-1"></div>
+                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-3 col-3">
                                     <select className="brand-type" value={group.brand} onChange={(e) => handleBrandChange(index, e.target.value)}>
                                         <option value="">Brand</option>
                                         {brands.map((brand, i) => (
@@ -220,7 +244,7 @@ const BrandsDetails = () => {
                                     </select>
                                 </div>
 
-                                <div className="col-lg-4 col-md-4 col-sm-6 col-5">
+                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-5">
                                     <select className="association-type" value={group.category} onChange={(e) => handleCategoryChange(index, e.target.value)}>
                                         <option value="">Choose Type of association</option>
                                         {categories.map((category) => (
@@ -229,7 +253,7 @@ const BrandsDetails = () => {
                                     </select>
                                 </div>
 
-                                <div className="col-lg-3 col-md-4 col-sm-3 col-4 d-flex gap-4">
+                                <div className="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-4 d-flex gap-4">
                                     <button
                                         onClick={() => document.getElementById(`fileInput-${index}`).click()}
                                         disabled={!isUploadAllowed}
@@ -250,7 +274,7 @@ const BrandsDetails = () => {
                                     onChange={(e) => handleFileUpload(index, e)}
                                     disabled={!isUploadAllowed}
                                 />
-                                <div className="col-lg-1 col-md-1"></div>
+                                <div className="col-xxl-1 col-xl-1 col-lg-1 col-md-1"></div>
                             </div>
                         );
                     })}

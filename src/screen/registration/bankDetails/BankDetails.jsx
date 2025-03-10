@@ -104,7 +104,7 @@ const BankDetails = () => {
 
     // Handle Next button click
     const handleNext = () => {
-        if (!isSaved) {
+        if (!isSaved && !bankDetailsFromStore) {
             toast.error("Please save the bank details before proceeding.");
             return;
         }

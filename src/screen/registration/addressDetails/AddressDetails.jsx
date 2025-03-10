@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -124,14 +124,66 @@ const AddressDetails = () => {
 
     // Handle Next button click
     const handleNext = () => {
-        if (!isSaved) {
+        if (!isSaved && !addressDetails) {
             toast.error("Please save the address before proceeding.");
             return;
         }
         navigate('/registration/brand-details');
     };
 
+    // Effect for Billing Address
+    useEffect(() => {
+        if (sameAsBusinessAddOne) {
+            setBillingAddress({
+                addressLine1: businessDetails?.address || "",
+                addressLine2: "",
+                pincode: businessDetails?.pincode || "",
+                city: businessDetails?.city || "",
+                district: "",
+                state: businessDetails?.state || "",
+                country: businessDetails?.country || "",
+                landmark: ""
+            });
+        } else {
+            setBillingAddress({
+                addressLine1: "",
+                addressLine2: "",
+                pincode: "",
+                city: "",
+                district: "",
+                state: "",
+                country: "",
+                landmark: ""
+            });
+        }
+    }, [sameAsBusinessAddOne, businessDetails]);
 
+    // Effect for Pickup Address
+    useEffect(() => {
+        if (sameAsBusinessAddTwo) {
+            setPickupAddress({
+                addressLine1: businessDetails?.address || "",
+                addressLine2: "",
+                pincode: businessDetails?.pincode || "",
+                city: businessDetails?.city || "",
+                district: "",
+                state: businessDetails?.state || "",
+                country: businessDetails?.country || "",
+                landmark: ""
+            });
+        } else {
+            setPickupAddress({
+                addressLine1: "",
+                addressLine2: "",
+                pincode: "",
+                city: "",
+                district: "",
+                state: "",
+                country: "",
+                landmark: ""
+            });
+        }
+    }, [sameAsBusinessAddTwo, businessDetails]);
 
 
 
@@ -254,12 +306,12 @@ const AddressDetails = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* <div className="row mt-2">
+                                        <div className="row mt-2">
                                             <div className="col-12 d-flex align-items-center ms-3">
                                                 <input type="checkbox" id="matchone" checked={sameAsBusinessAddOne} onChange={handleSameAsBusinessAddOne} />
                                                 <label htmlFor="matchone" className="acknowledge">Same as Business Address</label>
                                             </div>
-                                        </div> */}
+                                        </div>
                                     </div>
                                     <div className="col-lg-2">
 
@@ -345,12 +397,12 @@ const AddressDetails = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* <div className="row mt-2">
+                                        <div className="row mt-2">
                                             <div className="col-12 d-flex align-items-center ms-3">
                                                 <input type="checkbox" id="matchtwo" checked={sameAsBusinessAddTwo} onChange={handleSameAsBusinessAddTwo} />
                                                 <label htmlFor="matchtwo" className="acknowledge">Same as Business Address</label>
                                             </div>
-                                        </div> */}
+                                        </div>
                                     </div>
                                     <div className="col-lg-2 d-flex align-items-center justify-content-center">
                                         <div className="add-location-container d-flex flex-column align-items-center">

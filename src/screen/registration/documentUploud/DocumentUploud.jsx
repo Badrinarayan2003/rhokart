@@ -20,6 +20,9 @@ const DocumentUploud = () => {
     const businessDetails = useSelector((state) => state.registration.businessDetails);
     console.log(businessDetails, "businessDetails getting from redux store"); // This will log the stored business details
 
+    const documentDetails = useSelector((state) => state.registration.documentUpload);
+    console.log(documentDetails, "documentDetails getting from redux store"); // This will log the stored business details
+
     const allowedExtensions = ["pdf", "jpeg", "jpg", "png"];
     const [files, setFiles] = useState({
         panCard: null,
@@ -141,7 +144,7 @@ const DocumentUploud = () => {
 
     // Handle Next button click
     const handleNext = () => {
-        if (!isSaved) {
+        if (!isSaved && (!documentDetails || documentDetails.length === 0)) {
             toast.error("Please upload the documents before proceeding.");
             return;
         }

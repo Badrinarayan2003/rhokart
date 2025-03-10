@@ -87,6 +87,17 @@
     border-radius: 5px;
 }
 
+.review-check-box {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    gap: 5px;
+}
+
+.review-check-box label {
+    font-weight: 600;
+}
+
 @media (max-width: 992px) {
     .review-business-detail-title-box {
         font-size: 15px;
