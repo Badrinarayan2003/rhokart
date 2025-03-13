@@ -141,6 +141,7 @@ const BrandsDetails = () => {
 
     // Handle Save
     const handleSave = async () => {
+        
         if (!validateFields()) return;
 
         setLoading(true);

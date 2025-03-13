@@ -4,16 +4,22 @@ import './registrationReview.css';
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { submitRegistration } from "../../../redux/reducers/registrationSlice";
 
 import { FaLocationDot } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
 const RegistrationReview = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const brandDetails = useSelector((state) => state.registration?.brandsDetails);
-    console.log(brandDetails, "brand details from store!");
+    const { businessDetails, bankDetails, addressDetails, brandsDetails, documentUpload, } = useSelector((state) => state.registration);
+    console.log(businessDetails, "business details from store! in review");
+    console.log(bankDetails, "bank details from store! in review");
+    console.log(addressDetails, "address details from store! in review");
+    console.log(documentUpload, "document details from store! in review");
+    console.log(brandsDetails, "brand details from store! in review");
 
 
     const [checkboxes, setCheckboxes] = useState({
@@ -37,6 +43,7 @@ const RegistrationReview = () => {
         }
 
         // If the required checkbox is checked, navigate to the success page
+        dispatch(submitRegistration());
         navigate("/registration-success");
     };
 
@@ -73,7 +80,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">07ABCDE1234Q12M</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.gstin}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +92,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">Optional</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.tradeName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +104,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">Uttar Pradesh</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.state}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -109,7 +116,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABCDE1234Q</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.pan}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +128,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">9876543210</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.phoneNo}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -133,7 +140,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">example@gmail.com</span>
+                                            <span className="review-business-detail-title-value">{businessDetails?.email}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +156,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">Sankalp Traders Private Limited</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.entityName}</span>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +168,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">India</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.country}</span>
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +180,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">Durgapur</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.city}</span>
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +192,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">+914 8976543210</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.alternatePhoneNo || "XXXXXXXXXX"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +205,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">example2@gmail.com</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.alternateEmail || "XXXXXXXXXXXX"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +220,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">Amith Samanta</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.contactName}</span>
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +232,7 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">711803</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.pincode}</span>
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +244,20 @@ const RegistrationReview = () => {
                                         </p>
                                     </div>
                                     <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <span className="review-business-detail-title-value">DELL092S2A</span>
+                                        <span className="review-business-detail-title-value">{businessDetails?.tan}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-12 review-business-detail-title-container">
+                                <div className="row">
+                                    <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <p className="review-business-detail-title-box mb-0">
+                                            Address:
+                                        </p>
+                                    </div>
+                                    <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <span className="review-business-detail-title-value">{businessDetails?.address}</span>
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +284,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABC Traders Limited</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.accountHolderName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -276,7 +296,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABC Traders Limited</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.bankName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -288,7 +308,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABC Traders Limited</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.branchName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -300,7 +320,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABC Traders Limited</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.branchCityName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -316,7 +336,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">32612781919911</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.accountNo}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -328,7 +348,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">ABC Traders Limited</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.ifscCode}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +360,7 @@ const RegistrationReview = () => {
                                             </p>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <span className="review-business-detail-title-value">Current</span>
+                                            <span className="review-business-detail-title-value">{bankDetails?.accountType}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -356,86 +376,30 @@ const RegistrationReview = () => {
                         </div>
                     </div>
 
-
                     <div className="row mb-4">
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">PAN Card of Owner:</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0 ">Upload (pdf, jpeg, png, jpg)</p>
+
+                        {
+                            documentUpload.map((item, index) => {
+                                const fileuri = item?.fileUrl.split("/").pop().split("_");
+                                const mainFileName = fileuri.length > 1 ? fileuri.pop() : fileuri
+
+                                return (
+                                    <div className="col-12 mb-2" key={index}>
+                                        <div className="row">
+                                            <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 d-flex align-items-center">
+                                                <p className="mb-2 fw-bold">{item?.fileName}</p>
+                                            </div>
+                                            <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
+                                                <div className="review-business-doc-value">
+                                                    <a href={item?.fileUrl} className="mb-0 ">{mainFileName}</a>
+                                                </div>
+                                            </div>
+                                            <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">GSTIN Certificate:</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0 ">asdfcgvhG.pdf</p>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">Cancelled cheque:</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0 ">tfhjkggjkklmnkn.pdf</p>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">Certificate of Incrporation (MCA):</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0 ">abcfdfghgjkj.png</p>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">Business Address Proof:</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0 ">ghhthoppjhgfgfgjkljhgfd.jpg</p>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
-                        <div className="col-12 mb-2">
-                            <div className="row">
-                                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                                    <p className="mb-2 fw-bold">Signature:</p>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-5 col-md-5 col-sm-6 col-12">
-                                    <div className="review-business-doc-value">
-                                        <p className="mb-0">hhhhhhhhhghgyuhkjhjhfhg.png.jpg</p>
-                                    </div>
-                                </div>
-                                <div className="col-xxl-4 col-xl-4 col-lg-3 col-md-3 col-sm-0 col-0"></div>
-                            </div>
-                        </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
@@ -459,7 +423,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Address:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta assssssssssssskkkkkkkkkddd</p>
+                                            <p className="mb-0 ">{businessDetails?.address}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -475,7 +439,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Pincode:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">123456</p>
+                                            <p className="mb-0 ">{businessDetails?.pincode}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -491,7 +455,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">City:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Bhubaneswar</p>
+                                            <p className="mb-0 ">{businessDetails?.city}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -507,7 +471,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">State:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Odisha</p>
+                                            <p className="mb-0 ">{businessDetails?.state}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -523,7 +487,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Country:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">India</p>
+                                            <p className="mb-0 ">{businessDetails?.country}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -542,10 +506,26 @@ const RegistrationReview = () => {
                                 <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div className="row">
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 fw-bold">Address:</p>
+                                            <p className="mb-0 fw-bold">Address Line1:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta assssssssssssskkkkkkkkkddd</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.addressLine1}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12"></div>
+                            </div>
+                        </div>
+
+                        <div className="col-12 mb-2">
+                            <div className="row">
+                                <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div className="row">
+                                        <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
+                                            <p className="mb-0 fw-bold">Address Line2:</p>
+                                        </div>
+                                        <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.addressLine2}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -561,7 +541,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Nearest landmark:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.landmark}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -576,7 +556,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Country:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">India</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.country}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -592,7 +572,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">State:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Odisha</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.state}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -608,7 +588,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">District:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.district}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -623,7 +603,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">City:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Bhubaneswar</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.city}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -638,7 +618,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Pincode:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">123456</p>
+                                            <p className="mb-0 ">{addressDetails?.billingAddress?.pincode}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -657,10 +637,26 @@ const RegistrationReview = () => {
                                 <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div className="row">
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 fw-bold">Address:</p>
+                                            <p className="mb-0 fw-bold">Address Line1:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta assssssssssssskkkkkkkkkddd</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.addressLine1}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12"></div>
+                            </div>
+                        </div>
+
+                        <div className="col-12 mb-2">
+                            <div className="row">
+                                <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div className="row">
+                                        <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
+                                            <p className="mb-0 fw-bold">Address Line2:</p>
+                                        </div>
+                                        <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.addressLine2}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -676,7 +672,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Nearest landmark:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.landmark}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -691,7 +687,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Country:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">India</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.country}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -707,7 +703,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">State:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Odisha</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.state}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -723,7 +719,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">District:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Venkatanarasimharajuvaripeta</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.district}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -738,7 +734,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">City:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">Bhubaneswar</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.city}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -753,7 +749,7 @@ const RegistrationReview = () => {
                                             <p className="mb-0 fw-bold">Pincode:</p>
                                         </div>
                                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-center">
-                                            <p className="mb-0 ">123456</p>
+                                            <p className="mb-0 ">{addressDetails?.pickupAddress?.pincode}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -794,66 +790,26 @@ const RegistrationReview = () => {
                                 </div>
                             </div>
 
-                            <div className="row mb-3">
-                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
-                                    <p className="mb-0 review-brand-detail-title-value">Havells</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
-                                    <p className="mb-0 review-brand-detail-title-value">Trader / Wholesaler (no document required)</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
-                                    <a href="#" className="mb-0 review-brand-detail-title-value">havell.pdf</a>
-                                </div>
-                            </div>
+                            {
+                                brandsDetails.map((item, index) => {
+                                    const docFileuri = item?.certificationUrl?.split("/").pop().split("_");
+                                    const finalDocFileName = docFileuri.length > 1 ? docFileuri.pop() : docFileuri;
 
-                            <div className="row mb-3">
-                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
-                                    <p className="mb-0 review-brand-detail-title-value">Phillips</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
-                                    <p className="mb-0 review-brand-detail-title-value">Authorized Dealer / Distributor (attach brand certificate)</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
-                                    <a href="#" className="mb-0 review-brand-detail-title-value">phillp.jpeg</a>
-                                </div>
-                            </div>
-
-                            <div className="row mb-3">
-                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
-                                    <p className="mb-0 review-brand-detail-title-value">Haier</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
-                                    <p className="mb-0 review-brand-detail-title-value">Trader</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
-                                    <a href="#" className="mb-0 review-brand-detail-title-value">haier.png</a>
-                                </div>
-                            </div>
-
-                            <div className="row mb-3">
-                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
-                                    <p className="mb-0 review-brand-detail-title-value">Abcde</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
-                                    <p className="mb-0 review-brand-detail-title-value">Brand owner (attach brand ownership / trademark certificate)</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
-                                    <a href="#" className="mb-0 review-brand-detail-title-value">Abcde.jpg</a>
-                                </div>
-                            </div>
-
-                            <div className="row mb-3">
-                                <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
-                                    <p className="mb-0 review-brand-detail-title-value">XYZUV</p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
-                                    <p className="mb-0 review-brand-detail-title-value">Wholesaler </p>
-                                </div>
-                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
-                                    <a href="#" className="mb-0 review-brand-detail-title-value">xyz.pdf</a>
-                                </div>
-                            </div>
-
+                                    return (
+                                        <div className="row mb-3" index={index}>
+                                            <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                                                <p className="mb-0 review-brand-detail-title-value">{item?.brandName}</p>
+                                            </div>
+                                            <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-6">
+                                                <p className="mb-0 review-brand-detail-title-value">{item?.associationType}</p>
+                                            </div>
+                                            <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-4">
+                                                <a href="#" className="mb-0 review-brand-detail-title-value">{finalDocFileName}</a>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
 
