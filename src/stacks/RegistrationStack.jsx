@@ -25,8 +25,8 @@ const RegistrationStack = () => {
     if (businessDetails && bankDetails) nextRoute = "/registration/document-uploud";
     if (businessDetails && bankDetails && documentUpload.length > 0) nextRoute = "/registration/address-details";
     if (businessDetails && bankDetails && addressDetails && documentUpload.length > 0) nextRoute = "/registration/brand-details";
-    if (businessDetails && bankDetails && addressDetails && brandsDetails.length > 0 && documentUpload.length > 0)
-        nextRoute = "/review-status";
+    if (businessDetails && bankDetails && addressDetails && brandsDetails.length > 0 && documentUpload.length > 0) nextRoute = "/review-status";
+    if (isSubmitted) nextRoute = "/registration-success";
 
     return (
         <Routes>

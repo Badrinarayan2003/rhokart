@@ -19,7 +19,7 @@ const App = () => {
         ) : accessLevel === "DASHBOARD" ? (
           <Route path="/*" element={<AppStack />} />
         ) : accessLevel === "APPROVAL" ? (
-          <Route path="/*" element={<Navigate to="/review-status" />} />
+          <Route path="/*" element={<RegistrationStack />} /> //<Navigate to="/registration-success" />
         ) : (
           <Route path="/*" element={<AuthStack />} /> // Fallback for undefined accessLevel
         )}

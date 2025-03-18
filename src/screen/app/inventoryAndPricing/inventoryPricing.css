@@ -1,0 +1,107 @@
+.update-portal-box label {
+    color: #000;
+    font-size: 15px;
+}
+
+.update-portal-box select {
+    border: 1px solid #1F8505;
+    padding: 4px 7px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.or-text-update-portal {
+    color: #1F8505;
+    font-weight: 500;
+}
+
+.update-portal-search-box label {
+    color: #1F8505;
+    font-weight: 500;
+    margin-bottom: 6px;
+    margin-left: 16px;
+    font-size: 16px;
+}
+
+.update-portal-search-box input {
+    padding: 11px 20px;
+    border: 1px solid #1F8505;
+    border-radius: 25px;
+    color: #000;
+    outline: none;
+    width: 42%;
+}
+
+.update-portal-page-button-box button {
+    outline: none;
+    border: none;
+    background: #1F8505;
+    color: #fff;
+    padding: 2px 9px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.update-portal-page-button-box button:disabled {
+    background: #747474;
+}
+
+.update-portal-btns-box {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+}
+
+
+.update-portal-btn {
+    padding: 6px 50px;
+    outline: none;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+}
+
+
+.update-btns-clear {
+    background: #40444C;
+}
+
+.update-btns-save {
+    background: #66BB6A;
+}
+
+.update-btns-submit {
+    background: #1F8505;
+}
+
+@media screen and (max-width: 768px) {
+    .update-portal-search-box input {
+        width: 49%;
+        padding: 8px 20px;
+    }
+
+    .update-portal-btns-box {
+        gap: 2rem;
+    }
+
+    .update-portal-btn {
+        padding: 4px 25px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .update-portal-search-box input {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .update-portal-search-box input {
+        width: 100%;
+    }
+
+    .update-portal-btns-box {
+        gap: 1rem;
+    }
+}
