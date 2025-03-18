@@ -123,11 +123,21 @@ const AddressDetails = () => {
     };
 
     // Handle Next button click
-    const handleNext = () => {
-        if (!isSaved && !addressDetails) {
-            toast.error("Please save the address before proceeding.");
+    const handleNext = async () => {
+        // if (!isSaved && !addressDetails) {
+        //     toast.error("Please save the address before proceeding.");
+        //     return;
+        // }
+
+        if (!validateFields()) {
+            toast.error("Please fill all required field before procceding");
             return;
         }
+
+        if (!isSaved) {
+            await handleSaveAddress();
+        }
+
         navigate('/registration/brand-details');
     };
 

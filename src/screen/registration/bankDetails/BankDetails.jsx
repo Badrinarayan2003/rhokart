@@ -103,11 +103,19 @@ const BankDetails = () => {
     };
 
     // Handle Next button click
-    const handleNext = () => {
-        if (!isSaved && !bankDetailsFromStore) {
-            toast.error("Please save the bank details before proceeding.");
+    const handleNext = async () => {
+        if (!validateForm()) {
+            toast.error("Please fill all required field before procceding");
             return;
         }
+
+        if (!isSaved) {
+            await handleFormSubmit();
+        }
+        // if (!isSaved && !bankDetailsFromStore) {
+        //     toast.error("Please save the bank details before proceeding.");
+        //     return;
+        // }
         navigate("/registration/document-uploud"); // Change this to the actual next step route
     };
 

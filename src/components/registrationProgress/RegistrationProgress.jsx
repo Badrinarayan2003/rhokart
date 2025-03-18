@@ -3,6 +3,7 @@ import './registrationProgress.css';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/reducers/authSlice';
+import { resetRegistration } from '../../redux/reducers/registrationSlice';
 
 const RegistrationProgress = ({ color, active, step }) => {
 
@@ -11,7 +12,8 @@ const RegistrationProgress = ({ color, active, step }) => {
 
     const handleLogout = () => {
         dispatch(logout());
-        navigate("/login")
+        navigate("/login");
+        dispatch(resetRegistration());
     }
 
     return (

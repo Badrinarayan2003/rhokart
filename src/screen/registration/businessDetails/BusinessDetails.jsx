@@ -197,11 +197,23 @@ const BusinessDetails = () => {
 
 
     // Handle Next button click
-    const handleNext = () => {
-        if (!isSaved && !business_details) {
-            toast.error("Please save the business details before proceeding.");
+    const handleNext = async () => {
+        console.log(isSaved, "before is save");
+
+        if (!validateForm()) {
+            toast.error("Please fill all details before procceding");
             return;
         }
+
+        if (!isSaved) {
+            console.log(isSaved, "after is save");
+            await handleFormSubmit();
+            // if (!isSaved) return; // If still not saved, stop navigation
+        }
+        // if (!isSaved && !business_details) {
+        //     toast.error("Please save the business details before proceeding.");
+        //     return;
+        // }
         navigate('/registration/bank-details');
     };
 

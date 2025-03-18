@@ -141,7 +141,7 @@ const BrandsDetails = () => {
 
     // Handle Save
     const handleSave = async () => {
-        
+
         if (!validateFields()) return;
 
         setLoading(true);
@@ -187,10 +187,19 @@ const BrandsDetails = () => {
 
 
     // Handle Next button click
-    const handleNext = () => {
-        if (!isSaved && !brandDetails || brandDetails.length === 0) {
-            toast.error("Please upload the documents before proceeding.");
+    const handleNext = async () => {
+        // if (!isSaved && !brandDetails || brandDetails.length === 0) {
+        //     toast.error("Please upload the documents before proceeding.");
+        //     return;
+        // }
+
+        if (!validateFields()) {
+            toast.error("Please upload a document for required categories.");
             return;
+        }
+
+        if (!isSaved) {
+            await handleSave();
         }
         navigate('/review-status');
     };

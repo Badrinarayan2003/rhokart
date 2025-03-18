@@ -143,10 +143,20 @@ const DocumentUploud = () => {
     };
 
     // Handle Next button click
-    const handleNext = () => {
-        if (!isSaved && (!documentDetails || documentDetails.length === 0)) {
-            toast.error("Please upload the documents before proceeding.");
+    const handleNext = async () => {
+        // if (!isSaved && (!documentDetails || documentDetails.length === 0)) {
+        //     toast.error("Please upload the documents before proceeding.");
+        //     return;
+        // }
+
+        const missingFiles = Object.entries(files).filter(([_, file]) => !file);
+        if (missingFiles.length > 0) {
+            toast.error(`Please upload all required documents.`);
             return;
+        }
+
+        if (!isSaved) {
+            await handleSave();
         }
         navigate('/registration/address-details');
     };
