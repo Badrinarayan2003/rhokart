@@ -30,10 +30,6 @@ const UpdateOnPortal = () => {
         setRowData(updatedData);
     }, [rowData]);
 
-    const gridOptions = {
-        pagination: true,
-        paginationPageSize: 9, // Ensure the default page size is set
-    };
 
     return (
         <div className="update-on-portal">
@@ -104,6 +100,7 @@ const UpdateOnPortal = () => {
                             columnDefs={columnDefs}
                             pagination={true}
                             paginationPageSize={9}
+                            paginationPageSizeSelector={[9, 20, 50, 100]}
                             onCellValueChanged={onCellValueChanged}
                         />
                     </div>
