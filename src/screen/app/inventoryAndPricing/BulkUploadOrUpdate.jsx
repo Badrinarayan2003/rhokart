@@ -74,32 +74,47 @@ const BulkUploadOrUpdate = () => {
 
                     {/* Collapsible Section */}
                     {isCollapsed && (
-                        <div className="card card-body" style={{ padding: "15px", border: "1px solid #ddd", borderRadius: "5px" }}>
+                        <div className="card card-body" style={{ padding: "15px", border: "1px solid #000", borderRadius: "5px" }}>
                             {[1, 2, 3].map((item) => (
-                                <div key={item} className="d-flex gap-2 align-items-center justify-content-around mb-2" style={{ borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+                                <div key={item} className="row d-flex align-items-center justify-content-around mb-2" style={{ borderBottom: "1px solid #000", paddingBottom: "10px" }}>
                                     {/* File Name Display */}
-                                    <span className="bulk-up-file-name">Single & Twin core wire SKUs {item}</span>
+                                    <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mb-2">
+                                        <span className="bulk-up-file-name d-flex">Single & Twin core wire SKUs {item}</span>
+                                    </div>
 
                                     {/* Download Button */}
-                                    <a href="#" className="bulk-uploud-download-btn">
-                                        Download available SKUs list template <span> <FiDownload color="#fff" size={19} /></span>
-                                    </a>
+                                    <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mb-2">
+                                        <a href="#" className="bulk-uploud-download-btn d-flex">
+                                            Download available SKUs list template <span> <FiDownload color="#fff" size={19} /></span>
+                                        </a>
+                                    </div>
 
                                     {/* Upload Button */}
-                                    <label className="bulk-uploud-upload-btn">
-                                        {selectedFiles[item] || "Upload inventory and pricing of your items"}<span> <FiUpload color="#fff" size={19} /></span>
-                                        <input
-                                            type="file"
-                                            accept=".pdf, .xls, .xlsx"
-                                            hidden
-                                            onChange={(e) => handleFileChange(e, item)}
-                                        />
-                                    </label>
+                                    <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mb-2">
+                                        <label className="bulk-uploud-upload-btn">
+                                            {selectedFiles[item] || "Upload inventory and pricing of your items"}<span> <FiUpload color="#fff" size={18} /></span>
+                                            <input
+                                                type="file"
+                                                accept=".pdf, .xls, .xlsx"
+                                                hidden
+                                                onChange={(e) => handleFileChange(e, item)}
+                                            />
+                                        </label>
+                                    </div>
 
                                 </div>
                             ))}
                         </div>
                     )}
+                </div>
+            </div>
+
+            <div className="row" style={{ marginTop: '4rem' }}>
+                <div className="col-12">
+                    <div className="update-portal-btns-box d-flex justify-content-start flex-wrap">
+                        <button className="update-portal-btn update-btns-clear">Download all Templates <span> <FiDownload color="#fff" size={19} /></span></button>
+                        <button className="update-portal-btn update-btns-submit">Submit</button>
+                    </div>
                 </div>
             </div>
 

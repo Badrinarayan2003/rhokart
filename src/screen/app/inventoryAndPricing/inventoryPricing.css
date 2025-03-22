@@ -83,26 +83,33 @@
     align-items: center;
     font-weight: 600;
 }
-.bulk-up-file-name{
+
+.bulk-up-file-name {
     background: rgba(182, 186, 195, 1);
     padding: 7px 16px;
     border-radius: 5px;
     color: rgba(64, 68, 76, 1);
+    font-size: 13px;
 }
-.bulk-uploud-download-btn{
+
+.bulk-uploud-download-btn {
     padding: 8px 12px;
     background-color: rgba(31, 133, 5, 1);
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    font-size: 13px;
 }
-.bulk-uploud-upload-btn{
+
+.bulk-uploud-upload-btn {
     padding: 8px 12px;
     background-color: rgba(64, 68, 76, 1);
     color: #ffffff;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 13px;
 }
+
 @media screen and (max-width: 768px) {
     .update-portal-search-box input {
         width: 49%;
