@@ -148,6 +148,12 @@
     border-color: #fff;
 }
 
+.side-item-disable{
+    opacity: 0.5;
+    pointer-events: none; /* Prevent clicks */
+}
+
+
 @keyframes sidebarAnimation {
     0% {
         opacity: 0;

@@ -1,4 +1,7 @@
 import React, { useState, useCallback } from "react";
+
+import { FaEdit } from "react-icons/fa";
+
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -9,25 +12,92 @@ import { mockApiResponse } from "../../../constants/data";
 
 
 const UpdateOnPortal = () => {
-    const [rowData, setRowData] = useState(mockApiResponse);
+
+
+    // Transform the initial data
+    const transformData = (data) => {
+
+        return data.map((item) => {
+            const gstAmount = (item.unitPriceWithoutGst * item.gstRate) / 100;
+            const unitPriceIncludingGst = item.unitPriceWithoutGst + gstAmount;
+            return {
+                ...item,
+                listingName: item.listingName,
+                childSku: item.childSku,
+                listingId: item.listingId,
+                skuId: item.skuId,
+                listingUnitQty: item.listingUnitQty,
+                hsnCode: item.hsnCode,
+                qtyInStock: item.qtyInStock,
+                unitPriceWithoutGst: item.unitPriceWithoutGst,
+                gstRate: item.gstRate,
+                gstAmount: gstAmount,
+                unitPriceIncludingGst: unitPriceIncludingGst,
+            };
+        });
+    };
+
+    const [rowData, setRowData] = useState(transformData(mockApiResponse));
+
+
+    // Custom header renderer to display an edit icon
+    const headerRendererWithEditIcon = (params) => {
+        return (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-around' }}>
+                <span style={{ color: '#181d1f' }}>{params.displayName}</span>
+                <FaEdit style={{ color: "rgb(120 188 102)" }} /> {/* Edit icon */}
+            </div>
+        );
+    };
+
+    // Custom cell renderer to display an edit icon
+    const cellRendererWithEditIcon = (params) => {
+        return (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+                <span style={{ color: '#181d1f' }}>{params.value}</span>
+                <FaEdit style={{ color: "rgb(120 188 102)" }} /> {/* Edit icon */}
+            </div>
+        );
+    };
+
+
 
     const columnDefs = [
         { headerName: "Image", field: "image", sortable: true, filter: true, cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> },
-        { headerName: "Category L1", field: "categoryL1", sortable: true, filter: true },
-        { headerName: "Category L2", field: "categoryL2", sortable: true, filter: true },
-        { headerName: "Category L3", field: "categoryL3", sortable: true, filter: true },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
-        { headerName: "SKU Name", field: "skuName", sortable: true, filter: true },
-        { headerName: "Qty Stock", field: "qtyStock", sortable: true, filter: true },
-        { headerName: "Price Per Unit", field: "pricePerUnit", sortable: true, filter: true },
-        { headerName: "GST Rate", field: "gstRate", sortable: true, filter: true, editable: true },
-        { headerName: "GST Amount", field: "gstAmount", sortable: true, filter: true, editable: true },
-        { headerName: "HSN Code", field: "hsnCode", sortable: true, filter: true },
+        { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
+        { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
+        { headerName: "SKU ID", field: "skuId", sortable: true, filter: true },
+        { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true },
+        { headerName: "HSN Code", field: "hsnCode", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "Qty in stock (available inventory)", field: "qtyInStock", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "Unit price (INR, without GST)", field: "unitPriceWithoutGst", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "GST Rate", field: "gstRate", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "GST Amount(INR)", field: "gstAmount", sortable: true, filter: true },
+        { headerName: "Unit price (INR, including GST)", field: "unitPriceIncludingGst", sortable: true, filter: true },
     ];
 
     const onCellValueChanged = useCallback((params) => {
-        const updatedData = rowData.map((row) => (row.listingID === params.data.listingID ? params.data : row));
-        setRowData(updatedData);
+        const { data } = params;
+
+        // Check if the edited column is unitPriceWithoutGst or gstRate
+        if (params.colDef.field === "unitPriceWithoutGst" || params.colDef.field === "gstRate") {
+            const { unitPriceWithoutGst, gstRate } = data;
+
+            // Recalculate GST Amount and Unit Price Including GST
+            const gstAmount = (unitPriceWithoutGst * gstRate) / 100;
+            const unitPriceIncludingGst = unitPriceWithoutGst + gstAmount;
+
+            // Update the specific row
+            const updatedData = rowData.map((row) =>
+                row.listingId === data.listingId // Use listingId to identify the row
+                    ? { ...row, gstAmount, unitPriceIncludingGst }
+                    : row
+            );
+
+            // Update the state
+            setRowData(updatedData);
+        }
     }, [rowData]);
 
 
@@ -35,7 +105,7 @@ const UpdateOnPortal = () => {
         <div className="update-on-portal">
             {/* Categories and Search Section */}
             <div className="row mb-2 mt-3">
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L1</label>
                         <select>
@@ -47,7 +117,7 @@ const UpdateOnPortal = () => {
                         </select>
                     </div>
                 </div>
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L2</label>
                         <select>
@@ -59,7 +129,7 @@ const UpdateOnPortal = () => {
                         </select>
                     </div>
                 </div>
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L3</label>
                         <select>
@@ -71,6 +141,10 @@ const UpdateOnPortal = () => {
                         </select>
                     </div>
                 </div>
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3 d-flex align-items-end filter-btn-box">
+                    <button className="update-portal-btn update-btns-submit ">Filter</button>
+                </div>
+
             </div>
 
             <div className="row mb-2">
@@ -98,9 +172,9 @@ const UpdateOnPortal = () => {
                         <AgGridReact
                             rowData={rowData}
                             columnDefs={columnDefs}
-                            pagination={true}
-                            paginationPageSize={9}
-                            paginationPageSizeSelector={[9, 20, 50, 100]}
+                            // pagination={true}
+                            // paginationPageSize={9}
+                            // paginationPageSizeSelector={[9, 20, 50, 100]}
                             onCellValueChanged={onCellValueChanged}
                         />
                     </div>

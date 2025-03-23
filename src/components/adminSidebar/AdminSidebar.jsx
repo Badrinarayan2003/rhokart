@@ -43,7 +43,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
             className={openSidebarToggle ? "sidebar-responsive" : ""}
             ref={sidebarRef}
         >
-            <div className='sidebar-title justify-content-center'>
+            <div className='sidebar-title justify-content-space-between'>
                 <div className='sidebar-brand mt-0'>
                     <img src={logo2} />
                 </div>
@@ -58,7 +58,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                         <IoHomeSharp className='icon' color='#1F8505' /> Home
                     </Link>
                 </li>
-                <li className='sidebar-list-item dropdown'>
+                <li className='sidebar-list-item dropdown side-item-disable'>
                     <a
                         href="#"
                         className="dropdown-toggle d-flex align-items-center"
@@ -123,23 +123,23 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                         <TbReportSearch className='icon' color='#1F8505' /> Reports
                     </Link>
                 </li>
-                <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                <li className='sidebar-list-item side-item-disable'>
+                    <Link to="/home">
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Discount
                     </Link>
                 </li>
-                <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                <li className='sidebar-list-item side-item-disable'>
+                    <Link to="/home" >
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Offer and Coupon
                     </Link>
                 </li>
-                <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                <li className='sidebar-list-item side-item-disable'>
+                    <Link to="/home">
                         <HiUserGroup className='icon' color='#1F8505' /> Customer Mgmt
                     </Link>
                 </li>
-                <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                <li className='sidebar-list-item side-item-disable'>
+                    <Link to="/home">
                         <IoMdSettings className='icon' color='#1F8505' /> Account & Settings
                     </Link>
                 </li>

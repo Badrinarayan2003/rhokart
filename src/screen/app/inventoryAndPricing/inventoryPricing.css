@@ -11,7 +11,7 @@
 }
 
 .or-text-update-portal {
-    color: #1F8505;
+    color: #343933;
     font-weight: 500;
 }
 
@@ -129,6 +129,10 @@
     .update-portal-search-box input {
         width: 80%;
     }
+
+    .filter-btn-box {
+        justify-content: center;
+    }
 }
 
 @media screen and (max-width: 425px) {
@@ -138,5 +142,9 @@
 
     .update-portal-btns-box {
         gap: 1rem;
+    }
+
+    .filter-btn-box button {
+        width: 100%;
     }
 }

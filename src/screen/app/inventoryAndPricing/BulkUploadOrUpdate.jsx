@@ -21,7 +21,7 @@ const BulkUploadOrUpdate = () => {
     return (
         <div className="bulkupload-update-page">
             <div className="row mb-2 mt-3">
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L1</label>
                         <select>
@@ -33,7 +33,7 @@ const BulkUploadOrUpdate = () => {
                         </select>
                     </div>
                 </div>
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L2</label>
                         <select>
@@ -45,7 +45,7 @@ const BulkUploadOrUpdate = () => {
                         </select>
                     </div>
                 </div>
-                <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-4 col-sm-6 col-12 mb-3">
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                     <div className="update-portal-box d-flex flex-wrap align-items-center">
                         <label className="me-2">Category L3</label>
                         <select>
@@ -56,6 +56,9 @@ const BulkUploadOrUpdate = () => {
                             <option value="">Aluminium four Category L3</option>
                         </select>
                     </div>
+                </div>
+                <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3 d-flex align-items-end filter-btn-box">
+                    <button className="update-portal-btn update-btns-submit ">Filter</button>
                 </div>
             </div>
 

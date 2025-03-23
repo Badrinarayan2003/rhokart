@@ -25,13 +25,13 @@ function AdminHeader({ OpenSidebar }) {
                 <div className="dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div className="d-flex flex-column align-items-center">
                         <FaUser color='#fff' size={23} />
-                        <p className='mb-0 seller-profile-name'>User Name</p>
+                        <p className='mb-0 seller-profile-name'>Seller Name</p>
                     </div>
                 </div>
                 <ul className="dropdown-menu" id="dropdown-menu-show-ani-two" >
                     <li><a className="dropdown-item" href="#">
                         <span className='me-2'><IoSettingsSharp size={22} /></span>
-                        User Profile</a></li>
+                        Seller Profile</a></li>
                     <li>
                         <a className="dropdown-item" href="#">
                             <span className='me-2'> <IoLogOut size={22} /></span>
