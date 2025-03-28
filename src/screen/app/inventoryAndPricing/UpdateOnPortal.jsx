@@ -121,9 +121,10 @@ const UpdateOnPortal = () => {
                 const response = await axios.get(
                     `${BASE_URL}/test/inventory/category?level=L1`
                 );
+                console.log(response, "fetch cat 1")
                 setL1Categories(response.data);
             } catch (error) {
-                console.error("Error fetching L1 categories:", error);
+                console.log("Error fetching L1 categories:", error);
             }
         };
 
@@ -142,9 +143,10 @@ const UpdateOnPortal = () => {
                 const response = await axios.get(
                     `${BASE_URL}/test/inventory/category?level=L1&l1Value=${selectedL1}&level=L2`
                 );
+                console.log(response, "fetch cat 2")
                 setL2Categories(response.data);
             } catch (error) {
-                console.error("Error fetching L2 categories:", error);
+                console.log("Error fetching L2 categories:", error);
             }
         };
 
@@ -163,9 +165,10 @@ const UpdateOnPortal = () => {
                 const response = await axios.get(
                     `${BASE_URL}/test/inventory/category?level=L1&l1Value=${selectedL1}&level=L2&l2Value=${selectedL2}&level=L3`
                 );
+                console.log(response, "fetch cat 3")
                 setL3Categories(response.data);
             } catch (error) {
-                console.error("Error fetching L3 categories:", error);
+                console.log("Error fetching L3 categories:", error);
             }
         };
 
@@ -235,39 +238,104 @@ const UpdateOnPortal = () => {
         { headerName: "Image", field: "image", sortable: true, filter: true, cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
-        { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
-        { headerName: "SKU ID", field: "skuId", sortable: true, filter: true },
-        { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true },
         { headerName: "HSN Code", field: "hsnCode", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
         { headerName: "Qty in stock (available inventory)", field: "qtyInStock", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
         { headerName: "Unit price (INR, without GST)", field: "unitPriceWithoutGst", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
         { headerName: "GST Rate", field: "gstRate", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
         { headerName: "GST Amount(INR)", field: "gstAmount", sortable: true, filter: true },
         { headerName: "Unit price (INR, including GST)", field: "unitPriceIncludingGst", sortable: true, filter: true },
+        { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
+        { headerName: "SKU ID", field: "skuId", sortable: true, filter: true },
+        { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true },
     ];
 
+
+    const [editHistory, setEditHistory] = useState([]); // Array of all edits
+
     const onCellValueChanged = useCallback((params) => {
-        const { data } = params;
+        const { data, newValue, colDef } = params;
 
-        // Check if the edited column is unitPriceWithoutGst or gstRate
-        if (params.colDef.field === "unitPriceWithoutGst" || params.colDef.field === "gstRate") {
-            const { unitPriceWithoutGst, gstRate } = data;
+        setRowData(prevData => prevData.map(row => {
+            if (row.listingId === data.listingId && row.skuId === data.skuId) {
+                const updatedRow = {
+                    ...row,
+                    [colDef.field]: newValue,
+                    lastEdited: new Date().toISOString() // Timestamp
+                };
 
-            // Recalculate GST Amount and Unit Price Including GST
-            const gstAmount = (unitPriceWithoutGst * gstRate) / 100;
-            const unitPriceIncludingGst = unitPriceWithoutGst + gstAmount;
+                // Recalculate GST fields if needed
+                if (colDef.field === "unitPriceWithoutGst" || colDef.field === "gstRate") {
+                    const price = colDef.field === "unitPriceWithoutGst" ? newValue : row.unitPriceWithoutGst;
+                    const rate = colDef.field === "gstRate" ? newValue : row.gstRate;
 
-            // Update the specific row
-            const updatedData = rowData.map((row) =>
-                row.listingId === data.listingId // Use listingId to identify the row
-                    ? { ...row, gstAmount, unitPriceIncludingGst }
-                    : row
+                    updatedRow.gstAmount = (price * rate) / 100;
+                    updatedRow.unitPriceIncludingGst = price + updatedRow.gstAmount;
+                }
+
+                // Store EVERY edit in history
+                setEditHistory(prev => [...prev, {
+                    listingId: data.listingId,
+                    skuId: data.skuId,
+                    field: colDef.field,
+                    oldValue: row[colDef.field],
+                    newValue,
+                    timestamp: new Date().toISOString()
+                }]);
+
+                return updatedRow;
+            }
+            return row;
+        }));
+    }, []);
+
+
+
+    const handleSubmit = async () => {
+        try {
+            // Transform rowData to match API requirements
+            const updateInventoryList = rowData
+                .filter(row => row.lastEdited) // Only include edited rows
+                .map(row => ({
+                    skuId: row.skuId,
+                    hsnCode: parseInt(row.hsnCode) || 0, // Convert to number
+                    qtyInStock: row.qtyInStock,
+                    unitPriceWoGst: row.unitPriceWithoutGst,
+                    gstRate: row.gstRate,
+                    gstAmount: row.gstAmount,
+                    unitPriceWGst: row.unitPriceIncludingGst
+                }));
+            console.log(updateInventoryList, "transfer ready row data")
+            // Prepare request body
+            const requestBody = {
+                updateInventoryList
+            };
+
+            // Make API call
+            const response = await axios.post(
+                `${BASE_URL}/test/inventory/submit`,
+                requestBody,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
             );
 
-            // Update the state
-            setRowData(updatedData);
+            console.log("API Response:", response);
+            toast.success("Inventory updated successfully!");
+
+            // Clear edit history after successful submission
+            setRowData(prev => prev.map(row => {
+                const { lastEdited, ...rest } = row;
+                return rest;
+            }));
+
+        } catch (error) {
+            console.error("Error submitting inventory:", error);
+            toast.error("Failed to update inventory");
         }
-    }, [rowData]);
+    };
+
 
 
     return (
@@ -276,49 +344,6 @@ const UpdateOnPortal = () => {
 
             <div className="update-on-portal">
                 {/* Categories and Search Section */}
-                {/* <div className="row mb-2 mt-3">
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
-                        <div className="update-portal-box d-flex flex-wrap align-items-center">
-                            <label className="me-2">Category L1</label>
-                            <select>
-                                <option value="">Select</option>
-                                <option value="">Electrical one Category L1</option>
-                                <option value="">Electronics two Category L1</option>
-                                <option value="">Metrics three Category L1</option>
-                                <option value="">Aluminium four Category L1</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
-                        <div className="update-portal-box d-flex flex-wrap align-items-center">
-                            <label className="me-2">Category L2</label>
-                            <select>
-                                <option value="">Select</option>
-                                <option value="">Electrical one Category L2</option>
-                                <option value="">Electronics two Category L2</option>
-                                <option value="">Metrics three Category L2</option>
-                                <option value="">Aluminium four Category L2</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
-                        <div className="update-portal-box d-flex flex-wrap align-items-center">
-                            <label className="me-2">Category L3</label>
-                            <select>
-                                <option value="">Select</option>
-                                <option value="">Electrical one Category L3</option>
-                                <option value="">Electronics two Category L3</option>
-                                <option value="">Metrics three Category L3</option>
-                                <option value="">Aluminium four Category L3</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3 d-flex align-items-end filter-btn-box">
-                        <button className="update-portal-btn update-btns-submit ">Filter</button>
-                    </div>
-
-                </div> */}
-
                 <div className="row mb-2 mt-3">
                     <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                         <div className="update-portal-box d-flex flex-column align-items-start">
@@ -428,8 +453,8 @@ const UpdateOnPortal = () => {
                     <div className="col-12">
                         <div className="update-portal-btns-box">
                             <button className="update-portal-btn update-btns-clear">Clear</button>
-                            <button className="update-portal-btn update-btns-save">Save</button>
-                            <button className="update-portal-btn update-btns-submit">Submit</button>
+                            {/* <button className="update-portal-btn update-btns-save">Save</button> */}
+                            <button className="update-portal-btn update-btns-submit" onClick={handleSubmit}>Submit</button>
                         </div>
                     </div>
                 </div>

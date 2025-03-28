@@ -13,12 +13,12 @@ import { TbReportSearch } from "react-icons/tb";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { RiDiscountPercentFill } from "react-icons/ri";
 
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { logo2 } from '../../assets/assets';
 
 function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
     const sidebarRef = useRef(null);
-
+    const location = useLocation();
     // Close the sidebar when clicking outside (only if it's open)
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -54,14 +54,19 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
 
             <ul className='sidebar-list'>
                 <li className='sidebar-list-item'>
-                    <Link className='d-flex align-items-center' style={{ width: "auto" }} to="/home">
+                    <NavLink
+                        // className='d-flex align-items-center sidebar-link'
+                        className={({ isActive }) =>
+                            `d-flex align-items-center sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                        }
+                        style={{ width: "auto" }} to="/home">
                         <IoHomeSharp className='icon' color='#1F8505' /> Home
-                    </Link>
+                    </NavLink>
                 </li>
                 <li className='sidebar-list-item dropdown side-item-disable'>
                     <a
                         href="#"
-                        className="dropdown-toggle d-flex align-items-center"
+                        className="dropdown-toggle d-flex align-items-center sidebar-link"
                         id="productsDropdown"
                         role="button"
                         data-bs-toggle="dropdown"
@@ -71,26 +76,35 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                     </a>
                     <ul className="dropdown-menu" style={{ width: '100%' }} aria-labelledby="productsDropdown">
                         <li>
-                            <Link className="dropdown-item sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">Search for an existing product on the platform</Link>
+                            <NavLink className={({ isActive }) =>
+                                `dropdown-item sidebar-link sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                            }
+                                style={{ textWrap: 'auto', padding: "5px 5px" }} to="">Search for an existing product on the platform</NavLink>
                         </li>
                         <li>
-                            <Link className="dropdown-item sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">Download excel template for respective category </Link>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    `dropdown-item sidebar-link sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                                }
+                                style={{ textWrap: 'auto', padding: "5px 5px" }} to="">Download excel template for respective category </NavLink>
                         </li>
                         <li>
-                            <Link className="dropdown-item sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">List new products
-                                (Through bulk excel upload) </Link>
+                            <NavLink className="dropdown-item sidebar-link sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">List new products
+                                (Through bulk excel upload) </NavLink>
                         </li>
                         <li>
-                            <Link className="dropdown-item sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">List new products
-                                (Individual one by one) </Link>
+                            <NavLink className="dropdown-item sidebar-link sidebar-link" style={{ textWrap: 'auto', padding: "5px 5px" }} to="">List new products
+                                (Individual one by one) </NavLink>
                         </li>
                     </ul>
                 </li>
 
-                <li className='sidebar-list-item dropdown'>
+                <li className={`sidebar-list-item dropdown ${location.pathname.startsWith('/bulk-upload-update') ||
+                    location.pathname.startsWith('/update-on-portal') || location.pathname.startsWith('/products') ? 'active-parent' : ''
+                    }`}>
                     <a
                         href="#"
-                        className="dropdown-toggle d-flex align-items-center"
+                        className="dropdown-toggle d-flex align-items-center sidebar-link"
                         id="productsDropdown"
                         role="button"
                         data-bs-toggle="dropdown"
@@ -100,46 +114,76 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                     </a>
                     <ul className="dropdown-menu" style={{ width: '100%' }} aria-labelledby="productsDropdown">
                         <li>
-                            <Link className="dropdown-item" style={{ textWrap: 'auto', padding: "5px 5px" }} to="/bulk-upload-update">Bulk upload / Update</Link>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                                }
+                                style={{ textWrap: 'auto', padding: "5px 5px" }}
+                                to="/bulk-upload-update"
+
+                            >Bulk upload / Update</NavLink>
                         </li>
                         <li>
-                            <Link className="dropdown-item" style={{ textWrap: 'auto', padding: "5px 5px" }} to="/update-on-portal">Update here on portal</Link>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                                }
+                                style={{ textWrap: 'auto', padding: "5px 5px" }}
+                                to="/update-on-portal"
+
+                            >Update here on portal</NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                                }
+                                to="/products"
+                                style={{ textWrap: 'auto', padding: "5px 5px" }}
+                            >
+                                My Product
+                            </NavLink>
                         </li>
                     </ul>
                 </li>
 
                 <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                    <NavLink
+                        className={({ isActive }) =>
+                            `d-flex align-items-center sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                        }
+                        to="/orders"
+                    >
                         <MdLock className='icon' color='#1F8505' /> Orders
-                    </Link>
+                    </NavLink>
                 </li>
                 <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                    <Link to="" className='sidebar-link'>
                         <FaHandHoldingUsd className='icon' color='#1F8505' /> Payments
                     </Link>
                 </li>
                 <li className='sidebar-list-item'>
-                    <Link to="/transactions">
+                    <Link to="" className='sidebar-link'>
                         <TbReportSearch className='icon' color='#1F8505' /> Reports
                     </Link>
                 </li>
                 <li className='sidebar-list-item side-item-disable'>
-                    <Link to="/home">
+                    <Link to="" className='sidebar-link'>
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Discount
                     </Link>
                 </li>
                 <li className='sidebar-list-item side-item-disable'>
-                    <Link to="/home" >
+                    <Link to="" className='sidebar-link'>
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Offer and Coupon
                     </Link>
                 </li>
                 <li className='sidebar-list-item side-item-disable'>
-                    <Link to="/home">
+                    <Link to="" className='sidebar-link'>
                         <HiUserGroup className='icon' color='#1F8505' /> Customer Mgmt
                     </Link>
                 </li>
                 <li className='sidebar-list-item side-item-disable'>
-                    <Link to="/home">
+                    <Link to="" className='sidebar-link'>
                         <IoMdSettings className='icon' color='#1F8505' /> Account & Settings
                     </Link>
                 </li>

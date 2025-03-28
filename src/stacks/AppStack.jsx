@@ -9,6 +9,7 @@ import AdminHeader from "../components/adminHeader/AdminHeader";
 import AdminSidebar from "../components/adminSidebar/AdminSidebar";
 import BulkUploadOrUpdate from "../screen/app/inventoryAndPricing/BulkUploadOrUpdate";
 import UpdateOnPortal from "../screen/app/inventoryAndPricing/UpdateOnPortal";
+import Orders from "../screen/app/orders/Orders";
 
 
 const AppStack = () => {
@@ -34,6 +35,7 @@ const AppStack = () => {
                     <Route path="/products" element={<Products />} />
                     <Route path="/bulk-upload-update" element={<BulkUploadOrUpdate />} />
                     <Route path="/update-on-portal" element={<UpdateOnPortal />} />
+                    <Route path="/orders" element={<Orders />} />
                     <Route path="*" element={<Navigate to="/home" />} />
                 </Routes>
             </main>
