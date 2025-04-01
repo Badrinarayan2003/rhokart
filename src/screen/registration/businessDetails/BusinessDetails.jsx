@@ -23,6 +23,10 @@ const BusinessDetails = () => {
 
     const sellerEmail = useSelector((state) => state.auth.sellerEmail);
     // const sellerPhone = useSelector((state) => state.auth.sellerPhone);
+    // const sellerId = useSelector((state) => state.auth.sellerId);
+    // const sellerName = useSelector((state) => state.auth.sellerName);
+
+    // console.log(sellerId, "and ", sellerName)
 
     const business_details = useSelector((state) => state.registration?.businessDetails)
     console.log(business_details, "business_details this is from store");

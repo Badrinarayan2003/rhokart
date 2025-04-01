@@ -37,6 +37,18 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
         };
     }, [openSidebarToggle, OpenSidebar]);
 
+
+
+
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+    const handleDropdownToggle = (e) => {
+        e.preventDefault(); // Prevent default action of anchor tag
+        setDropdownOpen((prev) => !prev);
+    };
+
+
+
     return (
         <aside
             id="sidebar"
@@ -65,7 +77,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                 </li>
                 <li className='sidebar-list-item dropdown side-item-disable'>
                     <a
-                        href="#"
+                        // href="#"
                         className="dropdown-toggle d-flex align-items-center sidebar-link"
                         id="productsDropdown"
                         role="button"
@@ -99,21 +111,20 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                     </ul>
                 </li>
 
-                <li className={`sidebar-list-item dropdown ${location.pathname.startsWith('/bulk-upload-update') ||
-                    location.pathname.startsWith('/update-on-portal') || location.pathname.startsWith('/products') ? 'active-parent' : ''
-                    }`}>
+                {/* location.pathname.startsWith('/bulk-upload-update') || */}
+                <li className={`sidebar-list-item dropdown ${location.pathname.startsWith('/update-on-portal') || location.pathname.startsWith('/products') ? 'active-parent' : ''}`}>
                     <a
                         href="#"
-                        className="dropdown-toggle d-flex align-items-center sidebar-link"
+                        className={`dropdown-toggle d-flex align-items-center sidebar-link ${isDropdownOpen ? 'show' : ''}`}
                         id="productsDropdown"
                         role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        onClick={handleDropdownToggle}
+                        aria-expanded={isDropdownOpen}
                     >
-                        <LuNotebookPen className='icon' color='#1F8505' />Inventory & Pricing
+                        <LuNotebookPen className='icon' color='#1F8505' /> Inventory & Pricing
                     </a>
-                    <ul className="dropdown-menu" style={{ width: '100%' }} aria-labelledby="productsDropdown">
-                        <li>
+                    <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} style={{ width: '100%' }} aria-labelledby="productsDropdown">
+                        {/* <li>
                             <NavLink
                                 className={({ isActive }) =>
                                     `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
@@ -122,7 +133,8 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 to="/bulk-upload-update"
 
                             >Bulk upload / Update</NavLink>
-                        </li>
+                        </li> */}
+
                         <li>
                             <NavLink
                                 className={({ isActive }) =>
@@ -130,9 +142,12 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 }
                                 style={{ textWrap: 'auto', padding: "5px 5px" }}
                                 to="/update-on-portal"
-
-                            >Update here on portal</NavLink>
+                                onClick={(e) => e.stopPropagation()} // Prevents dropdown from closing
+                            >
+                                Update here on portal
+                            </NavLink>
                         </li>
+
                         <li>
                             <NavLink
                                 className={({ isActive }) =>
@@ -140,13 +155,13 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 }
                                 to="/products"
                                 style={{ textWrap: 'auto', padding: "5px 5px" }}
+                                onClick={(e) => e.stopPropagation()} // Prevents dropdown from closing
                             >
                                 My Product
                             </NavLink>
                         </li>
                     </ul>
                 </li>
-
                 <li className='sidebar-list-item'>
                     <NavLink
                         className={({ isActive }) =>

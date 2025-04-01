@@ -6,19 +6,20 @@ import Loader from "../../../components/loader/Loader";
 import { BASE_URL } from "../../../config/urls";
 
 import { FaEdit } from "react-icons/fa";
-
+import { useSelector } from "react-redux";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-
-import { mockApiResponse } from "../../../constants/data";
-
-
 
 
 const UpdateOnPortal = () => {
     const [loading, setLoading] = useState(false); // Loading state
 
+
+    const sellerId = useSelector((state) => state.auth?.sellerId);
+    const sellerName = useSelector((state) => state.auth?.sellerName);
+
+    console.log("hi this ", sellerId)
 
 
     const transformInventoryData = (inventoryDetails) => {
@@ -69,7 +70,7 @@ const UpdateOnPortal = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `${BASE_URL}/test/inventory/list?lstId=${listingId}&sellerId=3`
+                `${BASE_URL}/test/inventory/list?lstId=${listingId}&sellerId=${sellerId}`
             );
             console.log(response, "response from search suggestion ")
             if (response.data?.response?.rcode === 0) {
@@ -141,7 +142,7 @@ const UpdateOnPortal = () => {
 
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/category?level=L1&l1Value=${selectedL1}&level=L2`
+                    `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&level=L2`
                 );
                 console.log(response, "fetch cat 2")
                 setL2Categories(response.data);
@@ -163,7 +164,7 @@ const UpdateOnPortal = () => {
 
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/category?level=L1&l1Value=${selectedL1}&level=L2&l2Value=${selectedL2}&level=L3`
+                    `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&l2Value=${encodeURIComponent(selectedL2)}&level=L3`
                 );
                 console.log(response, "fetch cat 3")
                 setL3Categories(response.data);
@@ -182,7 +183,7 @@ const UpdateOnPortal = () => {
         }
 
         const requestBody = {
-            sellerId: "3",
+            sellerId: sellerId,
             l1: selectedL1,
             l2: selectedL2,
             l3: selectedL3,
@@ -238,10 +239,10 @@ const UpdateOnPortal = () => {
         { headerName: "Image", field: "image", sortable: true, filter: true, cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
-        { headerName: "HSN Code", field: "hsnCode", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
-        { headerName: "Qty in stock (available inventory)", field: "qtyInStock", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
-        { headerName: "Unit price (INR, without GST)", field: "unitPriceWithoutGst", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
-        { headerName: "GST Rate", field: "gstRate", sortable: true, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "Qty in stock (available inventory)", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "Unit price (INR, without GST)", field: "unitPriceWithoutGst", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
+        { headerName: "GST Rate", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" }, },
         { headerName: "GST Amount(INR)", field: "gstAmount", sortable: true, filter: true },
         { headerName: "Unit price (INR, including GST)", field: "unitPriceIncludingGst", sortable: true, filter: true },
         { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
@@ -304,7 +305,12 @@ const UpdateOnPortal = () => {
                     gstAmount: row.gstAmount,
                     unitPriceWGst: row.unitPriceIncludingGst
                 }));
-            console.log(updateInventoryList, "transfer ready row data")
+
+            if (updateInventoryList.length === 0) {
+                toast.info("No changes to submit");
+                return;
+            }
+            console.log(updateInventoryList, "api ready row data")
             // Prepare request body
             const requestBody = {
                 updateInventoryList
@@ -461,7 +467,7 @@ const UpdateOnPortal = () => {
 
             </div>
         </>
-    );
+    )
 };
 
 export default UpdateOnPortal;
