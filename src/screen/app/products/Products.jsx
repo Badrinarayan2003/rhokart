@@ -77,10 +77,50 @@ const Products = () => {
         { headerName: "Image", field: "image", sortable: true, filter: true, cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
-        { headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" } },
-        { headerName: "Qty in stock", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" } },
-        { headerName: "Unit price (without GST)", field: "unitPriceWithoutGst", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" } },
-        { headerName: "GST Rate", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon, cellStyle: { backgroundColor: "rgb(224 249 217)" } },
+        {
+            headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            cellStyle: (params) => {
+                const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('hsnCode');
+                return {
+                    backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
+                    border: isEdited ? "2px solid orange" : "none"
+                };
+            }
+        },
+        {
+            headerName: "Qty in stock", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            cellStyle: (params) => {
+                const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('qtyInStock');
+                return {
+                    backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
+                    border: isEdited ? "2px solid orange" : "none"
+                };
+            }
+        },
+        {
+            headerName: "Unit price (without GST)", field: "unitPriceWithoutGst", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            cellStyle: (params) => {
+                const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('unitPriceWithoutGst');
+                return {
+                    backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
+                    border: isEdited ? "2px solid orange" : "none"
+                };
+            }
+        },
+        {
+            headerName: "GST Rate", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            cellStyle: (params) => {
+                const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('gstRate');
+                return {
+                    backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
+                    border: isEdited ? "2px solid orange" : "none"
+                };
+            }
+        },
         { headerName: "GST Amount(INR)", field: "gstAmount", sortable: true, filter: true },
         { headerName: "Unit price (including GST)", field: "unitPriceIncludingGst", sortable: true, filter: true },
         { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
@@ -97,7 +137,8 @@ const Products = () => {
                 const updatedRow = {
                     ...row,
                     [colDef.field]: newValue,
-                    lastEdited: new Date().toISOString() // Timestamp
+                    lastEdited: new Date().toISOString(), // Timestamp
+                    lastEditedFields: [...(row.lastEditedFields || []), colDef.field]
                 };
 
                 // Recalculate GST fields if needed
@@ -167,7 +208,7 @@ const Products = () => {
 
             // Clear edit markers after successful submission
             setRowData(prev => prev.map(row => {
-                const { lastEdited, ...rest } = row;
+                const { lastEdited, lastEditedFields, ...rest } = row;
                 return rest;
             }));
             setEditHistory([]);
