@@ -4,7 +4,25 @@ import { FaBars } from "react-icons/fa6";
 import { IoSettingsSharp, IoLogOut } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 
+
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../redux/reducers/authSlice';
+import { resetRegistration } from '../../redux/reducers/registrationSlice';
+
 function AdminHeader({ OpenSidebar }) {
+
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate("/login");
+        dispatch(resetRegistration());
+    }
+
+
     return (
         <header className='header'>
             <div className='menu-icon'>
@@ -31,11 +49,14 @@ function AdminHeader({ OpenSidebar }) {
                 <ul className="dropdown-menu" id="dropdown-menu-show-ani-two" >
                     <li><a className="dropdown-item" href="#">
                         <span className='me-2'><IoSettingsSharp size={22} /></span>
-                        Seller Profile</a></li>
-                    <li>
-                        <a className="dropdown-item" href="#">
+                        Seller Profile
+                    </a>
+                    </li>
+                    <li onClick={handleLogout}>
+                        <span className="dropdown-item" style={{ cursor: 'pointer' }} >
                             <span className='me-2'> <IoLogOut size={22} /></span>
-                            Logout</a></li>
+                            Logout</span>
+                    </li>
                 </ul>
             </div>
         </header>
@@ -43,5 +64,3 @@ function AdminHeader({ OpenSidebar }) {
 }
 
 export default AdminHeader;
-
-

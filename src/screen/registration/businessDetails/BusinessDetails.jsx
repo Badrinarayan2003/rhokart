@@ -137,6 +137,10 @@ const BusinessDetails = () => {
 
     // Function to send OTP
     const handleRequestOTP = async () => {
+        if (formData.email === formData.alternateEmail) {
+            toast.warning("Alternate Email should be different");
+            return;
+        }
         setAltEmailLoader(true);
         const success = await requestOTP(formData.alternateEmail);
         if (success) {
@@ -163,6 +167,10 @@ const BusinessDetails = () => {
 
     const handleFormSubmit = async () => {
         if (!validateForm()) {
+            return;
+        }
+        if (formData.email === formData.alternateEmail) {
+            toast.warning("Alternate Email should be different");
             return;
         }
 

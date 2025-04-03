@@ -796,7 +796,7 @@ const RegistrationReview = () => {
                                     const finalDocFileName = docFileuri.length > 1 ? docFileuri.pop() : docFileuri;
 
                                     return (
-                                        <div className="row mb-3" index={index}>
+                                        <div className="row mb-3" key={index}>
                                             <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
                                                 <p className="mb-0 review-brand-detail-title-value">{item?.brandName}</p>
                                             </div>
