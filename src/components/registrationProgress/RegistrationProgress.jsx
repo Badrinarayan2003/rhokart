@@ -27,7 +27,7 @@ const RegistrationProgress = ({ color, active, step }) => {
                     <div className="d-flex justify-content-between position-relative">
                         {/* Step 1 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-start circle-main-box"
-                            onClick={handleLogout}
+                        // onClick={handleLogout}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
@@ -44,7 +44,7 @@ const RegistrationProgress = ({ color, active, step }) => {
 
                         {/* Step 2 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-center circle-main-box"
-                            onClick={() => navigate("/registration/bank-details")}
+                        // onClick={() => navigate("/registration/bank-details")}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
@@ -61,7 +61,7 @@ const RegistrationProgress = ({ color, active, step }) => {
 
                         {/* Step 3 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-center circle-main-box"
-                            onClick={() => navigate("/registration/document-uploud")}
+                        // onClick={() => navigate("/registration/document-uploud")}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
@@ -78,7 +78,7 @@ const RegistrationProgress = ({ color, active, step }) => {
 
                         {/* Step 4 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-center circle-main-box"
-                            onClick={() => navigate("/registration/address-details")}
+                        // onClick={() => navigate("/registration/address-details")}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
@@ -95,7 +95,7 @@ const RegistrationProgress = ({ color, active, step }) => {
 
                         {/* Step 5 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-end circle-main-box"
-                            onClick={() => navigate("/registration/brand-details")}
+                        // onClick={() => navigate("/registration/brand-details")}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
