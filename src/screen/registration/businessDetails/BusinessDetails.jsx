@@ -57,6 +57,7 @@ const BusinessDetails = () => {
         emailVerified: !!sellerEmail,
         phoneNoVerified: false
     });
+
     const [altEmailLoader, setAltEmailLoader] = useState(false);
     const [altEmailVerifyLoader, setAltEmailVerifyLoader] = useState(false);
 
@@ -116,7 +117,8 @@ const BusinessDetails = () => {
     };
 
     const validateForm = () => {
-        const requiredFields = ["gstin", "entityName", "contactName", "address", "tradeName", "country", "pincode", "state", "city", "phoneNo", "email", "tan"];
+        // const requiredFields = ["gstin", "entityName", "contactName", "address", "tradeName", "country", "pincode", "state", "city", "phoneNo", "email", "tan"];
+        const requiredFields = ["gstin", "contactName", "phoneNo", "email"];
         for (let field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} field is required`);
@@ -166,6 +168,7 @@ const BusinessDetails = () => {
 
 
     const handleFormSubmit = async () => {
+        console.log(formData, "this is before formdata when submit")
         if (!validateForm()) {
             return;
         }
@@ -331,7 +334,7 @@ const BusinessDetails = () => {
                             <div className="row">
                                 <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                     <div className="business-detail-input-box position-relative d-flex flex-column">
-                                        <label className="mb-1">Phone no.: </label>
+                                        <label className="mb-1">Phone no.:* </label>
                                         <div className="d-flex w-100" style={{ gap: "5%" }}>
                                             <div className="business-detail-select-option">
                                                 <BusinessDetailCountryCode />
@@ -354,7 +357,7 @@ const BusinessDetails = () => {
 
                                 <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                     <div className="business-detail-input-box position-relative d-flex flex-column">
-                                        <label className="mb-1">Email id: </label>
+                                        <label className="mb-1">Email id:* </label>
                                         <input type="email" placeholder="Enter phone" name="email" className="business-detail-input-one" value={formData.email} onChange={handleChange} disabled={!!sellerEmail} />
                                         <span className="verified-symbol">
                                             {sellerEmail && <MdVerified color='green' size={18} />}

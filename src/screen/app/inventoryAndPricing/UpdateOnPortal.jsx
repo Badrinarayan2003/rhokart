@@ -34,8 +34,10 @@ const UpdateOnPortal = () => {
             qtyInStock: item.qtyInStock,
             unitPriceWithoutGst: item.unitPriceWoGst,
             gstRate: item.gstRate,
-            gstAmount: (item.unitPriceWoGst * item.gstRate) / 100,
-            unitPriceIncludingGst: item.unitPriceWoGst + (item.unitPriceWoGst * item.gstRate) / 100,
+            // gstAmount: (item.unitPriceWoGst * item.gstRate) / 100,
+            gstAmount: parseFloat(((item.unitPriceWoGst * item.gstRate) / 100).toFixed(2)),
+            // unitPriceIncludingGst: item.unitPriceWoGst + (item.unitPriceWoGst * item.gstRate) / 100,
+            unitPriceIncludingGst: parseFloat((item.unitPriceWoGst + (item.unitPriceWoGst * item.gstRate) / 100).toFixed(2)),
         }));
     };
 
@@ -283,8 +285,20 @@ const UpdateOnPortal = () => {
                 };
             }
         },
-        { headerName: "GST Amount(INR)", field: "gstAmount", sortable: true, filter: true },
-        { headerName: "Unit price (INR, including GST)", field: "unitPriceIncludingGst", sortable: true, filter: true },
+        {
+            headerName: "GST Amount(INR)",
+            field: "gstAmount",
+            sortable: true,
+            filter: true,
+            valueFormatter: params => params.value.toFixed(2),
+        },
+        {
+            headerName: "Unit price (INR, including GST)",
+            field: "unitPriceIncludingGst",
+            sortable: true,
+            filter: true,
+            valueFormatter: params => params.value.toFixed(2),
+        },
         { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
         { headerName: "SKU ID", field: "skuId", sortable: true, filter: true },
         { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true },
@@ -310,8 +324,10 @@ const UpdateOnPortal = () => {
                     const price = colDef.field === "unitPriceWithoutGst" ? newValue : row.unitPriceWithoutGst;
                     const rate = colDef.field === "gstRate" ? newValue : row.gstRate;
 
-                    updatedRow.gstAmount = (price * rate) / 100;
-                    updatedRow.unitPriceIncludingGst = price + updatedRow.gstAmount;
+                    // updatedRow.gstAmount = (price * rate) / 100;
+                    // updatedRow.unitPriceIncludingGst = price + updatedRow.gstAmount;
+                    updatedRow.gstAmount = parseFloat(((price * rate) / 100).toFixed(2));
+                    updatedRow.unitPriceIncludingGst = parseFloat((price + updatedRow.gstAmount).toFixed(2));
                 }
 
                 // Store EVERY edit in history

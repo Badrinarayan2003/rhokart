@@ -263,7 +263,7 @@ const AddressDetails = () => {
                                                     </div>
                                                     <div className='col-lg-4 col-md-4 mt-2'>
                                                         <div className="address-details-billing-add-input-box-two d-flex flex-column">
-                                                            <label className="mb-1">AddressLine2:*</label>
+                                                            <label className="mb-1">AddressLine2:</label>
                                                             <input type="text" placeholder='Enter billing address' className="billing-add-input billing-add-input-active" name="addressLine2" value={billingAddress.addressLine2} onChange={(e) => handleInputChange(e, setBillingAddress)} />
                                                         </div>
                                                     </div>
@@ -354,7 +354,7 @@ const AddressDetails = () => {
                                                     </div>
                                                     <div className='col-lg-4 col-md-4 mt-2'>
                                                         <div className="address-details-billing-add-input-box-two d-flex flex-column">
-                                                            <label className="mb-1">AddressLine2:*</label>
+                                                            <label className="mb-1">AddressLine2:</label>
                                                             <input type="text" placeholder='Enter billing address' className="billing-add-input billing-add-input-active" name="addressLine2" value={pickupAddress.addressLine2} onChange={(e) => handleInputChange(e, setPickupAddress)} />
                                                         </div>
                                                     </div>

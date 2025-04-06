@@ -74,6 +74,17 @@ const DocumentUploud = () => {
             return;
         }
 
+        // // Filter required files (excluding panCard)
+        // const requiredFiles = Object.entries(files).filter(
+        //     ([key, file]) => key !== "panCard" && !file
+        // );
+
+        // if (requiredFiles.length > 0) {
+        //     toast.error(`Please upload all required documents.`);
+        //     return;
+        // }
+
+
         setLoading(true); // Start loading
 
         try {
@@ -155,6 +166,16 @@ const DocumentUploud = () => {
             return;
         }
 
+        // // Filter required files (excluding panCard)
+        // const requiredFiles = Object.entries(files).filter(
+        //     ([key, file]) => key !== "panCard" && !file
+        // );
+
+        // if (requiredFiles.length > 0) {
+        //     toast.error(`Please upload all required documents.`);
+        //     return;
+        // }
+
         if (!isSaved) {
             await handleSave();
         }
@@ -185,7 +206,8 @@ const DocumentUploud = () => {
                             {Object.keys(files).map((fieldName, index) => (
                                 <div className="mb-3" key={index}>
                                     <div className="document-details-input-container">
-                                        <label className="mb-1 text-capitalize">{fieldName.replace(/([A-Z])/g, " $1")}:</label>
+                                        {/* {fieldName === "panCard" ? '' : '*'} */}
+                                        <label className="mb-1 text-capitalize">{fieldName.replace(/([A-Z])/g, " $1")}:*</label>
                                         <div className="document-details-input-box d-flex justify-content-between">
                                             <div className={`document-name-box ${files[fieldName] ? "document-name-box-active" : ""}`}>
                                                 <p className="mb-0">{files[fieldName] ? files[fieldName].name : "Upload (pdf, jpeg, png, jpg)"}</p>

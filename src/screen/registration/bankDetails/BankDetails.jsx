@@ -48,14 +48,20 @@ const BankDetails = () => {
 
     // Validate form before submission
     const validateForm = () => {
+        // const requiredFields = [
+        //     "accountHolderName",
+        //     "accountNo",
+        //     "confirm_acc_number",
+        //     "ifscCode",
+        //     "bankName",
+        //     "branchName",
+        //     "branchCityName",
+        // ];
         const requiredFields = [
             "accountHolderName",
             "accountNo",
             "confirm_acc_number",
             "ifscCode",
-            "bankName",
-            "branchName",
-            "branchCityName",
         ];
 
         for (let field of requiredFields) {

@@ -15,9 +15,9 @@ const App = () => {
         {!isAuthenticated ? (
           <Route path="/*" element={<AuthStack />} />
         ) : accessLevel === "REGISTRATION" ? (
-          <Route path="/*" element={<RegistrationStack />} />
-        ) : accessLevel === "DASHBOARD" ? (
           <Route path="/*" element={<AppStack />} />
+        ) : accessLevel === "DASHBOARD" ? (
+          <Route path="/*" element={<RegistrationStack />} />
         ) : accessLevel === "APPROVAL" ? (
           <Route path="/*" element={<RegistrationStack />} /> //<Navigate to="/registration-success" />
         ) : (
