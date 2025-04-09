@@ -10,10 +10,14 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
+import { useSelector } from "react-redux";
+
 const Products = () => {
     const [loading, setLoading] = useState(false);
     const [rowData, setRowData] = useState([]);
     const [editHistory, setEditHistory] = useState([]);
+
+    const sellerId = useSelector((state) => state.auth?.sellerId);
 
     // Transform inventory data to match our table structure
     const transformInventoryData = (inventoryDetails) => {
@@ -41,7 +45,7 @@ const Products = () => {
             setLoading(true);
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/listed/items?sellerId=3`
+                    `${BASE_URL}/test/inventory/listed/items?sellerId=${sellerId}`
                 );
                 console.log(response, "this is my product response")
                 if (response.data?.response?.rcode === 0) {

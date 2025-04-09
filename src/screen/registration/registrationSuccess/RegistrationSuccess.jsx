@@ -3,11 +3,22 @@ import RegistrationHeader from "../../../components/registrationHeader/Registrat
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../redux/reducers/authSlice';
+import { resetRegistration } from '../../../redux/reducers/registrationSlice';
 
 const RegistrationSuccess = () => {
 
+
+
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate("/login");
+        dispatch(resetRegistration());
+    }
 
 
     return (
@@ -29,6 +40,11 @@ const RegistrationSuccess = () => {
                     <p className="reg-success-para">You may also reach out to <a href="seller_support@rhokart.com" className="reg-success-msg">seller_support@rhokart.com</a> for any clarification with
                         your reference ID screenshot and registered phone number
                     </p>
+                </div>
+            </div>
+            <div className='row'>
+                <div className='col-12'>
+                    <p className='back-to-login text-end me-5'>Back to <span onClick={handleLogout}>Login</span></p>
                 </div>
             </div>
         </div>

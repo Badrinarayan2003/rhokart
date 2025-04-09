@@ -25,6 +25,10 @@
     color: #1F8505;
 }
 
+.back-to-login span {
+    text-decoration: underline;
+}
+
 .reg-success-box {
     padding: 1rem 25rem;
 }

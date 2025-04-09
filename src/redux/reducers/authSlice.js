@@ -6,6 +6,8 @@ const initialState = {
     isApproved: false,
     accessLevel: localStorage.getItem("accessLevel") || null, // Store access level
     sellerEmail: localStorage.getItem("sellerEmail") || null, // Store seller email
+    sellerId: localStorage.getItem("sellerId") || null,
+    sellerName: localStorage.getItem("sellerName") || null
 };
 
 const authSlice = createSlice({
@@ -25,8 +27,8 @@ const authSlice = createSlice({
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("accessLevel", accessLevel);
             localStorage.setItem("sellerEmail", sellerEmail);
-            localStorage.setItem("sellerEmail", sellerId);
-            localStorage.setItem("sellerEmail", sellerName);
+            localStorage.setItem("sellerId", sellerId);
+            localStorage.setItem("sellerName", sellerName);
         },
         logout: (state) => {
             state.token = null;

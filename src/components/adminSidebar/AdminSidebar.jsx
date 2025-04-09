@@ -13,12 +13,13 @@ import { TbReportSearch } from "react-icons/tb";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { RiDiscountPercentFill } from "react-icons/ri";
 
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { logo2 } from '../../assets/assets';
 
 function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
     const sidebarRef = useRef(null);
     const location = useLocation();
+    const navigate = useNavigate();
     // Close the sidebar when clicking outside (only if it's open)
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -56,7 +57,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
             ref={sidebarRef}
         >
             <div className='sidebar-title justify-content-space-between'>
-                <div className='sidebar-brand mt-0'>
+                <div className='sidebar-brand mt-0' onClick={() => navigate("/home")}>
                     <img src={logo2} />
                 </div>
                 <span className='icon close_icon' onClick={OpenSidebar}>
@@ -114,16 +115,20 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                 {/* location.pathname.startsWith('/bulk-upload-update') || */}
                 <li className={`sidebar-list-item dropdown ${location.pathname.startsWith('/update-on-portal') || location.pathname.startsWith('/products') ? 'active-parent' : ''}`}>
                     <a
-                        href="#"
+                        // href="#"
                         className={`dropdown-toggle d-flex align-items-center sidebar-link ${isDropdownOpen ? 'show' : ''}`}
                         id="productsDropdown"
                         role="button"
                         onClick={handleDropdownToggle}
                         aria-expanded={isDropdownOpen}
+                        data-bs-toggle="collapse"
+                        href="#collapseExample"
                     >
                         <LuNotebookPen className='icon' color='#1F8505' /> Inventory & Pricing
                     </a>
-                    <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} style={{ width: '100%' }} aria-labelledby="productsDropdown">
+                    <div className={`collapse ${isDropdownOpen ? 'show' : ''}`} style={{ width: '100%' }} id="collapseExample"
+                        aria-labelledby="productsDropdown"
+                    >
                         {/* <li>
                             <NavLink
                                 className={({ isActive }) =>
@@ -135,10 +140,10 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                             >Bulk upload / Update</NavLink>
                         </li> */}
 
-                        <li>
+                        <a>
                             <NavLink
                                 className={({ isActive }) =>
-                                    `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                                    `dropdown-item mt-2 sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
                                 }
                                 style={{ textWrap: 'auto', padding: "5px 5px" }}
                                 to="/update-on-portal"
@@ -146,9 +151,9 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                             >
                                 Update here on portal
                             </NavLink>
-                        </li>
+                        </a>
 
-                        <li>
+                        <a>
                             <NavLink
                                 className={({ isActive }) =>
                                     `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
@@ -159,8 +164,8 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                             >
                                 My Product
                             </NavLink>
-                        </li>
-                    </ul>
+                        </a>
+                    </div>
                 </li>
                 <li className='sidebar-list-item'>
                     <NavLink

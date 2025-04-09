@@ -19,7 +19,7 @@ const UpdateOnPortal = () => {
     const sellerId = useSelector((state) => state.auth?.sellerId);
     const sellerName = useSelector((state) => state.auth?.sellerName);
 
-    console.log("hi this ", sellerId)
+    console.log("this is seller id", sellerId)
 
 
     const transformInventoryData = (inventoryDetails) => {
@@ -184,6 +184,7 @@ const UpdateOnPortal = () => {
             return;
         }
 
+        console.log("seller id when filter", sellerId)
         const requestBody = {
             sellerId: sellerId,
             l1: selectedL1,

@@ -24,6 +24,15 @@ const BrandsDetails = () => {
     const businessDetails = useSelector((state) => state.registration?.businessDetails);
     console.log(businessDetails, "business details in brands detail");
 
+    const bankDetails = useSelector((state) => state.registration?.bankDetails);
+    console.log(bankDetails, "bankDetails details in brands detail");
+
+    const documentDetails = useSelector((state) => state.registration?.documentUpload);
+    console.log(documentDetails, "documentUpload details in brands detail");
+
+    const addressDetails = useSelector((state) => state.registration?.addressDetails);
+    console.log(addressDetails, "addressDetails in brands detail");
+
     const brandDetails = useSelector((state) => state.registration?.brandsDetails);
     console.log(brandDetails, "brandDetails details in brands detail");
 
@@ -219,10 +228,10 @@ const BrandsDetails = () => {
                 <div className="brand-details-main-section mt-5 overflow-x-auto">
                     <div className="row mb-3">
                         <div className="col-12 d-flex position-relative brand-details-top-heading-box">
-                            <p className="brand-details-text">Select the brands that you would like to sell here:</p>
-                            <p className="brand-details-skip">
+                            <p className="brand-details-text">Select the brands that you would like to sell here</p>
+                            {/* <p className="brand-details-skip">
                                 Skip <MdKeyboardArrowRight size={20} color="#1F8505" />
-                            </p>
+                            </p> */}
                         </div>
                     </div>
                     <div className="row">

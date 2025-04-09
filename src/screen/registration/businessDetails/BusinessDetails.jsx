@@ -7,12 +7,14 @@ import Loader from '../../../components/loader/Loader';
 import { submitBusinessDetails } from '../../../api/businessDetailService';
 import { requestOTP, verifyOTP } from '../../../api/otpService';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setBusinessDetails } from '../../../redux/reducers/registrationSlice';
+import { setBusinessDetails, setBankDetails, setDocumentUpload, setAddressDetails, setBrandsDetails } from '../../../redux/reducers/registrationSlice';
+import { BASE_URL } from '../../../config/urls';
 
 import { MdVerified } from "react-icons/md";
 
@@ -22,11 +24,62 @@ const BusinessDetails = () => {
     const navigate = useNavigate();
 
     const sellerEmail = useSelector((state) => state.auth.sellerEmail);
-    // const sellerPhone = useSelector((state) => state.auth.sellerPhone);
-    // const sellerId = useSelector((state) => state.auth.sellerId);
+    const sellerId = useSelector((state) => state.auth.sellerId);
+    const accessLevel = useSelector((state) => state.auth.accessLevel);
     // const sellerName = useSelector((state) => state.auth.sellerName);
+    // const sellerPhone = useSelector((state) => state.auth.sellerPhone);
 
-    // console.log(sellerId, "and ", sellerName)
+
+    useEffect(() => {
+        console.log(sellerEmail, "seller email from store");
+        console.log(sellerId, "seller id from store");
+        console.log(accessLevel, "accessLevel from store");
+
+        if (sellerId && accessLevel === "REGISTRATION") {
+            const fetchRegistrationDetails = async () => {
+                try {
+                    const response = await axios.get(
+                        `${BASE_URL}/test/onboarding/registrationdetail`,
+                        {
+                            params: {
+                                email: sellerEmail,
+                            },
+                        }
+                    );
+                    console.log(response, "registration details response");
+                    console.log(response?.data?.response?.rcode, "registration details rcode");
+                    console.log(response?.data?.response?.coreData?.responseData, "registration details coreData");
+                    if (response?.data?.response?.rcode === 0 && response?.data?.response?.coreData?.responseData) {
+                        // toast.success(response?.data?.response?.rmessage)
+                        const fetchedBusinessDetails = response?.data?.response?.coreData?.responseData?.businessDetail;
+                        const fetchedBankDetails = response?.data?.response?.coreData?.responseData?.bankDetail;
+                        const fetchedDocuments = response?.data?.response?.coreData?.responseData?.documents;
+                        const fetchedsellerAddress = response?.data?.response?.coreData?.responseData?.sellerAddress;
+                        const fetchedBrandDetails = response?.data?.response?.coreData?.responseData?.brands;
+                        console.log(fetchedBusinessDetails, "fetched data only business details")
+                        console.log(fetchedBankDetails, "fetched data only bank details")
+                        console.log(fetchedDocuments, "fetched data only Documents")
+                        console.log(fetchedsellerAddress, "fetched data only seller Address")
+                        console.log(fetchedBrandDetails, "fetched data only brand details")
+                        dispatch(setBusinessDetails(fetchedBusinessDetails));
+                        dispatch(setBankDetails(fetchedBankDetails));
+                        dispatch(setDocumentUpload(fetchedDocuments));
+                        dispatch(setAddressDetails(fetchedsellerAddress));
+                        dispatch(setBrandsDetails(fetchedBrandDetails));
+                    } else {
+                        console.log(response?.data?.response?.rmessage, "registration details rmessage");
+                        toast.error(response?.data?.response?.rmessage)
+                    }
+                } catch (error) {
+                    console.log("Error fetching registration details:", error);
+                }
+            };
+
+            fetchRegistrationDetails();
+        }
+    }, [sellerId, accessLevel, sellerEmail]);
+
+
 
     const business_details = useSelector((state) => state.registration?.businessDetails)
     console.log(business_details, "business_details this is from store");
@@ -58,6 +111,36 @@ const BusinessDetails = () => {
         phoneNoVerified: false
     });
 
+    // Update formData when business_details changes
+    useEffect(() => {
+        if (business_details) {
+            setFormData({
+                gstin: business_details.gstin || "",
+                pan: business_details.pan || "",
+                entityName: business_details.entityName || "",
+                contactName: business_details.contactName || "",
+                tradeName: business_details.tradeName || "",
+                address: business_details.address || "",
+                country: business_details.country || "",
+                pincode: business_details.pincode || "",
+                state: business_details.state || "",
+                city: business_details.city || "",
+                tan: business_details.tan || "",
+                phoneNo: business_details.phoneNo || "",
+                email: sellerEmail || "",
+                alternateEmail: business_details.alternateEmail || "",
+                alternatePhoneNo: business_details.alternatePhoneNo || "",
+                alternateEmailVerified: business_details.alternateEmailVerified || false,
+                alternatePhoneNoVerified: business_details.alternatePhoneNoVerified || false,
+                panVerified: business_details.panVerified || false,
+                gstinVerified: business_details.gstinVerified || false,
+                emailVerified: !!sellerEmail,
+                phoneNoVerified: business_details.phoneNoVerified || false
+            });
+            // setIsSaved(true); // Mark as saved since we're loading existing data
+        }
+    }, [business_details, sellerEmail]);
+
     const [altEmailLoader, setAltEmailLoader] = useState(false);
     const [altEmailVerifyLoader, setAltEmailVerifyLoader] = useState(false);
 
@@ -79,7 +162,7 @@ const BusinessDetails = () => {
             errorFlag = true;
         } else {
             const stateCode = parseInt(gst.substring(0, 2));
-            if (stateCode < 1 || stateCode > 37 || isNaN(stateCode)) {
+            if (stateCode < 1 || stateCode > 38 || isNaN(stateCode)) {
                 errorMessage = 'Invalid First Two Characters of GSTIN.';
                 errorFlag = true;
             }
@@ -105,12 +188,13 @@ const BusinessDetails = () => {
             const { errorFlag, errorMessage, pan } = validateGSTIN(value);
             if (!errorFlag) {
                 newFormData = { ...newFormData, pan, panVerified: true, gstinVerified: true };
+                setGstinValidateError("");
             } else {
                 // toast.error(errorMessage);
                 setGstinValidateError(errorMessage);
-                setTimeout(() => {
-                    setGstinValidateError("");
-                }, 2000);
+                // setTimeout(() => {
+                //     setGstinValidateError("");
+                // }, 2000);
             }
         }
         setFormData(newFormData);
@@ -118,7 +202,7 @@ const BusinessDetails = () => {
 
     const validateForm = () => {
         // const requiredFields = ["gstin", "entityName", "contactName", "address", "tradeName", "country", "pincode", "state", "city", "phoneNo", "email", "tan"];
-        const requiredFields = ["gstin", "contactName", "phoneNo", "email"];
+        const requiredFields = ["gstin", "contactName", "phoneNo", "email", "pincode", "address", "tradeName"];
         for (let field of requiredFields) {
             if (!formData[field]) {
                 toast.error(`${field} field is required`);
@@ -188,7 +272,7 @@ const BusinessDetails = () => {
 
                 if (responseData?.response?.rcode === 0 && responseData?.response?.coreData?.responseData) {
                     const responseSellerData = responseData?.response?.coreData?.responseData;
-                    console.log(responseSellerData, "response business Seller Data ");
+                    console.log(responseSellerData, "response business Seller Data .");
                     dispatch(setBusinessDetails(responseSellerData));
                     toast.success(responseData?.response?.rmessage || "Business details saved successfully");
                     setIsSaved(true);
@@ -256,7 +340,7 @@ const BusinessDetails = () => {
                     <div className="row">
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column position-relative">
-                                <label className="mb-1">GSTIN:* </label>
+                                <label className="mb-1">GSTIN:<span className='star-inde'>*</span> </label>
                                 {
                                     gstinValidateError ? <p className='mb-0 gstin-error-msg'>{gstinValidateError}</p> : ""
                                 }
@@ -274,14 +358,14 @@ const BusinessDetails = () => {
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
-                                <label className="mb-1">Contact Name:* </label>
+                                <label className="mb-1">Contact Name:<span className='star-inde'>*</span> </label>
                                 <input type="text" placeholder="Enter your contact" name="contactName" className="business-detail-input-one" value={formData.contactName} onChange={handleChange} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
-                                <label className="mb-1">Trade Name: </label>
-                                <input type="text" placeholder="Enter trade name" name="tradeName" className="business-detail-input-one" value={formData.tradeName} onChange={handleChange} />
+                                <label className="mb-1">Display name:<span className='star-inde'>*</span> </label>
+                                <input type="text" placeholder="Enter display name" name="tradeName" className="business-detail-input-one" value={formData.tradeName} onChange={handleChange} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
@@ -292,7 +376,7 @@ const BusinessDetails = () => {
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
-                                <label className="mb-1">Pincode: </label>
+                                <label className="mb-1">Pincode:<span className='star-inde'>*</span> </label>
                                 <input type="number" placeholder="Enter pincode" name="pincode" className="business-detail-input-one" value={formData.pincode} onChange={handleChange} />
                             </div>
                         </div>
@@ -322,7 +406,7 @@ const BusinessDetails = () => {
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
-                                <label className="mb-1">Address: </label>
+                                <label className="mb-1">Address:<span className='star-inde'>*</span> </label>
                                 <input type="text" placeholder="Enter your Address" className="business-detail-input-one" name="address" value={formData.address} onChange={handleChange} />
                             </div>
                         </div>
@@ -334,7 +418,7 @@ const BusinessDetails = () => {
                             <div className="row">
                                 <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                     <div className="business-detail-input-box position-relative d-flex flex-column">
-                                        <label className="mb-1">Phone no.:* </label>
+                                        <label className="mb-1">Phone no.:<span className='star-inde'>*</span> </label>
                                         <div className="d-flex w-100" style={{ gap: "5%" }}>
                                             <div className="business-detail-select-option">
                                                 <BusinessDetailCountryCode />
@@ -357,7 +441,7 @@ const BusinessDetails = () => {
 
                                 <div className="col-lg-6 col-md-4 d-flex align-items-center justify-content-center mb-3">
                                     <div className="business-detail-input-box position-relative d-flex flex-column">
-                                        <label className="mb-1">Email id:* </label>
+                                        <label className="mb-1">Email id:<span className='star-inde'>*</span> </label>
                                         <input type="email" placeholder="Enter phone" name="email" className="business-detail-input-one" value={formData.email} onChange={handleChange} disabled={!!sellerEmail} />
                                         <span className="verified-symbol">
                                             {sellerEmail && <MdVerified color='green' size={18} />}
@@ -427,10 +511,10 @@ const BusinessDetails = () => {
 
                     <div className="row my-4">
                         <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-center gap-5">
-                            <button className="save-btn" style={isSaved ? { background: "#7e7e7e", cursor: "not-allowed" } : {}} onClick={handleFormSubmit} disabled={loading || isSaved}>
+                            <button className="save-btn" style={isSaved ? { background: "#7e7e7e", cursor: "not-allowed" } : {}} onClick={handleFormSubmit} disabled={loading || isSaved || gstinValidateError}>
                                 {loading ? "Saving..." : isSaved ? "Saved" : "Save"}
                             </button>
-                            <button className="next-btn" onClick={handleNext}>Next</button>
+                            <button className="next-btn" onClick={handleNext} disabled={gstinValidateError}>Next</button>
                         </div>
                     </div>
 

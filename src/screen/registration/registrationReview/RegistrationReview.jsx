@@ -18,7 +18,7 @@ const RegistrationReview = () => {
     console.log(businessDetails, "business details from store! in review");
     console.log(bankDetails, "bank details from store! in review");
     console.log(addressDetails, "address details from store! in review");
-    console.log(documentUpload, "document details from store! in review");
+    console.log(documentUpload, "document details from store! in review success...");
     console.log(brandsDetails, "brand details from store! in review");
 
 
@@ -380,8 +380,8 @@ const RegistrationReview = () => {
 
                         {
                             documentUpload.map((item, index) => {
-                                const fileuri = item?.fileUrl.split("/").pop().split("_");
-                                const mainFileName = fileuri.length > 1 ? fileuri.pop() : fileuri
+                                const fileuri = item?.fileUrl?.split("/").pop().split("_");
+                                const mainFileName = fileuri?.length > 1 ? fileuri.pop() : fileuri
 
                                 return (
                                     <div className="col-12 mb-2" key={index}>
