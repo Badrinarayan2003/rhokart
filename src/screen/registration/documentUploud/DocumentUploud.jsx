@@ -26,7 +26,7 @@ const DocumentUploud = () => {
         gstinCertificate: null,
         cancelledCheque: null,
         certificateOfIncorporation: null,
-        businessAddressProof: null,
+        // businessAddressProof: null,
         signature: null,
     });
     const [loading, setLoading] = useState(false);
@@ -56,24 +56,56 @@ const DocumentUploud = () => {
         gstinCertificate: useRef(null),
         cancelledCheque: useRef(null),
         certificateOfIncorporation: useRef(null),
-        businessAddressProof: useRef(null),
+        // businessAddressProof: useRef(null),
         signature: useRef(null),
     };
+
+    // const handleFileChange = (event, fieldName) => {
+    //     const selectedFile = event.target.files[0];
+    //     if (selectedFile) {
+    //         const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
+    //         if (allowedExtensions.includes(fileExtension)) {
+    //             setFiles(prev => ({
+    //                 ...prev,
+    //                 [fieldName]: selectedFile
+    //             }));
+    //             setIsSaved(false); // Mark as unsaved when changing a file
+    //         } else {
+    //             toast.warning(`Invalid file format for ${fieldName}! Please upload a PDF, JPEG, JPG, or PNG.`);
+    //             event.target.value = "";
+    //         }
+    //     }
+    // };
 
     const handleFileChange = (event, fieldName) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
-            if (allowedExtensions.includes(fileExtension)) {
-                setFiles(prev => ({
-                    ...prev,
-                    [fieldName]: selectedFile
-                }));
-                setIsSaved(false); // Mark as unsaved when changing a file
-            } else {
-                toast.warning(`Invalid file format for ${fieldName}! Please upload a PDF, JPEG, JPG, or PNG.`);
-                event.target.value = "";
+            
+            // Special handling for signature field (only image formats)
+            if (fieldName === "signature") {
+                const allowedImageExtensions = ["jpeg", "jpg", "png"];
+                if (!allowedImageExtensions.includes(fileExtension)) {
+                    toast.warning("Signature must be in JPG, JPEG, or PNG format!");
+                    event.target.value = "";
+                    return;
+                }
+            } 
+            // Handling for other fields (PDF and images)
+            else {
+                const allowedExtensions = ["pdf", "jpeg", "jpg", "png"];
+                if (!allowedExtensions.includes(fileExtension)) {
+                    toast.warning(`Invalid file format for ${fieldName}! Please upload a PDF, JPEG, JPG, or PNG.`);
+                    event.target.value = "";
+                    return;
+                }
             }
+
+            setFiles(prev => ({
+                ...prev,
+                [fieldName]: selectedFile
+            }));
+            setIsSaved(false);
         }
     };
 
@@ -208,13 +240,17 @@ const DocumentUploud = () => {
                                                             files[fieldName].name
                                                         )
                                                     ) : (
-                                                        "Upload (pdf, jpeg, png, jpg)"
+                                                        // "Upload (pdf, jpeg, png, jpg)"
+                                                        fieldName === "signature"
+                                                            ? "Upload (jpeg, jpg, png)"
+                                                            : "Upload (pdf, jpeg, jpg, png)"
                                                     )}
                                                 </p>
                                             </div>
                                             <input
                                                 type="file"
-                                                accept=".pdf, .jpeg, .jpg, .png"
+                                                // accept=".pdf, .jpeg, .jpg, .png"
+                                                accept={fieldName === "signature" ? ".jpeg, .jpg, .png" : ".pdf, .jpeg, .jpg, .png"}
                                                 ref={fileRefs[fieldName]}
                                                 style={{ display: "none" }}
                                                 onChange={(e) => handleFileChange(e, fieldName)}

@@ -111,6 +111,9 @@ const BusinessDetails = () => {
         phoneNoVerified: false
     });
 
+    // Track if GSTIN was previously verified
+    const [wasGstinVerified, setWasGstinVerified] = useState(false);
+
     // Update formData when business_details changes
     useEffect(() => {
         if (business_details) {
@@ -138,6 +141,7 @@ const BusinessDetails = () => {
                 phoneNoVerified: business_details.phoneNoVerified || false
             });
             // setIsSaved(true); // Mark as saved since we're loading existing data
+            setWasGstinVerified(business_details.gstinVerified || false);
         }
     }, [business_details, sellerEmail]);
 
@@ -180,15 +184,84 @@ const BusinessDetails = () => {
         return { errorFlag, errorMessage, pan };
     };
 
+    const [gstinLoading, setGstinLoading] = useState(false);
+
+    // Function to fetch business details by GSTIN
+    const fetchBusinessDetailsByGSTIN = async (gstin) => {
+        try {
+            setGstinLoading(true);
+            const response = await axios.get(
+                `https://80t82fiur2.execute-api.ap-south-1.amazonaws.com/test/autofill/businessdetails?gstNumber=${gstin}`
+            );
+
+            if (response.data?.response?.rcode === 0) {
+                const businessData = response.data.response.coreData.responseData;
+                console.log(response, "GSTIN RESPONSE FOR BUSINESS DETAILS");
+                // Update form data with the fetched values
+                setFormData(prev => ({
+                    ...prev,
+                    entityName: businessData.entityName || prev.entityName,
+                    tradeName: businessData.tradeName || prev.tradeName,
+                    address: businessData.address || prev.address,
+                    pincode: businessData.pincode || prev.pincode,
+                    state: businessData.state || prev.state,
+                    city: businessData.city || prev.city,
+                    gstinVerified: true,
+                    pan: businessData.pan || prev.pan,
+                    panVerified: true
+                }));
+                setWasGstinVerified(true);
+                toast.success("Business details auto-filled successfully");
+            } else {
+                toast.error(response.data?.response?.rmessage || "Error fetching business details");
+            }
+        } catch (error) {
+            console.error("Error fetching business details:", error);
+            toast.error("Failed to fetch business details");
+        } finally {
+            setGstinLoading(false);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // If changing GSTIN after it was previously verified
+        if (name === "gstin" && wasGstinVerified) {
+            // Reset all fields that were auto-filled by GSTIN
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+                entityName: "",
+                tradeName: "",
+                address: "",
+                pincode: "",
+                state: "",
+                city: "",
+                gstinVerified: false,
+                pan: "",
+                panVerified: false
+            }));
+            setWasGstinVerified(false);
+            setGstinValidateError("");
+            return;
+        }
+
         let newFormData = { ...formData, [name]: value };
 
         if (name === "gstin") {
             const { errorFlag, errorMessage, pan } = validateGSTIN(value);
             if (!errorFlag) {
-                newFormData = { ...newFormData, pan, panVerified: true, gstinVerified: true };
+                newFormData = {
+                    ...newFormData,
+                    pan,
+                    panVerified: true,
+                    // gstinVerified: true
+                };
                 setGstinValidateError("");
+
+                // Fetch business details when valid GSTIN is entered
+                fetchBusinessDetailsByGSTIN(value);
             } else {
                 // toast.error(errorMessage);
                 setGstinValidateError(errorMessage);
@@ -344,7 +417,19 @@ const BusinessDetails = () => {
                                 {
                                     gstinValidateError ? <p className='mb-0 gstin-error-msg'>{gstinValidateError}</p> : ""
                                 }
-                                <input type="text" placeholder="Enter GSTIN" name="gstin" className="business-detail-input-one" value={formData.gstin} onChange={handleChange} />
+                                {formData.gstinVerified && (
+                                    <small className="text-success">GSTIN fetched successfully</small>
+                                )}
+                                <div className='position-relative'>
+                                    <input type="text" placeholder="Enter GSTIN" name="gstin" className="business-detail-input-one w-100" value={formData.gstin} onChange={handleChange} />
+                                    {gstinLoading && (
+                                        <div className="position-absolute top-50 end-0 translate-middle-y pe-2">
+                                            <div className="spinner-border spinner-border-sm" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                                 <span className="verified-symbol">
                                     {/* <MdVerified color='green' size={18} /> */}
                                 </span>
@@ -353,7 +438,7 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Entity Name: </label>
-                                <input type="text" placeholder="Enter Entity" name="entityName" className="business-detail-input-one" value={formData.entityName} onChange={handleChange} />
+                                <input type="text" placeholder="Enter Entity" name="entityName" className="business-detail-input-one" value={formData.entityName} onChange={handleChange} disabled={formData.gstinVerified && formData.entityName} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
@@ -365,7 +450,7 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Display name:<span className='star-inde'>*</span> </label>
-                                <input type="text" placeholder="Enter display name" name="tradeName" className="business-detail-input-one" value={formData.tradeName} onChange={handleChange} />
+                                <input type="text" placeholder="Enter display name" name="tradeName" className="business-detail-input-one" value={formData.tradeName} onChange={handleChange} disabled={formData.gstinVerified && formData.tradeName} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
@@ -377,19 +462,19 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Pincode:<span className='star-inde'>*</span> </label>
-                                <input type="number" placeholder="Enter pincode" name="pincode" className="business-detail-input-one" value={formData.pincode} onChange={handleChange} />
+                                <input type="number" placeholder="Enter pincode" name="pincode" className="business-detail-input-one" value={formData.pincode} onChange={handleChange} disabled={formData.gstinVerified && formData.pincode} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">State: </label>
-                                <input type="text" placeholder="Enter state" name="state" className="business-detail-input-one" value={formData.state} onChange={handleChange} />
+                                <input type="text" placeholder="Enter state" name="state" className="business-detail-input-one" value={formData.state} onChange={handleChange} disabled={formData.gstinVerified && formData.state} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">City: </label>
-                                <input type="text" placeholder="Enter city" name="city" className="business-detail-input-one" value={formData.city} onChange={handleChange} />
+                                <input type="text" placeholder="Enter city" name="city" className="business-detail-input-one" value={formData.city} onChange={handleChange} disabled={formData.gstinVerified && formData.city} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
@@ -407,7 +492,7 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Address:<span className='star-inde'>*</span> </label>
-                                <input type="text" placeholder="Enter your Address" className="business-detail-input-one" name="address" value={formData.address} onChange={handleChange} />
+                                <input type="text" placeholder="Enter your Address" className="business-detail-input-one" name="address" value={formData.address} onChange={handleChange} disabled={formData.gstinVerified && formData.address} />
                             </div>
                         </div>
 
