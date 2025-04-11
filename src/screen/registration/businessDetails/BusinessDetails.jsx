@@ -191,7 +191,7 @@ const BusinessDetails = () => {
         try {
             setGstinLoading(true);
             const response = await axios.get(
-                `https://80t82fiur2.execute-api.ap-south-1.amazonaws.com/test/autofill/businessdetails?gstNumber=${gstin}`
+                `${BASE_URL}/test/autofill/businessdetails?gstNumber=${gstin}`
             );
 
             if (response.data?.response?.rcode === 0) {
