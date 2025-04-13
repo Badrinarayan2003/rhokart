@@ -193,7 +193,7 @@ const BusinessDetails = () => {
             const response = await axios.get(
                 `${BASE_URL}/test/autofill/businessdetails?gstNumber=${gstin}`
             );
-
+            console.log(response, "GSTIN RESPONSE FOR BUSINESS DETAILS BEFORE R CODE 0 BLOCK");
             if (response.data?.response?.rcode === 0) {
                 const businessData = response.data.response.coreData.responseData;
                 console.log(response, "GSTIN RESPONSE FOR BUSINESS DETAILS");

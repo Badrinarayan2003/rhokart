@@ -269,7 +269,7 @@ const BankDetails = () => {
                             <div className="col-lg-6 col-md-6 d-flex align-items-center justify-content-center mb-3">
                                 <div className="bank-detail-input-box d-flex flex-column">
                                     <label className="mb-1">Account Number:<span className='star-inde'>*</span> </label>
-                                    <input type="text" placeholder="Enter acc No." value={formData.accountNo} onChange={handleChange} name="accountNo" className="bank-detail-input-one" />
+                                    <input type="number" placeholder="Enter acc No." value={formData.accountNo} onChange={handleChange} name="accountNo" className="bank-detail-input-one" />
                                 </div>
                             </div>
 
@@ -285,7 +285,7 @@ const BankDetails = () => {
                                     <label className="mb-1">Confirm Account Number:<span className='star-inde'>*</span> </label>
                                     <div className="position-relative">
                                         <input
-                                            type="text"
+                                            type="password"
                                             placeholder="Enter Account No."
                                             value={formData.confirm_acc_number}
                                             onChange={handleChange}

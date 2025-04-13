@@ -758,9 +758,9 @@ const RegistrationReview = () => {
                         </div>
                     </div>
 
-                    <div className="review-location-container">
+                    {/* <div className="review-location-container">
                         <p className="mb-1"><FaLocationDot size={40} color='#1F8505' /></p>
-                    </div>
+                    </div> */}
 
                 </div>
 
@@ -848,7 +848,7 @@ const RegistrationReview = () => {
 
                 <div className="row my-5">
                     <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
-                        <button className="back-btn">Back</button>
+                        <button className="back-btn" onClick={() => navigate("/registration/brand-details")}>Back</button>
                         <button className="save-btn" onClick={handleSubmit}>Submit</button>
                     </div>
                 </div>

@@ -264,7 +264,11 @@ const BrandsDetails = () => {
                                 </div>
 
                                 <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-5">
-                                    <select className="association-type" value={group.category} onChange={(e) => handleCategoryChange(index, e.target.value)}>
+                                    <select className="association-type"
+                                        value={group.category}
+                                        onChange={(e) => handleCategoryChange(index, e.target.value)}
+                                        disabled={!group.brand}
+                                    >
                                         <option value="">Choose Type of association</option>
                                         {categories.map((category) => (
                                             <option key={category.id} value={category.id}>{category.name}</option>
@@ -308,7 +312,7 @@ const BrandsDetails = () => {
 
                     <div className="row my-4">
                         <div className="col-lg-12 d-flex justify-content-evenly">
-                            <button className="back-btn">Back</button>
+                            <button className="back-btn" onClick={() => navigate("/registration/address-details")}>Back</button>
                             <button className="save-btn" style={isSaved ? { background: "#7e7e7e", cursor: "not-allowed" } : {}} onClick={handleSave} disabled={loading || isSaved}>
                                 {loading ? "Saving..." : isSaved ? "Saved" : "Save"}
                             </button>

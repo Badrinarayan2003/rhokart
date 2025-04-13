@@ -27,7 +27,6 @@ const RegistrationProgress = ({ color, active, step }) => {
                     <div className="d-flex justify-content-between position-relative">
                         {/* Step 1 */}
                         <div className="text-center position-relative d-flex justify-content-center flex-column align-items-start circle-main-box"
-                            onClick={handleLogout}
                         >
                             <div
                                 className="rounded-circle mb-0 d-flex align-items-center justify-content-center round-circle"
