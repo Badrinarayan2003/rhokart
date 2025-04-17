@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { IoClose } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 
@@ -78,9 +79,58 @@ const Products = () => {
         );
     };
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+    const [productDetails, setProductDetails] = useState(null);
+    const [modalLoading, setModalLoading] = useState(false);
+
+    // Custom cell renderer for image with click handler
+    const imageCellRenderer = (params) => {
+        const handleImageClick = async () => {
+            setSelectedImage(params.value);
+            setModalLoading(true);
+            setShowModal(true);
+
+            try {
+                // Get listingId from the row data
+                const listingId = params.data.listingId.trim();
+
+                // Fetch additional product details
+                const response = await axios.get(
+                    `${BASE_URL}/test/inventory/popup/image?listingId=${listingId}`
+                );
+                console.log(response, "product details response")
+                if (response.data?.response?.rcode === 0) {
+                    setProductDetails(response.data.response.coreData.responseData);
+                }
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                toast.error("Failed to load product details");
+            } finally {
+                setModalLoading(false);
+            }
+        };
+
+        return (
+            <img
+                src={params.value}
+                alt="Product"
+                style={{ width: "45px", height: "45px", cursor: "pointer" }}
+                onClick={handleImageClick}
+            />
+        );
+    };
+
     // Column definitions
     const columnDefs = [
-        { headerName: "Image", field: "image", sortable: true, filter: true, cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> },
+        {
+            headerName: "Image",
+            field: "image",
+            sortable: true,
+            filter: true,
+            // cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} />
+            cellRenderer: imageCellRenderer
+        },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
         {
@@ -242,6 +292,70 @@ const Products = () => {
     return (
         <>
             {loading && <Loader message="Loading inventory..." />}
+            {/* Custom Modal for Image Preview */}
+            {showModal && (
+                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                    <div className="modal-content px-2 bg-white" onClick={(e) => e.stopPropagation()} >
+                        <div className="modal-header bg-white text-black">
+                            <h3>Product Details</h3>
+                            <button className="close-button" onClick={() => setShowModal(false)}>
+                                <IoClose color="black" />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {modalLoading ? (
+                                <Loader message="Loading product details..." />
+                            ) : (
+                                <div className="row">
+                                    <div className="col-12 d-flex justify-content-center align-items-center">
+
+                                        <img
+                                            src={selectedImage}
+                                            alt="Product Preview"
+                                            className="modal-image"
+                                        />
+                                    </div>
+                                    <div className="col-12 bg-white">
+
+                                        {productDetails && (
+                                            <>
+                                                <h4 className="text-black mt-2">{productDetails?.listingName}</h4>
+                                                <p className="text-black"><strong>Brand:</strong> {productDetails?.brandName}</p>
+
+                                                <div className="mt-3">
+                                                    <h5 className="text-black">Product Description</h5>
+                                                    <p className="text-black">{productDetails?.productDescription?.productDetails}</p>
+                                                    {productDetails?.productDescription?.features && (
+                                                        <ul>
+                                                            {productDetails?.productDescription?.features.map((feature, index) => (
+                                                                <li className="text-black" key={index}>{feature}</li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+
+                                                <div className="mt-3">
+                                                    <h5 className="text-black">Specifications</h5>
+                                                    <table className="table table-bordered">
+                                                        <tbody>
+                                                            {productDetails?.productSpecifications.map((spec, index) => (
+                                                                <tr key={index}>
+                                                                    <td><strong>{spec?.name}</strong></td>
+                                                                    <td>{spec?.value}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="update-on-portal">
                 <div className="row my-4">
