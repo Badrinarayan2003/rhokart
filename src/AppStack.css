@@ -740,6 +740,7 @@ span {
     max-height: 80vh;
     display: flex;
     flex-direction: column;
+    max-width: 800px;
 }
 
 .modal-header {

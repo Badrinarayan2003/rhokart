@@ -22,7 +22,6 @@ const RegistrationProgress = ({ color, active, step }) => {
                 <div className="position-relative">
                     {/* Horizontal Line */}
                     <div className="position-absolute start-0 w-100 reg-progress-horizontal-line" ></div>
-
                     {/* Circles with Text */}
                     <div className="d-flex justify-content-between position-relative">
                         {/* Step 1 */}
