@@ -3,9 +3,20 @@
     font-weight: 600;
 }
 
+.log-btn {
+    color: #fff;
+}
+
+.registration-header-col-section-two span {
+    cursor: pointer;
+}
 
 @media (max-width: 992px) {
     .registration-header-col-section-two {
         display: none;
+    }
+
+    .registration-header-text h3 {
+        font-size: 17px;
     }
 }

@@ -41,7 +41,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
 
 
 
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isDropdownOpen, setDropdownOpen] = useState(true);
 
     const handleDropdownToggle = (e) => {
         e.preventDefault(); // Prevent default action of anchor tag
@@ -145,7 +145,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 className={({ isActive }) =>
                                     `dropdown-item mt-2 sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
                                 }
-                                style={{ textWrap: 'auto', padding: "5px 5px" }}
+                                style={{ textWrap: 'auto', padding: "5px 5px", marginLeft: "10px" }}
                                 to="/update-on-portal"
                                 onClick={(e) => e.stopPropagation()} // Prevents dropdown from closing
                             >
@@ -159,7 +159,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                     `dropdown-item sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
                                 }
                                 to="/products"
-                                style={{ textWrap: 'auto', padding: "5px 5px" }}
+                                style={{ textWrap: 'auto', padding: "5px 5px", marginLeft: "10px" }}
                                 onClick={(e) => e.stopPropagation()} // Prevents dropdown from closing
                             >
                                 My Product

@@ -101,7 +101,7 @@ const Products = () => {
                 );
                 console.log(response, "product details response")
                 if (response.data?.response?.rcode === 0) {
-                    setProductDetails(response.data.response.coreData.responseData);
+                    setProductDetails(response?.data?.response?.coreData?.responseData);
                 }
             } catch (error) {
                 console.error("Error fetching product details:", error);
@@ -249,7 +249,8 @@ const Products = () => {
                     unitPriceWoGst: row.unitPriceWithoutGst,
                     gstRate: row.gstRate,
                     gstAmount: row.gstAmount,
-                    unitPriceWGst: row.unitPriceIncludingGst
+                    unitPriceWGst: row.unitPriceIncludingGst,
+                    sellerId: sellerId
                 }));
 
             if (updateInventoryList.length === 0) {
@@ -327,7 +328,7 @@ const Products = () => {
                                                     <p className="text-black">{productDetails?.productDescription?.productDetails}</p>
                                                     {productDetails?.productDescription?.features && (
                                                         <ul>
-                                                            {productDetails?.productDescription?.features.map((feature, index) => (
+                                                            {productDetails?.productDescription?.features?.map((feature, index) => (
                                                                 <li className="text-black" key={index}>{feature}</li>
                                                             ))}
                                                         </ul>
@@ -338,7 +339,7 @@ const Products = () => {
                                                     <h5 className="text-black">Specifications</h5>
                                                     <table className="table table-bordered">
                                                         <tbody>
-                                                            {productDetails?.productSpecifications.map((spec, index) => (
+                                                            {productDetails?.productSpecifications?.map((spec, index) => (
                                                                 <tr key={index}>
                                                                     <td><strong>{spec?.name}</strong></td>
                                                                     <td>{spec?.value}</td>

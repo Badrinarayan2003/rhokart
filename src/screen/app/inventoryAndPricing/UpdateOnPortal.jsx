@@ -55,7 +55,7 @@ const UpdateOnPortal = () => {
             try {
                 const res = await axios.get(`https://x9ra65bgf8.execute-api.ap-south-1.amazonaws.com/test/search/typeahead?query=${query}`);
                 console.log(res, "this is search response")
-                const products = res.data?.success?.coreData?.responseData?.productList || [];
+                const products = res?.data?.success?.coreData?.responseData?.productList || [];
                 setSuggestions(products);
             } catch (error) {
                 console.log("Error fetching suggestions:", error);
@@ -125,7 +125,7 @@ const UpdateOnPortal = () => {
                     `${BASE_URL}/test/inventory/category?level=L1`
                 );
                 console.log(response, "fetch cat 1")
-                setL1Categories(response.data);
+                setL1Categories(response?.data);
             } catch (error) {
                 console.log("Error fetching L1 categories:", error);
             }
@@ -147,7 +147,7 @@ const UpdateOnPortal = () => {
                     `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&level=L2`
                 );
                 console.log(response, "fetch cat 2")
-                setL2Categories(response.data);
+                setL2Categories(response?.data);
             } catch (error) {
                 console.log("Error fetching L2 categories:", error);
             }
@@ -169,7 +169,7 @@ const UpdateOnPortal = () => {
                     `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&l2Value=${encodeURIComponent(selectedL2)}&level=L3`
                 );
                 console.log(response, "fetch cat 3")
-                setL3Categories(response.data);
+                setL3Categories(response?.data);
             } catch (error) {
                 console.log("Error fetching L3 categories:", error);
             }
@@ -410,7 +410,8 @@ const UpdateOnPortal = () => {
                     unitPriceWoGst: row.unitPriceWithoutGst,
                     gstRate: row.gstRate,
                     gstAmount: row.gstAmount,
-                    unitPriceWGst: row.unitPriceIncludingGst
+                    unitPriceWGst: row.unitPriceIncludingGst,
+                    sellerId: sellerId
                 }));
 
             if (updateInventoryList.length === 0) {
@@ -490,7 +491,7 @@ const UpdateOnPortal = () => {
                                                     <p className="text-black">{productDetails?.productDescription?.productDetails}</p>
                                                     {productDetails?.productDescription?.features && (
                                                         <ul>
-                                                            {productDetails?.productDescription?.features.map((feature, index) => (
+                                                            {productDetails?.productDescription?.features?.map((feature, index) => (
                                                                 <li className="text-black" key={index}>{feature}</li>
                                                             ))}
                                                         </ul>
@@ -501,7 +502,7 @@ const UpdateOnPortal = () => {
                                                     <h5 className="text-black">Specifications</h5>
                                                     <table className="table table-bordered">
                                                         <tbody>
-                                                            {productDetails?.productSpecifications.map((spec, index) => (
+                                                            {productDetails?.productSpecifications?.map((spec, index) => (
                                                                 <tr key={index}>
                                                                     <td><strong>{spec?.name}</strong></td>
                                                                     <td>{spec?.value}</td>
@@ -528,7 +529,7 @@ const UpdateOnPortal = () => {
                             <label className="me-2">Category L1</label>
                             <select value={selectedL1} onChange={(e) => setSelectedL1(e.target.value)}>
                                 <option value="">Select</option>
-                                {l1Categories.map((item, index) => (
+                                {l1Categories?.map((item, index) => (
                                     <option key={index} value={item}>
                                         {item}
                                     </option>
@@ -542,7 +543,7 @@ const UpdateOnPortal = () => {
                             <label className="me-2">Category L2</label>
                             <select value={selectedL2} onChange={(e) => setSelectedL2(e.target.value)} disabled={!selectedL1}>
                                 <option value="">Select</option>
-                                {l2Categories.map((item, index) => (
+                                {l2Categories?.map((item, index) => (
                                     <option key={index} value={item}>
                                         {item}
                                     </option>
@@ -556,7 +557,7 @@ const UpdateOnPortal = () => {
                             <label className="me-2">Category L3</label>
                             <select value={selectedL3} onChange={(e) => setSelectedL3(e.target.value)} disabled={!selectedL2}>
                                 <option value="">Select</option>
-                                {l3Categories.map((item, index) => (
+                                {l3Categories?.map((item, index) => (
                                     <option key={index} value={item}>
                                         {item}
                                     </option>
@@ -594,7 +595,7 @@ const UpdateOnPortal = () => {
                     {suggestions.length > 0 && (
                         <div className="col-12" id="search-suggest-box">
                             <ul className="list-group mt-2">
-                                {suggestions.map((item, index) => (
+                                {suggestions?.map((item, index) => (
                                     <li
                                         key={index}
                                         className="list-group-item list-group-item-action"
