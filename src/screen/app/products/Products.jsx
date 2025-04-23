@@ -71,8 +71,36 @@ const Products = () => {
 
     // Custom cell renderer to display an edit icon
     const cellRendererWithEditIcon = (params) => {
+
+        const [isActive, setIsActive] = useState(false);
+
+        const handleClick = (e) => {
+            // Set active state
+            setIsActive(true);
+
+            // Start editing after a small delay to show the active state
+            setTimeout(() => {
+                params.api.startEditingCell({
+                    rowIndex: params.rowIndex,
+                    colKey: params.column.getId()
+                });
+            }, 50);
+
+            // Remove active state after edit finishes
+            const stopEditingHandler = () => {
+                setIsActive(false);
+                params.api.removeEventListener('cellEditingStopped', stopEditingHandler);
+            };
+            params.api.addEventListener('cellEditingStopped', stopEditingHandler);
+        };
+
+
         return (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+            <div
+                className={isActive ? 'active-edit-cell' : ''}
+                style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}
+                onClick={handleClick}
+            >
                 <span style={{ color: '#181d1f' }}>{params.value}</span>
                 <FaEdit style={{ color: "rgb(120 188 102)" }} />
             </div>
@@ -131,7 +159,9 @@ const Products = () => {
             // cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} />
             cellRenderer: imageCellRenderer
         },
-        { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
+        {
+            headerName: "Listing Name", field: "listingName", sortable: true, filter: true,
+        },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
         {
             headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
@@ -142,7 +172,8 @@ const Products = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
             headerName: "Qty in stock", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
@@ -153,7 +184,8 @@ const Products = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
             headerName: "Unit price (without GST)", field: "unitPriceWithoutGst", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
@@ -164,10 +196,11 @@ const Products = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
-            headerName: "GST Rate", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            headerName: "GST%", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
             // cellStyle: { backgroundColor: "rgb(224 249 217)" }
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('gstRate');
@@ -175,10 +208,11 @@ const Products = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
-            headerName: "GST Amount(INR)",
+            headerName: "GST Amount (INR)",
             field: "gstAmount",
             sortable: true,
             filter: true,
@@ -307,8 +341,8 @@ const Products = () => {
                             {modalLoading ? (
                                 <Loader message="Loading product details..." />
                             ) : (
-                                <div className="row">
-                                    <div className="col-12 d-flex justify-content-center align-items-center">
+                                <div className="row" style={{ height: "90vh" }}>
+                                    <div className="col-12 d-flex justify-content-center align-items-start">
 
                                         <img
                                             src={selectedImage}

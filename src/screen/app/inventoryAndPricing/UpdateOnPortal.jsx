@@ -11,6 +11,8 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { IoClose } from "react-icons/io5";
+import { FiSearch } from "react-icons/fi";
+
 
 const UpdateOnPortal = () => {
     const [loading, setLoading] = useState(false); // Loading state
@@ -230,8 +232,35 @@ const UpdateOnPortal = () => {
 
     // Custom cell renderer to display an edit icon
     const cellRendererWithEditIcon = (params) => {
+
+        const [isActive, setIsActive] = useState(false);
+
+        const handleClick = (e) => {
+            // Set active state
+            setIsActive(true);
+
+            // Start editing after a small delay to show the active state
+            setTimeout(() => {
+                params.api.startEditingCell({
+                    rowIndex: params.rowIndex,
+                    colKey: params.column.getId()
+                });
+            }, 50);
+
+            // Remove active state after edit finishes
+            const stopEditingHandler = () => {
+                setIsActive(false);
+                params.api.removeEventListener('cellEditingStopped', stopEditingHandler);
+            };
+            params.api.addEventListener('cellEditingStopped', stopEditingHandler);
+        };
+
         return (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+            <div
+                className={isActive ? 'active-edit-cell' : ''}
+                style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}
+                onClick={handleClick}
+            >
                 <span style={{ color: '#181d1f' }}>{params.value}</span>
                 <FaEdit style={{ color: "rgb(120 188 102)" }} /> {/* Edit icon */}
             </div>
@@ -284,15 +313,15 @@ const UpdateOnPortal = () => {
         {
             headerName: "Image",
             field: "image",
-            sortable: true,
-            filter: true,
+            sortable: false,
+            filter: false,
             //  cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} /> 
-            cellRenderer: imageCellRenderer
+            cellRenderer: imageCellRenderer,
         },
         { headerName: "Listing Name", field: "listingName", sortable: true, filter: true },
         { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
         {
-            headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            headerName: "HSN", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
             //  cellStyle: { backgroundColor: "rgb(224 249 217)" }, 
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('hsnCode');
@@ -300,7 +329,8 @@ const UpdateOnPortal = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
             headerName: "Qty in stock (available inventory)", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
@@ -311,7 +341,8 @@ const UpdateOnPortal = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
             headerName: "Unit price (INR, without GST)", field: "unitPriceWithoutGst", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
@@ -322,10 +353,11 @@ const UpdateOnPortal = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
-            headerName: "GST Rate", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            headerName: "GST%", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
             // cellStyle: { backgroundColor: "rgb(224 249 217)" },
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('gstRate');
@@ -333,7 +365,8 @@ const UpdateOnPortal = () => {
                     backgroundColor: isEdited ? "rgba(255, 255, 0, 0.3)" : "rgb(224 249 217)",
                     border: isEdited ? "2px solid orange" : "none"
                 };
-            }
+            },
+            singleClickEdit: true // Allows editing on single click
         },
         {
             headerName: "GST Amount(INR)",
@@ -470,8 +503,8 @@ const UpdateOnPortal = () => {
                             {modalLoading ? (
                                 <Loader message="Loading product details..." />
                             ) : (
-                                <div className="row">
-                                    <div className="col-12 d-flex justify-content-center align-items-center">
+                                <div className="row" style={{ height: "90vh" }}>
+                                    <div className="col-12 d-flex justify-content-center align-items-start">
 
                                         <img
                                             src={selectedImage}
@@ -523,8 +556,8 @@ const UpdateOnPortal = () => {
 
             <div className="update-on-portal">
                 {/* Categories and Search Section */}
-                <div className="row mb-2 mt-3">
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                <div className="row mb-2 mt-1">
+                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-1">
                         <div className="update-portal-box d-flex flex-column align-items-start">
                             <label className="me-2">Category L1</label>
                             <select value={selectedL1} onChange={(e) => setSelectedL1(e.target.value)}>
@@ -538,7 +571,7 @@ const UpdateOnPortal = () => {
                         </div>
                     </div>
 
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-1">
                         <div className="update-portal-box d-flex flex-column align-items-start">
                             <label className="me-2">Category L2</label>
                             <select value={selectedL2} onChange={(e) => setSelectedL2(e.target.value)} disabled={!selectedL1}>
@@ -552,7 +585,7 @@ const UpdateOnPortal = () => {
                         </div>
                     </div>
 
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-1">
                         <div className="update-portal-box d-flex flex-column align-items-start">
                             <label className="me-2">Category L3</label>
                             <select value={selectedL3} onChange={(e) => setSelectedL3(e.target.value)} disabled={!selectedL2}>
@@ -566,9 +599,9 @@ const UpdateOnPortal = () => {
                         </div>
                     </div>
 
-                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3 d-flex align-items-end filter-btn-box">
+                    <div className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-1 d-flex align-items-end filter-btn-box">
                         <button className="update-portal-btn update-btns-submit" onClick={handleFilter} disabled={!selectedL1 || !selectedL2 || !selectedL3}>
-                            Filter
+                            View
                         </button>
                     </div>
                 </div>
@@ -583,13 +616,16 @@ const UpdateOnPortal = () => {
 
                 <div className="row mb-4 position-relative">
                     <div className="col-12">
-                        <div className="update-portal-search-box d-flex flex-column">
-                            <label>Search by category</label>
+                        <div className="update-portal-search-box d-flex flex-column position-relative">
+                            {/* <label>Search by category</label> */}
                             <input type="text"
-                                placeholder="Search Here..."
+                                placeholder="Search products..."
                                 value={searchQuery}
                                 onChange={handleSearchChange}
                             />
+                            <span className="search-icon-upp">
+                                <FiSearch color="#999" size={20} />
+                            </span>
                         </div>
                     </div>
                     {suggestions.length > 0 && (
