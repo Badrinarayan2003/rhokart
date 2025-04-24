@@ -229,9 +229,9 @@ const BrandsDetails = () => {
                     <div className="row mb-3">
                         <div className="col-12 d-flex position-relative brand-details-top-heading-box">
                             <p className="brand-details-text">Select the brands that you would like to sell here</p>
-                            {/* <p className="brand-details-skip">
-                                Skip <MdKeyboardArrowRight size={20} color="#1F8505" />
-                            </p> */}
+                            <p className="brand-details-skip" onClick={() => navigate('/review-status')}>
+                                Skip <MdKeyboardArrowRight size={20} color="red" />
+                            </p>
                         </div>
                     </div>
                     <div className="row">

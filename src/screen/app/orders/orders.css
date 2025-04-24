@@ -1,0 +1,45 @@
+.order-section-page {
+    height: 100vh;
+}
+
+.order-status-box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 20%;
+    justify-content: center;
+    align-items: center;
+    background: #B6BAC3;
+    font-weight: 700;
+    border-radius: 10px;
+    height: auto;
+    padding: 8px 5px;
+    cursor: pointer;
+}
+
+.order-status-box p {
+    color: black;
+    font-size: 14px;
+}
+
+.order-status-box span {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #1F8505;
+    border-radius: 50%;
+    top: 7%;
+    right: 3%;
+}
+
+
+@media (max-width:768px) {
+    .order-status-box p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width:425px) {
+    .order-status-box p {
+        font-size: 11px;
+    }
+}

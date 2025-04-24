@@ -156,15 +156,16 @@ const Products = () => {
             field: "image",
             sortable: true,
             filter: true,
+            width: 100,
             // cellRenderer: (params) => <img src={params.value} alt="Product" style={{ width: "45px", height: "45px" }} />
             cellRenderer: imageCellRenderer
         },
         {
-            headerName: "Listing Name", field: "listingName", sortable: true, filter: true,
+            headerName: "Listing Name", field: "listingName", sortable: true, filter: true, width: 400,
         },
-        { headerName: "Child SKU", field: "childSku", sortable: true, filter: true },
+        { headerName: "Child SKU", field: "childSku", sortable: true, filter: true, width: 200 },
         {
-            headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
+            headerName: "HSN Code", field: "hsnCode", sortable: false, filter: true, editable: true, width: 180, cellRenderer: cellRendererWithEditIcon,
             // cellStyle: { backgroundColor: "rgb(224 249 217)" }
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('hsnCode');
@@ -178,6 +179,7 @@ const Products = () => {
         {
             headerName: "Qty in stock", field: "qtyInStock", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
             // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            width: 160,
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('qtyInStock');
                 return {
@@ -202,6 +204,7 @@ const Products = () => {
         {
             headerName: "GST%", field: "gstRate", sortable: false, filter: true, editable: true, cellRenderer: cellRendererWithEditIcon,
             // cellStyle: { backgroundColor: "rgb(224 249 217)" }
+            width: 100,
             cellStyle: (params) => {
                 const isEdited = params.data.lastEdited && params.data.lastEditedFields?.includes('gstRate');
                 return {
@@ -227,7 +230,7 @@ const Products = () => {
         },
         { headerName: "Listing ID", field: "listingId", sortable: true, filter: true },
         { headerName: "SKU ID", field: "skuId", sortable: true, filter: true },
-        { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true },
+        { headerName: "Listing Unit Qty", field: "listingUnitQty", sortable: true, filter: true, width: 100, },
     ];
 
     // Handle cell edits

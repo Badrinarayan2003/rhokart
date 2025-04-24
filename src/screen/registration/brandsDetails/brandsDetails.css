@@ -28,8 +28,14 @@
 
 .brand-details-skip {
     position: absolute;
-    color: #1F8505;
+    color: red;
     right: 40px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.brand-details-skip:hover {
+    text-decoration: underline;
 }
 
 .brand-custom-select {
