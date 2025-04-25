@@ -849,7 +849,7 @@ const RegistrationReview = () => {
                 <div className="row my-5">
                     <div className="col-lg-12 col-md-12 col-12 d-flex justify-content-evenly">
                         <button className="back-btn" onClick={() => navigate("/registration/brand-details")}>Back</button>
-                        <button className="save-btn" onClick={handleSubmit}>Submit</button>
+                        <button className="save-btn" style={!checkboxes.acceptPrivacyPolicy ? { background: "#5d5d5d", cursor: 'not-allowed' } : {}} disabled={!checkboxes.acceptPrivacyPolicy} onClick={handleSubmit}>Submit</button>
                     </div>
                 </div>
 
