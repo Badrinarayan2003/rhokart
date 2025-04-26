@@ -27,11 +27,15 @@
 
 .document-uploud-button {
     width: 22%;
-    background-color: #40444C;
+    background-color: #686565;
     color: #fff;
     padding: 6px 10px;
     border-radius: 5px;
     font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
 }
 
 .document-details-input-container label {

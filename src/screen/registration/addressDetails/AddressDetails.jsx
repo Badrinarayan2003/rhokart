@@ -193,7 +193,7 @@ const AddressDetails = () => {
 
     const handleNext = async () => {
         if (!validateFields()) {
-            toast.error("Please fill all required fields before proceeding");
+            // toast.error("Please fill all required fields before proceeding");
             return;
         }
 

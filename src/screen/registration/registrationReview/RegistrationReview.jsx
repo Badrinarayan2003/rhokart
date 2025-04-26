@@ -499,7 +499,7 @@ const RegistrationReview = () => {
 
                     <div className="row">
                         <div className="col-12">
-                            <h4 className="text-start my-3">BIlling address:</h4>
+                            <h4 className="text-start my-3">Billing address:</h4>
                         </div>
                         <div className="col-12 mb-2">
                             <div className="row">
@@ -826,7 +826,7 @@ const RegistrationReview = () => {
                                     onChange={handleCheckboxChange}
                                     required
                                 />
-                                I accept the{" "}
+                                {" "}I accept the{" "}
                                 <a href="https://www.rhokart.com/privacy-policy" target="_blank" rel="noopener noreferrer">
                                     Privacy Policy for Rhokart
                                 </a>.
@@ -839,7 +839,7 @@ const RegistrationReview = () => {
                                     checked={checkboxes.receiveInfo}
                                     onChange={handleCheckboxChange}
                                 />
-                                I want to receive personalized information from Rhokart.
+                                {" "}I want to receive personalized information from Rhokart.
                             </label>
                         </div>
                     </div>

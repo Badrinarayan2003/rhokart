@@ -27,6 +27,7 @@
 
 .back-to-login span {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .reg-success-box {

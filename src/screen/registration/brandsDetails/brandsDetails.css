@@ -125,6 +125,11 @@
     font-size: 14px;
     font-weight: 500;
     border-radius: 5px;
+    background-color: #686565;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 768px) {

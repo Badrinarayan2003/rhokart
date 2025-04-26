@@ -211,7 +211,7 @@ const BusinessDetails = () => {
                     panVerified: true
                 }));
                 setWasGstinVerified(true);
-                toast.success("Business details auto-filled successfully");
+                // toast.success("Business details auto-filled successfully");
             } else {
                 toast.error(response.data?.response?.rmessage || "Error fetching business details");
             }
@@ -373,7 +373,7 @@ const BusinessDetails = () => {
         console.log(isSaved, "before is save");
 
         if (!validateForm()) {
-            toast.error("Please fill all details before procceding");
+            // toast.error("Please fill all details before procceding");
             return;
         }
 

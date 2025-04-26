@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import "./brandsDetails.css";
 import RegistrationHeader from "../../../components/registrationHeader/RegistrationHeader";
 import RegistrationProgress from "../../../components/registrationProgress/RegistrationProgress";
@@ -203,7 +205,7 @@ const BrandsDetails = () => {
         // }
 
         if (!validateFields()) {
-            toast.error("Please upload a document for required categories.");
+            // toast.error("Please upload a document for required categories.");
             return;
         }
 
@@ -230,7 +232,7 @@ const BrandsDetails = () => {
                         <div className="col-12 d-flex position-relative brand-details-top-heading-box">
                             <p className="brand-details-text">Select the brands that you would like to sell here</p>
                             <p className="brand-details-skip" onClick={() => navigate('/review-status')}>
-                                Skip <MdKeyboardArrowRight size={20} color="red" />
+                                Skip <MdKeyboardDoubleArrowRight size={20} color="red" />
                             </p>
                         </div>
                     </div>
@@ -280,9 +282,10 @@ const BrandsDetails = () => {
                                     <button
                                         onClick={() => document.getElementById(`fileInput-${index}`).click()}
                                         disabled={!isUploadAllowed}
-                                        style={{ backgroundColor: isUploadAllowed ? "#40444C" : "#ccc", color: isUploadAllowed ? "#fff" : "#000" }}
+                                        style={{ backgroundColor: isUploadAllowed ? "#40444C" : "#686565", color: isUploadAllowed ? "#fff" : "#fff" }}
                                         className="upload-button"
                                     >
+                                        <FaCloudUploadAlt color="#fff" size={20} />
                                         Upload
                                     </button>
 
