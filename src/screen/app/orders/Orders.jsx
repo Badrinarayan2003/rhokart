@@ -1,66 +1,9 @@
-// import './orders.css'
-
-// const Orders = () => {
-//     return (
-//         <div className="order-section-page">
-//             <div className='row'>
-//                 <div className='col-12 d-flex justify-content-between gap-1'>
-//                     <div className='order-status-box position-relative'>
-//                         <p className='mb-0'>Order received & waiting for packing</p>
-//                         <span className='order-status-indecator'></span>
-//                     </div>
-//                     <div className='order-status-box position-relative'>
-//                         <p className='mb-0'>Order packed & waiting for peakup</p>
-//                         <span className='order-status-indecator'></span>
-//                     </div>
-//                     <div className='order-status-box position-relative'>
-//                         <p className='mb-0'>In transit orders</p>
-//                         <span className='order-status-indecator'></span>
-//                     </div>
-//                     <div className='order-status-box position-relative'>
-//                         <p className='mb-0'>Delivered</p>
-//                         <span className='order-status-indecator'></span>
-//                     </div>
-//                     <div className='order-status-box position-relative'>
-//                         <p className='mb-0'>Cancelled</p>
-//                         <span className='order-status-indecator'></span>
-//                     </div>
-//                 </div>
-//             </div>
-
-//             <div className='row'>
-//                 <div className='col-12'>
-
-//                 </div>
-//             </div>
-
-
-
-//         </div>
-//     )
-// }
-
-// export default Orders;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import './orders.css';
+import { FaDownload } from "react-icons/fa";
 
 const Orders = () => {
     // Sample data for the orders table
@@ -76,7 +19,9 @@ const Orders = () => {
             totalValue: 2499.00,
             invoiceNo: "INV-2023-1001",
             slamId: "SLAM-001",
-            rtsId: "RTS-001"
+            rtsId: "RTS-001",
+            action: "Packed", // Added status field
+            hasDocuments: true // Added flag for documents
         },
         {
             slNo: 2,
@@ -89,7 +34,9 @@ const Orders = () => {
             totalValue: 1599.00,
             invoiceNo: "INV-2023-1002",
             slamId: "SLAM-002",
-            rtsId: "RTS-002"
+            rtsId: "RTS-002",
+            action: "Packed (Partial)",
+            hasDocuments: true
         },
         {
             slNo: 3,
@@ -102,7 +49,9 @@ const Orders = () => {
             totalValue: 5499.00,
             invoiceNo: "INV-2023-1003",
             slamId: "SLAM-003",
-            rtsId: "RTS-003"
+            rtsId: "RTS-003",
+            action: "Order Details",
+            hasDocuments: false
         },
         {
             slNo: 4,
@@ -115,7 +64,9 @@ const Orders = () => {
             totalValue: 899.00,
             invoiceNo: "INV-2023-1004",
             slamId: "SLAM-004",
-            rtsId: "RTS-004"
+            rtsId: "RTS-004",
+            action: "Packed",
+            hasDocuments: true
         },
         {
             slNo: 5,
@@ -128,7 +79,9 @@ const Orders = () => {
             totalValue: 1998.00,
             invoiceNo: "INV-2023-1005",
             slamId: "SLAM-005",
-            rtsId: "RTS-005"
+            rtsId: "RTS-005",
+            action: "Order Details",
+            hasDocuments: false
         }
     ]);
 
@@ -138,7 +91,7 @@ const Orders = () => {
             headerName: "SL No.",
             field: "slNo",
             sortable: true,
-            width: 80
+            width: 95
         },
         {
             headerName: "Order ID",
@@ -179,7 +132,7 @@ const Orders = () => {
                     <span>{params.data.itemsCount} / {params.data.skuCount}</span>
                 </div>
             ),
-            width: 130
+            width: 180
         },
         {
             headerName: "Total Value (₹)",
@@ -191,10 +144,12 @@ const Orders = () => {
         },
         {
             headerName: "Take Action",
+            field: "action",
             cellRenderer: (params) => (
-                <div className="d-flex gap-2">
-                    <button className="btn btn-sm btn-primary">Process</button>
-                    <button className="btn btn-sm btn-success">Print</button>
+                <div className="d-flex justify-content-center">
+                    <span className={`status-badge ${params?.value?.toLowerCase().replace(' ', '-')}`}>
+                        {params.value}
+                    </span>
                 </div>
             ),
             width: 150
@@ -205,6 +160,25 @@ const Orders = () => {
             sortable: true,
             filter: true,
             width: 120
+        },
+        {
+            headerName: "Invoice",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.data.hasDocuments ? (
+                        <button
+                            className="btn btn-sm btn-outline-primary"
+                            style={{ fontSize: "12px" }}
+                            onClick={() => handleDownload(params.data.orderId)}
+                        >
+                            <FaDownload /> Download
+                        </button>
+                    ) : (
+                        <span className="text-muted">No Invoice</span>
+                    )}
+                </div>
+            ),
+            width: 150
         },
         {
             headerName: "SLAM IDs",
@@ -221,6 +195,13 @@ const Orders = () => {
             width: 120
         }
     ]);
+
+    // Handle download button click
+    const handleDownload = (orderId) => {
+        console.log(`Downloading documents for order ${orderId}`);
+        // Add your download logic here
+        // Example: window.open(`/api/documents/${orderId}`, '_blank');
+    };
 
     return (
         <div className="order-section-page">

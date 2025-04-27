@@ -26,7 +26,7 @@ const BusinessDetails = () => {
     const sellerEmail = useSelector((state) => state.auth.sellerEmail);
     const sellerId = useSelector((state) => state.auth.sellerId);
     const accessLevel = useSelector((state) => state.auth.accessLevel);
-    // const sellerName = useSelector((state) => state.auth.sellerName);
+    const sellerName = useSelector((state) => state.auth.sellerName);
     // const sellerPhone = useSelector((state) => state.auth.sellerPhone);
 
 
@@ -34,6 +34,7 @@ const BusinessDetails = () => {
         console.log(sellerEmail, "seller email from store");
         console.log(sellerId, "seller id from store");
         console.log(accessLevel, "accessLevel from store");
+        console.log(sellerName, "sellerName from store");
 
         if (sellerId && accessLevel === "REGISTRATION") {
             const fetchRegistrationDetails = async () => {
@@ -206,6 +207,7 @@ const BusinessDetails = () => {
                     pincode: businessData.pincode || prev.pincode,
                     state: businessData.state || prev.state,
                     city: businessData.city || prev.city,
+                    country: businessData.country || prev.country,
                     gstinVerified: true,
                     pan: businessData.pan || prev.pan,
                     panVerified: true
@@ -238,6 +240,7 @@ const BusinessDetails = () => {
                 pincode: "",
                 state: "",
                 city: "",
+                country: "",
                 gstinVerified: false,
                 pan: "",
                 panVerified: false
@@ -456,7 +459,7 @@ const BusinessDetails = () => {
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">
                             <div className="business-detail-input-box d-flex flex-column">
                                 <label className="mb-1">Country: </label>
-                                <input type="text" placeholder="Enter country" name="country" className="business-detail-input-one" value={formData.country} onChange={handleChange} />
+                                <input type="text" placeholder="Enter country" name="country" className="business-detail-input-one" value={formData.country} onChange={handleChange} disabled={formData.gstinVerified && formData.country} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 d-flex align-items-center justify-content-center mb-3">

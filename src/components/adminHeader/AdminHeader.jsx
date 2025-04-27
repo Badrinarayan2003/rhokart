@@ -45,7 +45,7 @@ function AdminHeader({ OpenSidebar }) {
                 <div className="dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div className="d-flex flex-column align-items-center">
                         <FaUser color='#fff' size={23} />
-                        <p className='mb-0 seller-profile-name'>Seller Name</p>
+                        <p className='mb-0 seller-profile-name'>{sellerName ? sellerName : "Seller Name"}</p>
                     </div>
                 </div>
                 <ul className="dropdown-menu" id="dropdown-menu-show-ani-two" >

@@ -32,6 +32,44 @@
 }
 
 
+
+
+/* Status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+
+.status-badge.packed {
+    color: #1F8505;
+}
+
+.status-badge.order-details {
+    color: #e90404;
+}
+
+/* Download button styling */
+.btn-outline-primary {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.25rem 0.5rem;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+
+
+
+
+
+
 @media (max-width:768px) {
     .order-status-box p {
         font-size: 13px;
