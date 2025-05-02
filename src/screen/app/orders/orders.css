@@ -12,8 +12,12 @@
     font-weight: 700;
     border-radius: 10px;
     height: auto;
-    padding: 8px 5px;
+    padding: 18px 5px;
     cursor: pointer;
+}
+
+.order-status-box.active {
+    background-color: #1f850580;
 }
 
 .order-status-box p {

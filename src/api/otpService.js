@@ -11,7 +11,7 @@ export const requestOTP = async (email) => {
     }
 
     try {
-        const response = await axios.get(`${BASE_URL}/test/registration/emailotp?email=${email}`);
+        const response = await axios.get(`${BASE_URL}/registration/emailotp?email=${email}`);
 
         if (response?.data?.response?.rcode === 0) {
             toast.success(`OTP sent to ${email}. Please check your email.`);
@@ -34,7 +34,7 @@ export const verifyOTP = async (email, otp) => {
     }
 
     try {
-        const response = await axios.get(`${BASE_URL}/test/registration/validateEmailOtp?email=${email}&otpValue=${otp}`);
+        const response = await axios.get(`${BASE_URL}/registration/validateEmailOtp?email=${email}&otpValue=${otp}`);
 
         if (response?.data?.response?.rcode === 0) {
             toast.success("Email verified successfully!");

@@ -148,7 +148,7 @@ const DocumentUploud = () => {
 
             // Save to server
             const serverResponse = await axios.post(
-                `${BASE_URL}/test/onboarding/businessdocuments?email=${businessDetails?.email}`,
+                `${BASE_URL}/onboarding/businessdocuments?email=${businessDetails?.email}`,
                 { businessDocuments: allDocuments }
             );
 

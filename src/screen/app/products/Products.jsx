@@ -46,7 +46,7 @@ const Products = () => {
             setLoading(true);
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/listed/items?sellerId=${sellerId}`
+                    `${BASE_URL}/inventory/listed/items?sellerId=${sellerId}`
                 );
                 console.log(response, "this is my product response")
                 if (response.data?.response?.rcode === 0) {
@@ -125,7 +125,7 @@ const Products = () => {
 
                 // Fetch additional product details
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/popup/image?listingId=${listingId}`
+                    `${BASE_URL}/inventory/popup/image?listingId=${listingId}`
                 );
                 console.log(response, "product details response")
                 if (response.data?.response?.rcode === 0) {
@@ -302,7 +302,7 @@ const Products = () => {
 
             // Make API call
             const response = await axios.post(
-                `${BASE_URL}/test/inventory/submit`,
+                `${BASE_URL}/inventory/submit`,
                 requestBody,
                 {
                     headers: {

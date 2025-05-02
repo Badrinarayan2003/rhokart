@@ -40,7 +40,7 @@ const BusinessDetails = () => {
             const fetchRegistrationDetails = async () => {
                 try {
                     const response = await axios.get(
-                        `${BASE_URL}/test/onboarding/registrationdetail`,
+                        `${BASE_URL}/onboarding/registrationdetail`,
                         {
                             params: {
                                 email: sellerEmail,
@@ -192,7 +192,7 @@ const BusinessDetails = () => {
         try {
             setGstinLoading(true);
             const response = await axios.get(
-                `${BASE_URL}/test/autofill/businessdetails?gstNumber=${gstin}`
+                `${BASE_URL}/autofill/businessdetails?gstNumber=${gstin}`
             );
             console.log(response, "GSTIN RESPONSE FOR BUSINESS DETAILS BEFORE R CODE 0 BLOCK");
             if (response.data?.response?.rcode === 0) {

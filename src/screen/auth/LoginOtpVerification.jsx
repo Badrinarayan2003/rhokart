@@ -55,7 +55,7 @@ const LoginOtpVerification = () => {
             try {
                 console.log(otpValue, "this is entered otp inside try block");
                 const response = await axios.get(
-                    `${BASE_URL}/test/registration/validateotp?email=${email}&otpValue=${otpValue}`
+                    `${BASE_URL}/registration/validateotp?email=${email}&otpValue=${otpValue}`
                 );
                 console.log(response);
                 if (response?.data?.response?.rcode === 0) {

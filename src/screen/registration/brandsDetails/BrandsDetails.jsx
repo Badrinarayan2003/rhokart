@@ -43,7 +43,7 @@ const BrandsDetails = () => {
     useEffect(() => {
         const fetchBrands = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/test/onboarding/brandlist`);
+                const response = await axios.get(`${BASE_URL}/onboarding/brandlist`);
                 if (response) {
                     setBrands(response?.data);
                     console.log(response?.data, "brand list ")
@@ -175,7 +175,7 @@ const BrandsDetails = () => {
 
             // Send Data to Backend
             const serverResponse = await axios.post(
-                `${BASE_URL}/test/onboarding/branddetails?email=${businessDetails?.email}`,
+                `${BASE_URL}/onboarding/branddetails?email=${businessDetails?.email}`,
                 { brands: formattedData },
                 { headers: { "Content-Type": "application/json" } }
             );

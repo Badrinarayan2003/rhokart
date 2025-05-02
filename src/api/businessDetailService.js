@@ -4,7 +4,7 @@ import { BASE_URL } from "../config/urls";
 export const submitBusinessDetails = async (formData) => {
     try {
         const response = await axios.post(
-            `${BASE_URL}/test/onboarding/businessDetail`,
+            `${BASE_URL}/onboarding/businessDetail`,
             formData,
             {
                 headers: { "Content-Type": "application/json" },

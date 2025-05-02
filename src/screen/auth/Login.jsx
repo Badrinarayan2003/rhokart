@@ -30,7 +30,7 @@ const Login = () => {
 
         try {
             const response = await axios.get(
-                `${BASE_URL}/test/registration/emailotp?email=${email}`
+                `${BASE_URL}/registration/emailotp?email=${email}`
             );
             console.log(response, "this is respones");
             console.log(response?.data?.response?.rcode, "this is rcode");

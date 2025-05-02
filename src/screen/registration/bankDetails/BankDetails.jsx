@@ -87,7 +87,7 @@ const BankDetails = () => {
                 try {
                     setIfscLoading(true);
                     const response = await axios.get(
-                        `${BASE_URL}/test/autofill/bankdetails?ifsc=${formData.ifscCode}`
+                        `${BASE_URL}/autofill/bankdetails?ifsc=${formData.ifscCode}`
                     );
                     console.log(response, "ifsc response")
                     if (response.data?.response?.rcode === 0) {

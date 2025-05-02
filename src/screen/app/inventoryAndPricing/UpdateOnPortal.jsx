@@ -55,7 +55,7 @@ const UpdateOnPortal = () => {
 
         if (query.length > 2) {
             try {
-                const res = await axios.get(`https://x9ra65bgf8.execute-api.ap-south-1.amazonaws.com/test/search/typeahead?query=${query}`);
+                const res = await axios.get(`${BASE_URL}/search/typeahead?query=${query}`);
                 console.log(res, "this is search response")
                 const products = res?.data?.success?.coreData?.responseData?.productList || [];
                 setSuggestions(products);
@@ -74,7 +74,7 @@ const UpdateOnPortal = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `${BASE_URL}/test/inventory/list?lstId=${listingId}&sellerId=${sellerId}`
+                `${BASE_URL}/inventory/list?lstId=${listingId}&sellerId=${sellerId}`
             );
             console.log(response, "response from search suggestion ")
             if (response.data?.response?.rcode === 0) {
@@ -124,7 +124,7 @@ const UpdateOnPortal = () => {
         const fetchL1Categories = async () => {
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/category?level=L1`
+                    `${BASE_URL}/inventory/category?level=L1`
                 );
                 console.log(response, "fetch cat 1")
                 setL1Categories(response?.data);
@@ -146,7 +146,7 @@ const UpdateOnPortal = () => {
 
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&level=L2`
+                    `${BASE_URL}/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&level=L2`
                 );
                 console.log(response, "fetch cat 2")
                 setL2Categories(response?.data);
@@ -168,7 +168,7 @@ const UpdateOnPortal = () => {
 
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&l2Value=${encodeURIComponent(selectedL2)}&level=L3`
+                    `${BASE_URL}/inventory/category?l1Value=${encodeURIComponent(selectedL1)}&l2Value=${encodeURIComponent(selectedL2)}&level=L3`
                 );
                 console.log(response, "fetch cat 3")
                 setL3Categories(response?.data);
@@ -196,7 +196,7 @@ const UpdateOnPortal = () => {
         setLoading(true);
         try {
             const response = await axios.post(
-                `${BASE_URL}/test/inventory/filter`,
+                `${BASE_URL}/inventory/filter`,
                 requestBody
             );
             console.log("Filter Response:", response?.data);
@@ -285,7 +285,7 @@ const UpdateOnPortal = () => {
 
                 // Fetch additional product details
                 const response = await axios.get(
-                    `${BASE_URL}/test/inventory/popup/image?listingId=${listingId}`
+                    `${BASE_URL}/inventory/popup/image?listingId=${listingId}`
                 );
                 console.log(response, "product details response")
                 if (response.data?.response?.rcode === 0) {
@@ -463,7 +463,7 @@ const UpdateOnPortal = () => {
 
             // Make API call
             const response = await axios.post(
-                `${BASE_URL}/test/inventory/submit`,
+                `${BASE_URL}/inventory/submit`,
                 requestBody,
                 {
                     headers: {

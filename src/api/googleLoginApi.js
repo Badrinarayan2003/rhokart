@@ -25,7 +25,7 @@ export const handleGoogleLogin = async (tokenResponse, setLoading) => {
         if (userInfoResponse.data) {
             setLoading(true);
             try {
-                const serverResponse = await axios.get(`${BASE_URL}/test/registration/oauthlogin?email=${userInfoResponse?.data?.email}`);
+                const serverResponse = await axios.get(`${BASE_URL}/registration/oauthlogin?email=${userInfoResponse?.data?.email}`);
                 console.log("Server Response:", serverResponse.data);
                 setLoading(false);
                 return serverResponse;
