@@ -417,6 +417,7 @@ const OrderDetails = () => {
                                 filter: true
                             }}
                             suppressCellFocus={true}
+                            stopEditingWhenCellsLoseFocus={true} // Add this line
                         />
                     </div>
                     <div className="d-flex justify-content-end mb-4 mt-3">
@@ -511,7 +512,7 @@ const OrderDetails = () => {
                         onClick={handleShipmentUpdate}
                         disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                     >
-                        Save Changes
+                        Submit
                     </button>
                 </div>
             </div>
