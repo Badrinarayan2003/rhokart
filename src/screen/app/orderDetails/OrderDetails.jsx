@@ -17,20 +17,34 @@ const OrderDetails = () => {
     const [loading, setLoading] = useState(true);
     const [shipments, setShipments] = useState([]);
     const [invoiceNo, setInvoiceNo] = useState('');
+    const [totalPackedQuantity, setTotalPackedQuantity] = useState(0);
+    const [orderDetailsSaved, setOrderDetailsSaved] = useState(false);
+    const [hasPackedQuantityChanges, setHasPackedQuantityChanges] = useState(false);
 
     console.log(orderId, status)
     // Function to add new shipment box
     const addNewShipmentBox = () => {
+
+        if (!orderDetailsSaved) {
+            toast.warning("Please save order details first before adding boxes");
+            return;
+        }
+
+        if (totalPackedQuantity <= 0) {
+            toast.warning("Cannot add boxes when total packed quantity is zero");
+            return;
+        }
+
         // Calculate next box number
         const nextBoxNo = shipments.length > 0 ?
             Math.max(...shipments.map(box => box.boxNo)) + 1 : 1;
 
         const newShipment = {
             boxNo: nextBoxNo,
-            boxLength: 0,
-            boxBreadth: 0,
-            boxHeight: 0,
-            boxWeight: 0
+            boxLength: null,
+            boxBreadth: null,
+            boxHeight: null,
+            boxWeight: null
         };
 
         setShipments([...shipments, newShipment]);
@@ -55,7 +69,6 @@ const OrderDetails = () => {
                     colKey: params.column.getId()
                 });
             }, 50);
-
             const stopEditingHandler = () => {
                 setIsActive(false);
                 params.api.removeEventListener('cellEditingStopped', stopEditingHandler);
@@ -79,6 +92,8 @@ const OrderDetails = () => {
         );
     };
 
+    console.log(orderDetailsSaved, "orderDetailsSaved")
+    console.log(totalPackedQuantity, "totalPackedQuantity")
     // And in your useEffect for initial data:
     useEffect(() => {
         if (!orderId) {
@@ -91,7 +106,7 @@ const OrderDetails = () => {
             try {
                 const response = await axios.get(`${BASE_URL}/order/info?orderId=${orderId}`);
                 if (response?.data?.rcode === 0) {
-                    console.log(response, "api response for order tail")
+                    console.log(response, "api response for order detail")
                     const details = response?.data?.coreData?.responseData?.orderDataDetails || [];
                     const detailsWithEditTracking = details.map(item => ({
                         ...item,
@@ -112,12 +127,17 @@ const OrderDetails = () => {
 
                     setShipments(transformedShipments.length > 0 ? transformedShipments : [{
                         boxNo: 1,
-                        boxLength: 0,
-                        boxBreadth: 0,
-                        boxHeight: 0,
-                        boxWeight: 0
+                        boxLength: null,
+                        boxBreadth: null,
+                        boxHeight: null,
+                        boxWeight: null
                         // No shipId for initial empty box
                     }]);
+                    setOrderDetailsSaved(transformedShipments.length > 0); // If we have shipments, consider details saved
+                    setHasPackedQuantityChanges(false); // Reset changes flag when loading new data
+                } else {
+                    toast.error(response?.data?.rmessage || "Failed to load order details");
+                    console.error("order details failed:", response?.data);
                 }
                 setLoading(false);
             } catch (error) {
@@ -135,6 +155,11 @@ const OrderDetails = () => {
     }, [shipments]);
 
 
+    // useEffect(() => {
+    //     const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+    //     setTotalPackedQuantity(total);
+    // }, [orderDetails]);
+
 
     const handlePackedUnitsChange = (params) => {
         const updatedDetails = orderDetails.map(item => {
@@ -149,13 +174,101 @@ const OrderDetails = () => {
             return item;
         });
         setOrderDetails(updatedDetails);
+        setHasPackedQuantityChanges(true); // Set changes flag when packed units are modified
     };
 
     const handleShipmentChange = (index, field, value) => {
+
+        if (!orderDetailsSaved) {
+            toast.warning("Please save order details first before modifying shipment details");
+            return;
+        }
+
+        if (totalPackedQuantity <= 0) {
+            toast.warning("Cannot modify shipment details when total packed quantity is zero");
+            return;
+        }
+
         const updatedShipments = [...shipments];
         updatedShipments[index][field] = parseFloat(value) || 0;
         setShipments(updatedShipments);
     };
+
+    // const handleSaveOrderDetails = async () => {
+    //     try {
+    //         const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+    //         setTotalPackedQuantity(total);
+    //         setOrderDetailsSaved(true);
+    //         setHasPackedQuantityChanges(false); // Reset changes flag after saving
+    //         toast.success("Order details saved. You can now edit shipment details.");
+    //         console.log("Updated order details:", orderDetails);
+
+    //         if (shipments.length === 0 && totalPackedQuantity > 0) {
+    //             addNewShipmentBox();
+    //         }
+    //     } catch (error) {
+    //         console.error("Error saving order details:", error);
+    //         toast.error("Failed to save order details");
+    //     }
+    // };
+
+
+
+    const handleSaveOrderDetails = async () => {
+        try {
+            // First validate packed quantities don't exceed order quantities
+            const hasInvalidQuantities = orderDetails.some(item =>
+                item.packedUnits > item.orderUnits
+            );
+
+            if (hasInvalidQuantities) {
+                toast.error("Packed quantities cannot exceed order quantities");
+                return;
+            }
+
+            const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+            setTotalPackedQuantity(total);
+
+            // Prepare the order updates payload
+            const orderUpdates = orderDetails.map(item => ({
+                dtlId: item.dtlId,
+                skuId: item.skuId,
+                orderUnits: item.orderUnits,
+                packedUnits: item.packedUnits || 0
+            }));
+
+            // Call the order update API
+            const response = await axios.post(
+                `${BASE_URL}/order/orderupdate`,
+                {
+                    orderId: orderId,
+                    status: status,
+                    orderUpdates: orderUpdates
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response?.data?.rcode === 0) {
+                setOrderDetailsSaved(true);
+                setHasPackedQuantityChanges(false);
+                toast.success(response?.data?.coreData?.responseData?.message || "Order details updated successfully!");
+
+                if (shipments.length === 0 && totalPackedQuantity > 0) {
+                    addNewShipmentBox();
+                }
+            } else {
+                toast.error(response?.data?.rmessage || "Failed to update order details");
+            }
+        } catch (error) {
+            console.error("Error saving order details:", error);
+            toast.error("Failed to save order details");
+        }
+    };
+
 
     const [columnDefs] = useState([
         {
@@ -308,10 +421,9 @@ const OrderDetails = () => {
                     </div>
                     <div className="d-flex justify-content-end mb-4 mt-3">
                         <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                                console.log("Updated order details:", orderDetails);
-                            }}
+                            className={`save-change-btn ${!hasPackedQuantityChanges ? 'disabled-save-btn' : ''}`}
+                            onClick={handleSaveOrderDetails}
+                            disabled={!hasPackedQuantityChanges}
                         >
                             Save Changes
                         </button>
@@ -331,6 +443,7 @@ const OrderDetails = () => {
                                 placeholder="Enter invoice no."
                                 value={invoiceNo}
                                 onChange={(e) => setInvoiceNo(e.target.value)}
+                                disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                             />
                         </div>
                     </div>
@@ -344,8 +457,9 @@ const OrderDetails = () => {
                                         <input
                                             type="number"
                                             className="form-control"
-                                            value={shipment.boxLength || 0}
+                                            value={shipment.boxLength}
                                             onChange={(e) => handleShipmentChange(index, 'boxLength', e.target.value)}
+                                            disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                                         />
                                     </div>
                                     <div className="col-md-3">
@@ -353,8 +467,9 @@ const OrderDetails = () => {
                                         <input
                                             type="number"
                                             className="form-control"
-                                            value={shipment.boxBreadth || 0}
+                                            value={shipment.boxBreadth}
                                             onChange={(e) => handleShipmentChange(index, 'boxBreadth', e.target.value)}
+                                            disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                                         />
                                     </div>
                                     <div className="col-md-3">
@@ -362,8 +477,9 @@ const OrderDetails = () => {
                                         <input
                                             type="number"
                                             className="form-control"
-                                            value={shipment.boxHeight || 0}
+                                            value={shipment.boxHeight}
                                             onChange={(e) => handleShipmentChange(index, 'boxHeight', e.target.value)}
+                                            disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                                         />
                                     </div>
                                     <div className="col-md-3">
@@ -371,8 +487,9 @@ const OrderDetails = () => {
                                         <input
                                             type="number"
                                             className="form-control"
-                                            value={shipment.boxWeight || 0}
+                                            value={shipment.boxWeight}
                                             onChange={(e) => handleShipmentChange(index, 'boxWeight', e.target.value)}
+                                            disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                                         />
                                     </div>
                                 </div>
@@ -380,8 +497,9 @@ const OrderDetails = () => {
                         </div>
                     ))}
                     <button
-                        className="btn btn-sm btn-primary"
+                        className={`save-change-btn ${(!orderDetailsSaved || totalPackedQuantity <= 0) ? 'disabled-save-btn' : ''}`}
                         onClick={addNewShipmentBox}
+                        disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
                     >
                         <FaPlus className="me-1" /> Add more boxes for this order
                     </button>
@@ -389,8 +507,10 @@ const OrderDetails = () => {
 
                 <div className="d-flex justify-content-end mb-4">
                     <button
-                        className="btn btn-primary"
-                        onClick={handleShipmentUpdate}>
+                        className={`save-change-btn ${(!orderDetailsSaved || totalPackedQuantity <= 0) ? 'disabled-save-btn' : ''}`}
+                        onClick={handleShipmentUpdate}
+                        disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
+                    >
                         Save Changes
                     </button>
                 </div>

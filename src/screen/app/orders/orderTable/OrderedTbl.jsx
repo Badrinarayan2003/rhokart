@@ -9,11 +9,13 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { BASE_URL } from "../../../../config/urls";
+import Loader from "../../../../components/loader/Loader";
 
 const OrderedTbl = () => {
     const navigate = useNavigate();
     const [rowData, setRowData] = useState([]);
 
+    const [loading, setLoading] = useState(false);
     const sellerId = useSelector((state) => state.auth?.sellerId);
 
     console.log(sellerId, "sellerId in order")
@@ -21,10 +23,12 @@ const OrderedTbl = () => {
     // Fetch data from API
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(`${BASE_URL}/order/detail?sellerId=${sellerId}&status=ORDERED`);
                 if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.sellerOrders) {
                     console.log(response, "order response")
+                    setLoading(false);
                     // Map API data to row data with SL No.
                     const mappedData = response?.data?.coreData?.responseData?.sellerOrders.map((order, index) => ({
                         slNo: index + 1,
@@ -37,14 +41,16 @@ const OrderedTbl = () => {
                         totalAmount: order.totalAmount,
                         status: order.status,
                         invoiceNo: order.invoiceNo,
-                        hasDocuments: !!order.invoiceNo, // Check if invoice exists
+                        // hasDocuments: !!order.invoiceNo, 
+                        hasDocuments: order.invoiceNo && order.invoiceNo.trim() !== "",
                         slamId: order.slamId,
                         rtsId: order.shipId
                     }));
                     setRowData(mappedData);
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.log("Error fetching data:", error);
+                setLoading(false);
             }
         };
 
@@ -158,22 +164,22 @@ const OrderedTbl = () => {
             ),
             width: 150
         },
-        {
-            headerName: "Invoice No.",
-            field: "invoiceNo",
-            sortable: true,
-            filter: true,
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    {params.value ? (
-                        <span>{params.value}</span>
-                    ) : (
-                        <span className="text-muted">No Invoice No.</span>
-                    )}
-                </div>
-            ),
-            width: 150
-        },
+        // {
+        //     headerName: "Invoice No.",
+        //     field: "invoiceNo",
+        //     sortable: true,
+        //     filter: true,
+        //     cellRenderer: (params) => (
+        //         <div className="d-flex justify-content-center align-items-center h-100">
+        //             {params.value && params.value.trim() ? (
+        //                 <span>{params.value}</span>
+        //             ) : (
+        //                 <span className="text-muted">No Invoice No.</span>
+        //             )}
+        //         </div>
+        //     ),
+        //     width: 150
+        // },
         {
             headerName: "Invoice",
             cellRenderer: (params) => (
@@ -205,25 +211,29 @@ const OrderedTbl = () => {
             field: "rtsId",
             sortable: true,
             filter: true,
-            width: 120
+            width: 150
         }
     ]);
 
 
 
     return (
-        <div className="ag-theme-alpine" style={{ height: '420px', width: '100%' }}>
-            <AgGridReact
-                rowData={rowData}
-                columnDefs={columnDefs}
-                suppressCellFocus={true}
-                defaultColDef={{
-                    resizable: true,
-                    sortable: true,
-                    filter: true
-                }}
-            />
-        </div>
+        <>
+            {loading && <Loader message="Loading Orders..." />}
+            <div className="ag-theme-alpine mt-4" style={{ height: '550px', width: '100%' }}>
+                <AgGridReact
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    suppressCellFocus={true}
+                    defaultColDef={{
+                        resizable: true,
+                        sortable: true,
+                        filter: true
+                    }}
+                />
+            </div>
+        </>
+
     )
 }
 

@@ -1,3 +1,18 @@
-.color-headline{
+.color-headline {
     color: #1F8505;
+}
+
+
+.save-change-btn {
+    background-color: #1F8505;
+    color: #fff;
+    padding: 6px 35px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+}
+
+.disabled-save-btn {
+    background-color: #43982d;
+    cursor: not-allowed;
 }
