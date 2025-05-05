@@ -12,28 +12,28 @@ import { BASE_URL } from "../../../config/urls";
 
 const OrderDetails = () => {
     const location = useLocation();
-    const { orderId, status } = location.state || {};
+    const { orderId, status, oInvoiceNo } = location.state || {};
     const [orderDetails, setOrderDetails] = useState([]);
     const [loading, setLoading] = useState(true);
     const [shipments, setShipments] = useState([]);
-    const [invoiceNo, setInvoiceNo] = useState('');
+    const [invoiceNo, setInvoiceNo] = useState(oInvoiceNo);
     const [totalPackedQuantity, setTotalPackedQuantity] = useState(0);
     const [orderDetailsSaved, setOrderDetailsSaved] = useState(false);
     const [hasPackedQuantityChanges, setHasPackedQuantityChanges] = useState(false);
 
-    console.log(orderId, status)
+    console.log(orderId, status, oInvoiceNo, "orderId , status, oInvoiceNo, from orders component")
     // Function to add new shipment box
     const addNewShipmentBox = () => {
 
-        if (!orderDetailsSaved) {
-            toast.warning("Please save order details first before adding boxes");
-            return;
-        }
+        // if (!orderDetailsSaved) {
+        //     toast.warning("Please save order details first before adding boxes");
+        //     return;
+        // }
 
-        if (totalPackedQuantity <= 0) {
-            toast.warning("Cannot add boxes when total packed quantity is zero");
-            return;
-        }
+        // if (totalPackedQuantity <= 0) {
+        //     toast.warning("Cannot add boxes when total packed quantity is zero");
+        //     return;
+        // }
 
         // Calculate next box number
         const nextBoxNo = shipments.length > 0 ?
@@ -110,10 +110,16 @@ const OrderDetails = () => {
                     const details = response?.data?.coreData?.responseData?.orderDataDetails || [];
                     const detailsWithEditTracking = details.map(item => ({
                         ...item,
-                        lastEditedFields: []
+                        lastEditedFields: [],
+                        packedUnits: item?.packedUnits
                     }));
                     setOrderDetails(detailsWithEditTracking);
-
+                    // Calculate total packed quantity
+                    const totalPacked = detailsWithEditTracking.reduce(
+                        (sum, item) => sum + (item.packedUnits || 0),
+                        0
+                    );
+                    setTotalPackedQuantity(totalPacked);
                     // Transform API data
                     const apiShipments = response?.data?.coreData?.responseData?.shipments || [];
                     const transformedShipments = apiShipments.map(shipment => ({
@@ -125,15 +131,18 @@ const OrderDetails = () => {
                         shipId: shipment.shipId // Keep shipId from API
                     }));
 
-                    setShipments(transformedShipments.length > 0 ? transformedShipments : [{
-                        boxNo: 1,
-                        boxLength: null,
-                        boxBreadth: null,
-                        boxHeight: null,
-                        boxWeight: null
-                        // No shipId for initial empty box
-                    }]);
-                    setOrderDetailsSaved(transformedShipments.length > 0); // If we have shipments, consider details saved
+                    // setShipments(transformedShipments.length > 0 ? transformedShipments : [{
+                    //     boxNo: 1,
+                    //     boxLength: null,
+                    //     boxBreadth: null,
+                    //     boxHeight: null,
+                    //     boxWeight: null
+                    //     // No shipId for initial empty box
+                    // }]);
+                    setShipments(transformedShipments.length > 0 ? transformedShipments : []);
+                    // setOrderDetailsSaved(transformedShipments.length > 0); // If we have shipments, consider details saved
+                    const hasPackedItems = detailsWithEditTracking.some(item => item.packedUnits > 0);
+                    setOrderDetailsSaved(transformedShipments.length > 0 || hasPackedItems);
                     setHasPackedQuantityChanges(false); // Reset changes flag when loading new data
                 } else {
                     toast.error(response?.data?.rmessage || "Failed to load order details");
@@ -439,7 +448,7 @@ const OrderDetails = () => {
                         <div className="col-xxl-4 col-xl-5 col-lg-6 col-md-6">
                             <label className="form-label">Enter the invoice no. for this shipment</label>
                             <input
-                                type="number"
+                                type="text"
                                 className="form-control"
                                 placeholder="Enter invoice no."
                                 value={invoiceNo}

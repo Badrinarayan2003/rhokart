@@ -67,12 +67,13 @@ const OrderedTbl = () => {
 
 
     // Handle details button click
-    const handleDetailsClick = (orderId, status) => {
-        console.log("Details clicked for order:", orderId, "with status:", status);
+    const handleDetailsClick = (orderId, status, invoiceNo) => {
+        console.log("Details clicked for order:", orderId, "with status:", status, "with invoiceNo", invoiceNo);
         navigate('/order-details', {
             state: {
                 orderId: orderId,
-                status: status
+                status: status,
+                oInvoiceNo: invoiceNo
             }
         });
     };
@@ -144,7 +145,7 @@ const OrderedTbl = () => {
                 <div className="d-flex justify-content-center align-items-center h-100">
                     <button
                         className="btn btn-sm btn-outline-info"
-                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status)}
+                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status, params.data.invoiceNo.trim())}
                     >
                         <FaInfoCircle /> Details
                     </button>
@@ -164,22 +165,22 @@ const OrderedTbl = () => {
             ),
             width: 150
         },
-        // {
-        //     headerName: "Invoice No.",
-        //     field: "invoiceNo",
-        //     sortable: true,
-        //     filter: true,
-        //     cellRenderer: (params) => (
-        //         <div className="d-flex justify-content-center align-items-center h-100">
-        //             {params.value && params.value.trim() ? (
-        //                 <span>{params.value}</span>
-        //             ) : (
-        //                 <span className="text-muted">No Invoice No.</span>
-        //             )}
-        //         </div>
-        //     ),
-        //     width: 150
-        // },
+        {
+            headerName: "Invoice No.",
+            field: "invoiceNo",
+            sortable: true,
+            filter: true,
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.value && params.value.trim() ? (
+                        <span>{params.value}</span>
+                    ) : (
+                        <span className="text-muted">No Invoice No.</span>
+                    )}
+                </div>
+            ),
+            width: 150
+        },
         {
             headerName: "Invoice",
             cellRenderer: (params) => (
@@ -220,7 +221,7 @@ const OrderedTbl = () => {
     return (
         <>
             {loading && <Loader message="Loading Orders..." />}
-            <div className="ag-theme-alpine mt-4" style={{ height: '550px', width: '100%' }}>
+            <div className="ag-theme-alpine mt-4" style={{ height: '500px', width: '100%' }}>
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={columnDefs}
