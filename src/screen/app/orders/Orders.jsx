@@ -37,13 +37,13 @@ const Orders = () => {
                         <p className='mb-0'>Order received & waiting for packing</p>
                         <span className={`${activeTab === 'ORDERED' ? 'order-status-indecator' : ''}`}></span>
                     </div>
-                    <div
+                    {/* <div
                         className={`order-status-box position-relative ${activeTab === 'PACKED' ? 'active' : ''}`}
                         onClick={() => setActiveTab('PACKED')}
                     >
                         <p className='mb-0'>Order packed & waiting for peakup</p>
                         <span className={`${activeTab === 'PACKED' ? 'order-status-indecator' : ''}`}></span>
-                    </div>
+                    </div> */}
                     <div
                         className={`order-status-box position-relative ${activeTab === 'TRANSIT' ? 'active' : ''}`}
                         onClick={() => setActiveTab('TRANSIT')}

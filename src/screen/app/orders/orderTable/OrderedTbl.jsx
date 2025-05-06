@@ -67,13 +67,12 @@ const OrderedTbl = () => {
 
 
     // Handle details button click
-    const handleDetailsClick = (orderId, status, invoiceNo) => {
-        console.log("Details clicked for order:", orderId, "with status:", status, "with invoiceNo", invoiceNo);
+    const handleDetailsClick = (orderId, status) => {
+        console.log("Details clicked for order:", orderId, "with status:", status);
         navigate('/order-details', {
             state: {
                 orderId: orderId,
                 status: status,
-                oInvoiceNo: invoiceNo
             }
         });
     };
@@ -117,13 +116,13 @@ const OrderedTbl = () => {
             filter: true,
             width: 140
         },
-        {
-            headerName: "Buyer Pin",
-            field: "buyerPin",
-            sortable: true,
-            filter: true,
-            width: 120
-        },
+        // {
+        //     headerName: "Buyer Pin",
+        //     field: "buyerPin",
+        //     sortable: true,
+        //     filter: true,
+        //     width: 120
+        // },
         {
             headerName: "No. of Items/sku",
             field: "units",
@@ -143,77 +142,89 @@ const OrderedTbl = () => {
             headerName: "Take Action",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        className="btn btn-sm btn-outline-info"
-                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status, params.data.invoiceNo.trim())}
+                    <p
+                        className="mb-0 text-danger fw-bold"
+                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status)}
                     >
-                        <FaInfoCircle /> Details
-                    </button>
+                        Order details
+                    </p>
                 </div>
             ),
             width: 150
         },
-        {
-            headerName: "Status",
-            field: "status",
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center">
-                    <span className={`status-badge ${params?.value?.toLowerCase().replace(' ', '-')}`}>
-                        {params.value}
-                    </span>
-                </div>
-            ),
-            width: 150
-        },
-        {
-            headerName: "Invoice No.",
-            field: "invoiceNo",
-            sortable: true,
-            filter: true,
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    {params.value && params.value.trim() ? (
-                        <span>{params.value}</span>
-                    ) : (
-                        <span className="text-muted">No Invoice No.</span>
-                    )}
-                </div>
-            ),
-            width: 150
-        },
+        // {
+        //     headerName: "Status",
+        //     field: "status",
+        //     cellRenderer: (params) => (
+        //         <div className="d-flex justify-content-center">
+        //             <span className={`status-badge ${params?.value?.toLowerCase().replace(' ', '-')}`}>
+        //                 {params.value}
+        //             </span>
+        //         </div>
+        //     ),
+        //     width: 150
+        // },
+        // {
+        //     headerName: "Invoice No.",
+        //     field: "invoiceNo",
+        //     sortable: true,
+        //     filter: true,
+        //     cellRenderer: (params) => (
+        //         <div className="d-flex justify-content-center align-items-center h-100">
+        //             {params.value && params.value.trim() ? (
+        //                 <span>{params.value}</span>
+        //             ) : (
+        //                 <span className="text-muted">No Invoice No.</span>
+        //             )}
+        //         </div>
+        //     ),
+        //     width: 150
+        // },
         {
             headerName: "Invoice",
+            headerClass: "badri",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.hasDocuments ? (
                         <button
-                            className="btn btn-sm btn-outline-primary"
-                            style={{ fontSize: "12px" }}
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
                             onClick={() => handleDownload(params.data.orderId)}
                         >
-                            <FaDownload /> Download
+                            <FaDownload /> {params.data.invoiceNo}
                         </button>
                     ) : (
                         <span className="text-muted">No Invoice</span>
                     )}
                 </div>
             ),
-            width: 150
+            width: 300
         },
         {
-            headerName: "SLAM IDs",
+            headerName: "Shipping Label",
             field: "slamId",
             sortable: true,
             filter: true,
-            width: 120
-        },
-        {
-            headerName: "RTS ID",
-            field: "rtsId",
-            sortable: true,
-            filter: true,
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    <button
+                        style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                        className="btn btn-sm"
+                    >
+                        <FaDownload /> {params.data.slamId}
+                    </button>
+                </div>
+            ),
             width: 150
-        }
+        },
+        // {
+        //     headerName: "RTS ID",
+        //     field: "rtsId",
+        //     sortable: true,
+        //     filter: true,
+        //     width: 150
+        // }
     ]);
 
 

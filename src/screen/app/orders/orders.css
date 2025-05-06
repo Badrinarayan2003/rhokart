@@ -35,7 +35,9 @@
     right: 3%;
 }
 
-
+.badri{
+    justify-content: center;
+}
 
 /* Status badges */
 .status-badge {
