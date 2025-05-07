@@ -35,7 +35,7 @@
     right: 3%;
 }
 
-.badri{
+.badri {
     justify-content: center;
 }
 
@@ -69,7 +69,11 @@
     color: #6c757d !important;
 }
 
+#my-button {
+    background: #1F8505;
+    color: #fff;
 
+}
 
 
 

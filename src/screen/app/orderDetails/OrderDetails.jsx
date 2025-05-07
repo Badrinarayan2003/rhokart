@@ -173,6 +173,7 @@ const OrderDetails = () => {
     };
 
     const handleSaveOrderDetails = async () => {
+        setLoading(true);
         try {
 
             // First calculate what the new total packed quantity would be
@@ -215,13 +216,16 @@ const OrderDetails = () => {
             } else {
                 toast.error(response?.data?.rmessage || "Failed to update order details");
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error saving order details:", error);
             toast.error("Failed to save order details");
+            setLoading(false);
         }
     };
 
     const handleShipmentUpdate = async () => {
+        setLoading(true);
         try {
             // Prepare the request payload
             const payload = {
@@ -254,9 +258,11 @@ const OrderDetails = () => {
             } else {
                 toast.error(response?.data?.rmessage || "Failed to update shipment");
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error updating shipment:", error);
             toast.error("Error updating shipment. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -344,7 +350,7 @@ const OrderDetails = () => {
 
     return (
         <>
-            {loading && <Loader message="Loading order details..." />}
+            {loading && <Loader message="Loading" />}
             <div className="container mt-1">
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h4 className="mb-2 text-dark">Order ID: {orderId}</h4>
