@@ -805,7 +805,7 @@ const TransitTbl = () => {
                                         </div>
 
                                         <div className="form-group mb-3">
-                                            <label className="form-label">Upload Invoice (Signed by the buyer)</label>
+                                            <label className="form-label">Upload Invoice (Signed by the buyer)<span className="text-danger">*</span></label>
                                             <div className="upload-container">
                                                 <input
                                                     type="file"
@@ -871,7 +871,7 @@ const TransitTbl = () => {
             </div>
             {showModal && <div className="modal-backdrop fade show"></div>}
 
-            <div className="ag-theme-alpine mt-4" style={{ height: '500px', width: '100%' }}>
+            <div className="ag-theme-alpine mt-4" style={{ height: '400px', width: '100%' }}>
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={columnDefs}

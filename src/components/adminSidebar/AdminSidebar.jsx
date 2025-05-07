@@ -76,7 +76,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                         <IoHomeSharp className='icon' color='#1F8505' /> Home
                     </NavLink>
                 </li>
-                <li className='sidebar-list-item dropdown side-item-disable'>
+                {/* <li className='sidebar-list-item dropdown side-item-disable'>
                     <a
                         // href="#"
                         className="dropdown-toggle d-flex align-items-center sidebar-link"
@@ -110,7 +110,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 (Individual one by one) </NavLink>
                         </li>
                     </ul>
-                </li>
+                </li> */}
 
                 {/* location.pathname.startsWith('/bulk-upload-update') || */}
                 <li className={`sidebar-list-item dropdown ${location.pathname.startsWith('/update-on-portal') || location.pathname.startsWith('/products') ? 'active-parent' : ''}`}>
@@ -187,26 +187,26 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                         <TbReportSearch className='icon' color='#1F8505' /> Reports
                     </Link>
                 </li>
-                <li className='sidebar-list-item side-item-disable'>
+                {/* <li className='sidebar-list-item side-item-disable'>
                     <Link to="" className='sidebar-link'>
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Discount
                     </Link>
-                </li>
-                <li className='sidebar-list-item side-item-disable'>
+                </li> */}
+                {/* <li className='sidebar-list-item side-item-disable'>
                     <Link to="" className='sidebar-link'>
                         <RiDiscountPercentFill className='icon' color='#1F8505' /> Offer and Coupon
                     </Link>
-                </li>
-                <li className='sidebar-list-item side-item-disable'>
+                </li> */}
+                {/* <li className='sidebar-list-item side-item-disable'>
                     <Link to="" className='sidebar-link'>
                         <HiUserGroup className='icon' color='#1F8505' /> Customer Mgmt
                     </Link>
-                </li>
-                <li className='sidebar-list-item side-item-disable'>
+                </li> */}
+                {/* <li className='sidebar-list-item side-item-disable'>
                     <Link to="" className='sidebar-link'>
                         <IoMdSettings className='icon' color='#1F8505' /> Account & Settings
                     </Link>
-                </li>
+                </li> */}
 
             </ul>
         </aside>
