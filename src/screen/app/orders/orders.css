@@ -17,7 +17,7 @@
 }
 
 .order-status-box.active {
-    background-color: #1f850580;
+    background-color: #1F8505;
 }
 
 .order-status-box p {
@@ -29,7 +29,7 @@
     position: absolute;
     width: 14px;
     height: 14px;
-    background: #1F8505;
+    background: #fff;
     border-radius: 50%;
     top: 7%;
     right: 3%;
