@@ -32,7 +32,7 @@ function AdminHeader({ OpenSidebar }) {
             </div>
 
             <div className='header-left'>
-                <h5 className="text-light fw-bold mb-0" id='well-come'>Seller Corner</h5>
+
             </div>
 
             <div className='header-right gap-3 dropdown'>

@@ -16,3 +16,12 @@
     background-color: #8b8b8b;
     cursor: not-allowed;
 }
+.mrg-in{
+    margin-right: 5rem;
+}
+
+@media (max-width:560px) {
+    .mrg-in{
+        margin-right: 10px;
+    }
+}

@@ -60,6 +60,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                 <div className='sidebar-brand mt-0' onClick={() => navigate("/home")}>
                     <img src={logo2} />
                 </div>
+                <h5 className="text-light fw-bold mb-0" id='well-come'>Seller Corner</h5>
                 <span className='icon close_icon' onClick={OpenSidebar}>
                     <CgClose size={25} color='#fff' />
                 </span>

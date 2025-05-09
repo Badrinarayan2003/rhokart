@@ -21,36 +21,37 @@ const TransitTbl = () => {
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const sellerId = useSelector((state) => state.auth?.sellerId);
 
-    // Fetch data from API
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get(`${BASE_URL}/order/detail?sellerId=${sellerId}&status=TRNST`);
-                if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.sellerOrders) {
-                    const mappedData = response?.data?.coreData?.responseData?.sellerOrders.map((order, index) => ({
-                        slNo: index + 1,
-                        orderId: order.orderId,
-                        buyerName: order.buyerName,
-                        buyerState: order.buyerState,
-                        buyerDistrict: order.buyerDistrict,
-                        buyerPin: order.buyerPin,
-                        units: order.units,
-                        totalAmount: order.totalAmount,
-                        status: order.status,
-                        invoiceNo: order.invoiceNo,
-                        hasDocuments: order.invoiceNo && order.invoiceNo.trim() !== "",
-                        slamId: order.slamId,
-                        rtsId: order.shipId
-                    }));
-                    setRowData(mappedData);
-                    setLoading(false);
-                }
-            } catch (error) {
-                console.log("Error fetching data:", error);
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${BASE_URL}/order/detail?sellerId=${sellerId}&status=TRNST`);
+            if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.sellerOrders) {
+                const mappedData = response?.data?.coreData?.responseData?.sellerOrders.map((order, index) => ({
+                    slNo: index + 1,
+                    orderId: order.orderId,
+                    buyerName: order.buyerName,
+                    buyerState: order.buyerState,
+                    buyerDistrict: order.buyerDistrict,
+                    buyerPin: order.buyerPin,
+                    units: order.units,
+                    totalAmount: order.totalAmount,
+                    status: order.status,
+                    invoiceNo: order.invoiceNo,
+                    hasDocuments: order.invoiceNo && order.invoiceNo.trim() !== "",
+                    slamId: order.slamId,
+                    rtsId: order.shipId
+                }));
+                setRowData(mappedData);
                 setLoading(false);
             }
-        };
+        } catch (error) {
+            console.log("Error fetching data:", error);
+            setLoading(false);
+        }
+    };
+
+    // Fetch data from API
+    useEffect(() => {
 
         fetchData();
     }, [sellerId]);
@@ -140,8 +141,8 @@ const TransitTbl = () => {
                 alert(response.data.coreData?.responseData?.message || "Delivery confirmed successfully!");
 
                 // Close the modal and reset form
-                // handleCloseModal();
-
+                handleCloseModal();
+                fetchData();
                 // Optionally, refresh the order data
                 // You might want to add a refresh function here
             } else {
@@ -298,11 +299,11 @@ const TransitTbl = () => {
                         <div className="modal-body">
                             {selectedOrder && (
                                 <div className="row w-75 mt-3">
-                                    <div className="col-md-6 mb-3">
-                                        <h5 className="text-dark fw-bold">Order Details</h5>
+                                    <div className="col-md-12 mb-2">
+                                        {/* <h5 className="text-dark fw-bold">Order Details</h5> */}
                                         <div className="order-details-container">
                                             <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Order Id:</span>
+                                                <span className="detail-label text-dark fw-bold">Order ID:</span>
                                                 <span className="detail-value"> {selectedOrder?.orderId}</span>
                                             </div>
                                             <div className="detail-item mb-1">
@@ -343,7 +344,7 @@ const TransitTbl = () => {
                                                 id="otpInput"
                                                 value={otp}
                                                 onChange={(e) => setOtp(e.target.value)}
-                                                placeholder="Enter OTP received from buyer"
+                                                placeholder="Enter 5 digit OTP"
                                                 required
                                             />
                                         </div>

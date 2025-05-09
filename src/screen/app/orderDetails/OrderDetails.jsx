@@ -9,9 +9,17 @@ import './orderDetails.css';
 import Loader from "../../../components/loader/Loader";
 import { FaEdit, FaPlus, FaSync } from "react-icons/fa";
 import { BASE_URL } from "../../../config/urls";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const OrderDetails = () => {
+    const navigate = useNavigate();
     const location = useLocation();
+
+    const sellerId = useSelector((state) => state.auth?.sellerId);
+    console.log(sellerId,"seller id in orderDetails")
+
     const { orderId, status } = location.state || {};
     const [orderDetails, setOrderDetails] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -162,8 +170,8 @@ const OrderDetails = () => {
         setHasPackedQuantityChanges(true);
 
         // Update total packed quantity
-        // const totalPacked = updatedDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
-        // setTotalPackedQuantity(totalPacked);
+        const totalPacked = updatedDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+        setTotalPackedQuantity(totalPacked);
     };
 
     const handleShipmentChange = (index, field, value) => {
@@ -231,6 +239,7 @@ const OrderDetails = () => {
             const payload = {
                 orderId: orderId,
                 status: status,
+                sellerId: sellerId,
                 invoiceNo: invoiceNo,
                 shipmentUpdates: shipments.map(shipment => ({
                     boxNo: shipment.boxNo,
@@ -240,6 +249,7 @@ const OrderDetails = () => {
                     boxWeight: shipment.boxWeight
                 }))
             };
+console.log(payload,"payload for shipment update");
 
             const response = await axios.post(
                 `${BASE_URL}/order/shipmentupdate`,
@@ -255,6 +265,7 @@ const OrderDetails = () => {
                 toast.success(response?.data?.coreData?.responseData?.message || "Shipment updated successfully!");
                 // Refresh the data
                 // fetchOrderDetails();
+                navigate("/orders");
             } else {
                 toast.error(response?.data?.rmessage || "Failed to update shipment");
             }
@@ -355,7 +366,7 @@ const OrderDetails = () => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h4 className="mb-2 text-dark">Order ID: {orderId}</h4>
                     <div className="text-end">
-                        <h5 className="text-dark">Total Price: ₹{totalPrice.toFixed(2)}</h5>
+                        <h5 className="" style={{color:"#1F8505"}}>Total Price: ₹{totalPrice.toFixed(2)}</h5>
                     </div>
                 </div>
 
@@ -466,7 +477,7 @@ const OrderDetails = () => {
 
                         <div className="d-flex justify-content-end">
                             <button
-                                className="save-change-btn me-3"
+                                className="save-change-btn mrg-in bg-secondary"
                                 onClick={refreshPage}
                             >
                                 <FaSync className="me-1" /> Back to update
