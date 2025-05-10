@@ -18,7 +18,7 @@ const OrderDetails = () => {
     const location = useLocation();
 
     const sellerId = useSelector((state) => state.auth?.sellerId);
-    console.log(sellerId,"seller id in orderDetails")
+    console.log(sellerId, "seller id in orderDetails")
 
     const { orderId, status } = location.state || {};
     const [orderDetails, setOrderDetails] = useState([]);
@@ -249,7 +249,6 @@ const OrderDetails = () => {
                     boxWeight: shipment.boxWeight
                 }))
             };
-console.log(payload,"payload for shipment update");
 
             const response = await axios.post(
                 `${BASE_URL}/order/shipmentupdate`,
@@ -366,7 +365,7 @@ console.log(payload,"payload for shipment update");
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h4 className="mb-2 text-dark">Order ID: {orderId}</h4>
                     <div className="text-end">
-                        <h5 className="" style={{color:"#1F8505"}}>Total Price: ₹{totalPrice.toFixed(2)}</h5>
+                        <h5 className="" style={{ color: "#1F8505" }}>Total Price: ₹{totalPrice.toFixed(2)}</h5>
                     </div>
                 </div>
 
