@@ -124,7 +124,7 @@ const Home = () => {
             {loading && <Loader message="Loading..." />}
             <div className="admin-home-page">
                 <h5 className='text-dark fw-bold'>Order Overview</h5>
-                <div className="row mb-3">
+                <div className="row pb-2 first-sec">
                     <div className='col-12 d-flex justify-content-between gap-1'>
                         {/* Order Received (ORDERED) */}
                         <div
@@ -169,7 +169,7 @@ const Home = () => {
                 </div>
 
                 <div className='row'>
-                    <div className='col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-12'>
+                    <div className='col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-12 payment-overview-container'>
                         <h5 className='text-dark fw-bold mt-2'>Payment Overview</h5>
                         <div className="pay-over-table-filter-container mb-3">
                             <div className='pay-over-table-filter-box d-flex flex-column'>
@@ -207,18 +207,18 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <div className='col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-12'>
-                        <h5 className='text-dark fw-bold mt-2'>Your delivery location</h5>
+                    <div className='col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-12 '>
+                        <h5 className='text-dark fw-bold loction-header'>Your delivery location</h5>
 
                         {/* First Section - Whitelist */}
-                        <div className="delivery-location-section mb-4 p-3">
+                        <div className="delivery-location-section mb-0 p-3">
                             <h6 className='fw-bold mb-3 p-text-color'>Add new delivery location(Whitelist)</h6>
                             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                                <label className='me-2 text-dark fw-bold'>Download delivery address template:</label>
+                                <label className='me-2 text-dark'>Download delivery address template:</label>
                                 <a className="btn btn-sm btn-secondary">Download</a>
                             </div>
                             <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap">
-                                <label className='d-block mb-2 text-dark fw-bold'>Upload your delivery addresses:</label>
+                                <label className='d-block mb-2 text-dark'>Upload your delivery addresses:</label>
                                 <div className="d-flex align-items-end flex-column">
                                     <div>
                                         <input
@@ -228,7 +228,7 @@ const Home = () => {
                                             onChange={handleWhitelistFileChange}
                                             className="d-none"
                                         />
-                                        <label htmlFor="whitelist-upload" className="btn btn-sm btn-secondary me-2 text-end">
+                                        <label htmlFor="whitelist-upload" className="btn btn-sm btn-secondary text-end">
                                             Uplouad
                                         </label>
                                     </div>
@@ -237,20 +237,20 @@ const Home = () => {
                                     )}
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-end'>
+                            <div className='d-flex justify-content-center'>
                                 <button className=" my-coust-btn">Submit</button>
                             </div>
                         </div>
 
                         {/* Second Section - Blacklist */}
-                        <div className="delivery-location-section mb-4 p-3">
+                        <div className="delivery-location-section mb-0 p-3">
                             <h6 className='fw-bold mb-3 p-text-color'>Block delivery location(Blacklist)</h6>
                             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                                <label className='me-2 text-dark fw-bold'>Download delivery address template:</label>
+                                <label className='me-2 text-dark'>Download delivery address template:</label>
                                 <a className="btn btn-sm btn-secondary">Download</a>
                             </div>
                             <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap">
-                                <label className='d-block mb-2 text-dark fw-bold'>Upload your delivery addresses:</label>
+                                <label className='d-block mb-2 text-dark'>Upload your delivery addresses:</label>
                                 <div className="d-flex align-items-end flex-column">
                                     <div>
                                         <input
@@ -260,7 +260,7 @@ const Home = () => {
                                             onChange={handleBlacklistFileChange}
                                             className="d-none"
                                         />
-                                        <label htmlFor="blacklist-upload" className="btn btn-sm btn-secondary me-2">
+                                        <label htmlFor="blacklist-upload" className="btn btn-sm btn-secondary">
                                             Uplouad
                                         </label>
                                     </div>

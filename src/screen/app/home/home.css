@@ -62,10 +62,31 @@
     padding: 4px 27px;
 }
 
+.first-sec {
+    border-bottom: 2px solid #000;
+}
+
+.payment-overview-container {
+    border-right: 2px solid #000;
+}
+
+.loction-header {
+    margin-top: 0.5rem;
+}
 
 @media (max-width:768px) {
     .order-status-box-one p {
         font-size: 13px;
+    }
+
+    .payment-overview-container {
+        border-right: none;
+        padding-bottom: .5rem;
+        border-bottom: 2px solid #000;
+    }
+
+    .loction-header {
+        margin-top: 0.7rem;
     }
 }
 
