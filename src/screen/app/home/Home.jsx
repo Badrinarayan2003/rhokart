@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { BASE_URL } from '../../../config/urls';
 import Loader from '../../../components/loader/Loader';
 
+import { FaDownload, FaUpload } from "react-icons/fa";
+
 const Home = () => {
 
     const sellerId = useSelector((state) => state.auth?.sellerId);
@@ -80,6 +82,22 @@ const Home = () => {
             width: 130
         },
         {
+            headerName: "Order ID",
+            field: 'orderId',
+            filter: true,
+            sortable: true,
+            cellStyle: { fontWeight: 'bold' },
+            width: 130
+        },
+        {
+            headerName: "Status",
+            field: 'status',
+            filter: true,
+            sortable: true,
+            cellStyle: { fontWeight: 'bold' },
+            width: 130
+        },
+        {
             headerName: 'Received Amount (INR)',
             field: 'amount',
             filter: true,
@@ -123,8 +141,8 @@ const Home = () => {
         <>
             {loading && <Loader message="Loading..." />}
             <div className="admin-home-page">
-                <h5 className='text-dark fw-bold'>Order Overview</h5>
-                <div className="row pb-2 first-sec">
+                <h5 className='text-dark fw-bold mb-3'>Order Overview</h5>
+                <div className="row pb-4 first-sec">
                     <div className='col-12 d-flex justify-content-between gap-1'>
                         {/* Order Received (ORDERED) */}
                         <div
@@ -132,8 +150,8 @@ const Home = () => {
                             onClick={() => handleStatusClick('ORDERED')}
                             style={{ cursor: 'pointer' }}
                         >
-                            <p className='mb-2 text-light text-center'>Order received & waiting for packup</p>
-                            <p className='mb-0 text-light home-count text-end'>{orderStatus.ORDERED}</p>
+                            <p className='mb-2 text-center order-status-box-one-text'>Order received & waiting for packup</p>
+                            <p className='mb-0 home-count text-end'>{orderStatus.ORDERED}</p>
                         </div>
 
                         {/* In Transit (TRNST) */}
@@ -142,8 +160,8 @@ const Home = () => {
                             onClick={() => handleStatusClick('TRNST')}
                             style={{ cursor: 'pointer' }}
                         >
-                            <p className='mb-0 text-light text-center'>In transit orders</p>
-                            <p className='mb-0 text-light home-count text-end'>{orderStatus.TRNST}</p>
+                            <p className='mb-0 text-center order-status-box-one-text'>In transit orders</p>
+                            <p className='mb-0 home-count text-end'>{orderStatus.TRNST}</p>
                         </div>
 
                         {/* Delivered (DLVRD) */}
@@ -152,8 +170,8 @@ const Home = () => {
                             onClick={() => handleStatusClick('DLVRD')}
                             style={{ cursor: 'pointer' }}
                         >
-                            <p className='mb-0 text-light text-center'>Delivered</p>
-                            <p className='mb-0 text-light home-count text-end'>{orderStatus.DLVRD}</p>
+                            <p className='mb-0 text-center order-status-box-one-text'>Delivered</p>
+                            <p className='mb-0 home-count text-end'>{orderStatus.DLVRD}</p>
                         </div>
 
                         {/* Cancelled (CANCEL) */}
@@ -162,8 +180,8 @@ const Home = () => {
                             onClick={() => handleStatusClick('CANCEL')}
                             style={{ cursor: 'pointer' }}
                         >
-                            <p className='mb-0 text-light text-center'>Cancelled</p>
-                            <p className='mb-0 text-light home-count text-end'>{orderStatus.CANCEL}</p>
+                            <p className='mb-0 text-center order-status-box-one-text'>Cancelled</p>
+                            <p className='mb-0 home-count text-end'>{orderStatus.CANCEL}</p>
                         </div>
                     </div>
                 </div>
@@ -203,6 +221,7 @@ const Home = () => {
                                     filter: true
                                 }}
                                 animateRows={true}
+                                suppressScrollOnNewData={true}
                             />
                         </div>
                     </div>
@@ -215,7 +234,12 @@ const Home = () => {
                             <h6 className='fw-bold mb-3 p-text-color'>Add new delivery location(Whitelist)</h6>
                             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                                 <label className='me-2 text-dark'>Download delivery address template:</label>
-                                <a className="btn btn-sm btn-secondary">Download</a>
+                                <a className="btn btn-sm btn-secondary">
+                                    <span className='me-1'>
+                                        <FaDownload size={13} color='#fff' />
+                                    </span>
+                                    Download
+                                </a>
                             </div>
                             <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap">
                                 <label className='d-block mb-2 text-dark'>Upload your delivery addresses:</label>
@@ -228,8 +252,11 @@ const Home = () => {
                                             onChange={handleWhitelistFileChange}
                                             className="d-none"
                                         />
-                                        <label htmlFor="whitelist-upload" className="btn btn-sm btn-secondary text-end">
-                                            Uplouad
+                                        <label htmlFor="whitelist-upload" className="btn btn-sm btn-secondary text-end" style={{ padding: "4px 17px" }}>
+                                            <span className='me-1'>
+                                                <FaUpload size={13} color='#fff' />
+                                            </span>
+                                            Upload
                                         </label>
                                     </div>
                                     {whitelistFile && (
@@ -247,7 +274,12 @@ const Home = () => {
                             <h6 className='fw-bold mb-3 p-text-color'>Block delivery location(Blacklist)</h6>
                             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                                 <label className='me-2 text-dark'>Download delivery address template:</label>
-                                <a className="btn btn-sm btn-secondary">Download</a>
+                                <a className="btn btn-sm btn-secondary">
+                                    <span className='me-1'>
+                                        <FaDownload size={13} color='#fff' />
+                                    </span>
+                                    Download
+                                </a>
                             </div>
                             <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap">
                                 <label className='d-block mb-2 text-dark'>Upload your delivery addresses:</label>
@@ -260,14 +292,20 @@ const Home = () => {
                                             onChange={handleBlacklistFileChange}
                                             className="d-none"
                                         />
-                                        <label htmlFor="blacklist-upload" className="btn btn-sm btn-secondary">
-                                            Uplouad
+                                        <label htmlFor="blacklist-upload" className="btn btn-sm btn-secondary" style={{ padding: "4px 17px" }}>
+                                            <span className='me-1'>
+                                                <FaUpload size={13} color='#fff' />
+                                            </span>
+                                            Upload
                                         </label>
                                     </div>
                                     {blacklistFile && (
                                         <span className="small">{blacklistFile.name}</span>
                                     )}
                                 </div>
+                            </div>
+                            <div className='d-flex justify-content-center'>
+                                <button className=" my-coust-btn">Submit</button>
                             </div>
                         </div>
 

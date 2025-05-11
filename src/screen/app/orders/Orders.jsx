@@ -34,35 +34,35 @@ const Orders = () => {
                         className={`order-status-box position-relative ${activeTab === 'ORDERED' ? 'active' : ''}`}
                         onClick={() => setActiveTab('ORDERED')}
                     >
-                        <p className='mb-0 text-light'>Order received & waiting for packing</p>
+                        <p className={`mb-0 order-text ${activeTab === 'ORDERED' ? 'text-light' : ''}`}>Order received & waiting for packing</p>
                         <span className={`${activeTab === 'ORDERED' ? 'order-status-indecator' : ''}`}></span>
                     </div>
                     {/* <div
                         className={`order-status-box position-relative ${activeTab === 'PACKED' ? 'active' : ''}`}
                         onClick={() => setActiveTab('PACKED')}
                     >
-                        <p className='mb-0 text-light'>Order packed & waiting for peakup</p>
+                        <p className={`mb-0 order-text ${activeTab === 'PACKED' ? 'text-light' : ''}`}>Order packed & waiting for peakup</p>
                         <span className={`${activeTab === 'PACKED' ? 'order-status-indecator' : ''}`}></span>
                     </div> */}
                     <div
                         className={`order-status-box position-relative ${activeTab === 'TRANSIT' ? 'active' : ''}`}
                         onClick={() => setActiveTab('TRANSIT')}
                     >
-                        <p className='mb-0 text-light'>In transit orders</p>
+                        <p className={`mb-0 order-text ${activeTab === 'TRANSIT' ? 'text-light' : ''}`}>In transit orders</p>
                         <span className={`${activeTab === 'TRANSIT' ? 'order-status-indecator' : ''}`}></span>
                     </div>
                     <div
                         className={`order-status-box position-relative ${activeTab === 'DELIVERED' ? 'active' : ''}`}
                         onClick={() => setActiveTab('DELIVERED')}
                     >
-                        <p className='mb-0 text-light'>Delivered</p>
+                        <p className={`mb-0 order-text ${activeTab === 'DELIVERED' ? 'text-light' : ''}`}>Delivered</p>
                         <span className={`${activeTab === 'DELIVERED' ? 'order-status-indecator' : ''}`}></span>
                     </div>
                     <div
                         className={`order-status-box position-relative ${activeTab === 'CANCEL' ? 'active' : ''}`}
                         onClick={() => setActiveTab('CANCEL')}
                     >
-                        <p className='mb-0 text-light'>Cancelled</p>
+                        <p className={`mb-0 order-text ${activeTab === 'CANCEL' ? 'text-light' : ''}`}>Cancelled</p>
                         <span className={`${activeTab === 'CANCEL' ? 'order-status-indecator' : ''}`}></span>
                     </div>
                 </div>

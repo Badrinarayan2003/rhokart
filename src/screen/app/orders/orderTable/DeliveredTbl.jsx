@@ -210,6 +210,7 @@ const DeliveredTbl = () => {
                         sortable: true,
                         filter: true
                     }}
+                    suppressScrollOnNewData={true}
                 />
             </div>
         </>

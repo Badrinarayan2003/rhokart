@@ -242,6 +242,7 @@ const OrderedTbl = () => {
                         sortable: true,
                         filter: true
                     }}
+                    suppressScrollOnNewData={true}
                 />
             </div>
         </>

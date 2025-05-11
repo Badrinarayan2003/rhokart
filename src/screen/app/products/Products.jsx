@@ -409,6 +409,7 @@ const Products = () => {
                                 rowData={rowData}
                                 columnDefs={columnDefs}
                                 onCellValueChanged={onCellValueChanged}
+                            suppressScrollOnNewData={true}
                             />
                         </div>
                     </div>

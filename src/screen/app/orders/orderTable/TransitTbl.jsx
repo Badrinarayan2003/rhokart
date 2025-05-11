@@ -426,6 +426,7 @@ const TransitTbl = () => {
                         sortable: true,
                         filter: true
                     }}
+                    suppressScrollOnNewData={true}
                 />
             </div>
         </>

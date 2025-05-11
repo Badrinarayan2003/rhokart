@@ -288,6 +288,7 @@ const PackedTbl = () => {
                         sortable: true,
                         filter: true
                     }}
+                    suppressScrollOnNewData={true}
                 />
             </div>
 

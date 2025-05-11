@@ -663,6 +663,7 @@ const UpdateOnPortal = () => {
                                 // paginationPageSize={9}
                                 // paginationPageSizeSelector={[9, 20, 50, 100]}
                                 onCellValueChanged={onCellValueChanged}
+                                suppressScrollOnNewData={true}
                             />
                         </div>
                     </div>

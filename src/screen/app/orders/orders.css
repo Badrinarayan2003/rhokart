@@ -8,21 +8,23 @@
     width: 20%;
     justify-content: center;
     align-items: center;
-    background: #B6BAC3;
     font-weight: 700;
     border-radius: 10px;
     height: auto;
     padding: 18px 5px;
     cursor: pointer;
+    box-shadow: 0px 0px 9px #1F8505;
+    color: #1F8505;
+    transition: 0.2s linear;
+}
+
+.order-text {
+    color: #1F8505;
+    font-size: 14px;
 }
 
 .order-status-box.active {
     background-color: #1F8505;
-}
-
-.order-status-box p {
-    color: black;
-    font-size: 14px;
 }
 
 .order-status-indecator {
