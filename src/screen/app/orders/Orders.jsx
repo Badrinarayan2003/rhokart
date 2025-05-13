@@ -5,9 +5,19 @@ import PackedTbl from "./orderTable/PackedTbl";
 import TransitTbl from "./orderTable/TransitTbl";
 import DeliveredTbl from "./orderTable/DeliveredTbl";
 import CancelTbl from "./orderTable/CancelTbl";
+import { useLocation } from 'react-router-dom';
+
 
 const Orders = () => {
-    const [activeTab, setActiveTab] = useState('ORDERED');
+    const location = useLocation();
+
+    const [activeTab, setActiveTab] = useState(
+        location.state?.activeTab || 'ORDERED'
+    );
+
+
+    // const [activeTab, setActiveTab] = useState('ORDERED');
+
 
     const renderTable = () => {
         switch (activeTab) {

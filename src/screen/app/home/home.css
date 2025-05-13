@@ -19,10 +19,12 @@
     background: #1F8505;
 
 }
-.order-status-box-one:hover .order-status-box-one-text{
+
+.order-status-box-one:hover .order-status-box-one-text {
     color: #fff;
 }
-.order-status-box-one:hover .home-count{
+
+.order-status-box-one:hover .home-count {
     color: #fff;
 }
 
@@ -90,6 +92,12 @@
 .order-status-box-one-text {
     color: #1F8505;
     font-size: 14px;
+}
+
+.home-select-disable {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
 }
 
 @media (max-width:768px) {

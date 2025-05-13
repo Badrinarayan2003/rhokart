@@ -179,9 +179,14 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                     </NavLink>
                 </li>
                 <li className='sidebar-list-item'>
-                    <Link to="" className='sidebar-link'>
+                    <NavLink
+                        className={({ isActive }) =>
+                            `d-flex align-items-center sidebar-link ${isActive ? 'active-sidebar-link' : ''}`
+                        }
+                        to="/payment-overview"
+                    >
                         <FaHandHoldingUsd className='icon' color='#1F8505' /> Payments
-                    </Link>
+                    </NavLink>
                 </li>
                 <li className='sidebar-list-item'>
                     <Link to="" className='sidebar-link'>
