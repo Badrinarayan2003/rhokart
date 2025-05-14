@@ -19,6 +19,7 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
+    const [errMsg, setErrMsg] = useState();
 
     const requestOTP = async () => {
         setLoading(true);

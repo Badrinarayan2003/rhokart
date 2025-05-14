@@ -7,8 +7,8 @@ import axios from 'axios';
 import { useSelector } from "react-redux";
 import { BASE_URL } from '../../../config/urls';
 import Loader from '../../../components/loader/Loader';
-
-
+import ExcelJS from 'exceljs';
+import { FaFileDownload } from "react-icons/fa";
 
 
 const Payments = () => {
@@ -28,6 +28,97 @@ const Payments = () => {
     const [isCustomDateSelected, setIsCustomDateSelected] = useState(false);
 
 
+
+
+
+
+    const exportToExcel = async () => {
+        if (paymentData.length === 0) {
+            alert('No data to export');
+            return;
+        }
+
+        // Create a new workbook
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Payments');
+
+        // Define columns
+        worksheet.columns = [
+            { header: 'Date', key: 'payDate', width: 15 },
+            { header: 'Order ID', key: 'orderId', width: 15 },
+            { header: 'Status', key: 'status', width: 20 },
+            { header: 'Amount (INR)', key: 'amount', width: 15 },
+            { header: 'Payment Mode', key: 'paymentMode', width: 15 },
+            { header: 'Transit ID', key: 'transId', width: 20 }
+        ];
+
+        // Style the header row
+        worksheet.getRow(1).eachCell((cell) => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF4472C4' } // Blue background
+            };
+            cell.font = {
+                bold: true,
+                color: { argb: 'FFFFFFFF' } // White text
+            };
+            cell.alignment = {
+                vertical: 'middle',
+                horizontal: 'center',
+                wrapText: true
+            };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+        // Add data rows
+        paymentData.forEach(payment => {
+            worksheet.addRow({
+                payDate: payment.payDate,
+                orderId: payment.orderId,
+                status: payment.status,
+                amount: payment.amount ? payment.amount.toFixed(2) : '0.00',
+                paymentMode: payment.paymentMode,
+                transId: payment.transId
+            });
+        });
+
+        // Style all data rows
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 1) { // Skip header row
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+            }
+        });
+
+        // Generate file buffer
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        // Create download link
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Payments_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.click();
+
+        // Clean up
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            link.remove();
+        }, 100);
+    };
 
 
 
@@ -215,9 +306,21 @@ const Payments = () => {
                             </select>
                         </div>
                     </div>
-                    <p className="p-text-color fw-bold">
-                        Total Amount Received (as per filter data range): {totalAmount.toFixed(2)} (INR)
-                    </p>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <p className="p-text-color fw-bold mb-0">
+                            Total Amount Received (as per filter data range): {totalAmount.toFixed(2)} (INR)
+                        </p>
+                        <button
+                            onClick={exportToExcel}
+                            className="btn btn-success d-flex align-items-center"
+                            disabled={paymentData.length === 0}
+                        >
+                            <span className='d-flex'>
+                                <FaFileDownload color='#fff' size={16} />
+                            </span>
+                            Download to excel
+                        </button>
+                    </div>
 
                     <div className="home-table ag-theme-alpine" style={{ height: 300, width: '100%' }}>
                         <AgGridReact
