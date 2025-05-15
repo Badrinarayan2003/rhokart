@@ -194,7 +194,8 @@ const BankDetails = () => {
             if (responesData?.response?.rcode === 0 && responesData?.response?.coreData?.responseData) {
                 const responseSellerBankData = responesData?.response?.coreData?.responseData;
                 dispatch(setBankDetails(responseSellerBankData));
-                toast.success(responesData?.response?.rmessage || "Bank details saved successfully");
+                console.log(responesData?.response?.rmessage || "Bank details saved successfully");
+                // toast.success(responesData?.response?.rmessage || "Bank details saved successfully");
                 setIsSaved(true);
 
                 //last change for track changes start

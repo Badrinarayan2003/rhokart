@@ -49,10 +49,12 @@ function AdminHeader({ OpenSidebar }) {
                     </div>
                 </div>
                 <ul className="dropdown-menu" id="dropdown-menu-show-ani-two" >
-                    <li><a className="dropdown-item" href="#">
-                        <span className='me-2'><IoSettingsSharp size={22} /></span>
-                        Seller Profile
-                    </a>
+                    <li
+                        onClick={() => navigate("/profile")}
+                    ><p className="dropdown-item mb-0">
+                            <span className='me-2'><IoSettingsSharp size={22} /></span>
+                            Seller Profile
+                        </p>
                     </li>
                     <li onClick={handleLogout}>
                         <span className="dropdown-item" style={{ cursor: 'pointer' }} >

@@ -177,7 +177,7 @@ const AddressDetails = () => {
                 console.log(savedData, "api response save data of address details")
 
                 dispatch(setAddressDetails(savedData));
-                toast.success(response.data.response.rmessage || "Address saved successfully");
+                // toast.success(response.data.response.rmessage || "Address saved successfully");
                 setIsSaved(true);
                 setHasChanges(false);
             } else {

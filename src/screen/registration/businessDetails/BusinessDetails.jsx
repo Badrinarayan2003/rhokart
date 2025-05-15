@@ -350,7 +350,7 @@ const BusinessDetails = () => {
                     const responseSellerData = responseData?.response?.coreData?.responseData;
                     console.log(responseSellerData, "response business Seller Data .");
                     dispatch(setBusinessDetails(responseSellerData));
-                    toast.success(responseData?.response?.rmessage || "Business details saved successfully");
+                    // toast.success(responseData?.response?.rmessage || "Business details saved successfully");
                     setIsSaved(true);
                 } else {
                     toast.error(responseData?.response?.rmessage || "Oops something went wrong");

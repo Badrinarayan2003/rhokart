@@ -154,7 +154,8 @@ const DocumentUploud = () => {
 
             if (serverResponse?.data?.response?.rcode === 0) {
                 dispatch(setDocumentUpload(allDocuments));
-                toast.success("Documents saved successfully");
+                console.log("Documents saved successfully");
+                // toast.success("Documents saved successfully");
                 setIsSaved(true);
             } else {
                 throw new Error(serverResponse?.data?.response?.rmessage || "Save failed");

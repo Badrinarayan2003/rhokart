@@ -122,7 +122,8 @@ const BrandsDetails = () => {
                     newGroups[index].certificationUrl = fileUrl;
                     setGroups(newGroups);
 
-                    toast.success("File uploaded successfully!");
+                    console.log("File uploaded successfully in using multipart!");
+                    // toast.success("File uploaded successfully!");
                 }
             } else {
                 toast.error("File upload failed. Please try again.");
@@ -183,8 +184,8 @@ const BrandsDetails = () => {
             if (serverResponse?.data?.response?.rcode === 0) {
                 const brandResMainData = serverResponse?.data?.response?.coreData?.responseData?.brands;
                 dispatch(setBrandsDetails(brandResMainData));
-                toast.success("Brand details saved successfully!");
-                console.log(brandResMainData, "backend server res final main data")
+                // toast.success("Brand details saved successfully!");
+                console.log(brandResMainData, "backend server res final main data Brand details saved successfully")
                 setIsSaved(true);
             } else {
                 toast.error(serverResponse?.data?.response?.rmessage || "Failed to save data.");

@@ -24,10 +24,11 @@ const LoginOtpVerification = () => {
     const otpInputs = useRef([]);
     const [otp, setOtp] = useState(["", "", "", "", ""]);
     const [responseData, setResponseData] = useState(null);
-    const [error, setError] = useState(null);
+    const [errorMsg, setErrorMsg] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (index, e) => {
+        setErrorMsg("")
         const value = e.target.value;
         if (/^\d?$/.test(value)) { // Allow only numeric input
             const newOtp = [...otp];
@@ -63,7 +64,7 @@ const LoginOtpVerification = () => {
                     const responseData = response?.data?.response?.coreData?.responseData;
                     dispatch(loginSuccess(responseData)); // Save to Redux
                     setResponseData(response);
-                    toast.success("logged in successfully");
+                    // toast.success("logged in successfully");
                     // Redirect based on access level
                     if (responseData.accessLevel === "REGISTRATION") {
                         navigate("/registration/business-details");
@@ -74,17 +75,20 @@ const LoginOtpVerification = () => {
                     }
                 } else {
                     setLoading(false);
-                    toast.error(response?.data?.response?.rmessage || "OTP Expired!");
+                    setErrorMsg(response?.data?.response?.rmessage || "OTP Invalid!")
+                    // toast.error(response?.data?.response?.rmessage || "OTP Invalid!");
                     console.log(response?.data?.response?.rmessage, "this is else block of try block in otp verification page");
                 }
             } catch (err) {
                 setLoading(false);
-                toast.error("Invalid OTP. Please try again.");
+                setErrorMsg("Invalid OTP. Please try again.")
+                // toast.error("Invalid OTP. Please try again.");
             }
 
         } else {
             setLoading(false);
-            toast.warning("Please enter a 5-digit OTP");
+            setErrorMsg("Please enter a 5-digit OTP")
+            // toast.warning("Please enter a 5-digit OTP");
         }
     };
 
@@ -114,6 +118,9 @@ const LoginOtpVerification = () => {
                         <p className='mb-4 otp-text'>Enter the OTP sent
                             <span className='ms-1 number-span'>{email && `${email}`}<FiEdit3 size={15} /> </span>
                         </p>
+                        {
+                            errorMsg ? <small className='err-msg'>{errorMsg}</small> : ""
+                        }
                         <div className='d-flex justify-content-center gap-3'>
                             {otp.map((digit, index) => (
                                 <input

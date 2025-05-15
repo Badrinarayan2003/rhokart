@@ -19,13 +19,21 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
-    const [errMsg, setErrMsg] = useState();
+    const [errMsg, setErrMsg] = useState("");
+
+
+    const handleEmailChange = (e) => {
+        setErrMsg("");
+        setEmail(e.target.value)
+    }
+
 
     const requestOTP = async () => {
         setLoading(true);
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             setLoading(false);
-            toast.warning("Please enter a valid email.");
+            setErrMsg("Please enter a valid email.")
+            // toast.warning("Please enter a valid email.");
             return;
         }
 
@@ -37,11 +45,12 @@ const Login = () => {
             console.log(response?.data?.response?.rcode, "this is rcode");
             if (response?.data?.response?.rcode === 0) {
                 setLoading(false);
-                toast.success(`OTP sent to your email! ${email}`);
+                // toast.success(`OTP sent to your email! ${email}`);
                 navigate("/loginotpverification", { state: { email: email } });
             } else {
                 setLoading(false);
-                toast.error(response?.data?.response?.rmessage || "Failed to send OTP");
+                setErrMsg(response?.data?.response?.rmessage || "Failed to send OTP");
+                // toast.error(response?.data?.response?.rmessage || "Failed to send OTP");
                 console.log(response?.data?.response?.rmessage, "this is else block of try block");
             }
         } catch (err) {
@@ -50,10 +59,12 @@ const Login = () => {
 
             if (err?.code === "ERR_NETWORK") {
                 setLoading(false);
-                toast.error("Please Check Your Internet Connection!")
+                setErrMsg("Please Check Your Internet Connection!")
+                // toast.error("Please Check Your Internet Connection!")
             } else {
                 setLoading(false);
-                toast.error("Failed to send OTP. Try again later")
+                setErrMsg("Failed to send OTP. Try again later")
+                // toast.error("Failed to send OTP. Try again later")
                 console.log(err, "Failed to send OTP. Try again.");
             }
         }
@@ -70,7 +81,7 @@ const Login = () => {
                 const responseData = userData?.data?.response?.coreData?.responseData;
                 console.log("filter data from backend", responseData);
                 dispatch(loginSuccess(responseData));
-                toast.success("logged in successfully");
+                // toast.success("logged in successfully");
                 if (responseData.accessLevel === "REGISTRATION") {
                     navigate("/registration/business-details");
                 } else if (responseData.accessLevel === "DASHBOARD") {
@@ -110,7 +121,10 @@ const Login = () => {
                         </div>
                         <div className="mb-3 w-75 d-flex flex-column align-items-start">
                             <h4 className="form-label mb-3">Email id</h4>
-                            <input type="email" className="form-control py-2 mb-3" id="phone" placeholder="Enter your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            {
+                                errMsg ? <small className='err-msg'>{errMsg}</small> : ""
+                            }
+                            <input type="email" className="form-control py-2 mb-3" id="phone" placeholder="Enter your Email" value={email} onChange={handleEmailChange} />
                         </div>
                         <button className="btn w-75" id='p-btn' onClick={requestOTP}>Proceed</button>
                         <p className='mt-4'>------------- <span className='or'>Or</span> -------------</p>

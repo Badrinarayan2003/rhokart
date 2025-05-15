@@ -30,18 +30,19 @@ export const handleGoogleLogin = async (tokenResponse, setLoading) => {
                 setLoading(false);
                 return serverResponse;
             } catch (error) {
-                console.log("server error", error);
-                toast.error("Server Error");
+                console.log("server error when sendign google login data", error);
+                // toast.error("Server Error");
                 setLoading(false);
             }
         } else {
-            toast.warning("user info not available");
+            console.log("user info not available");
+            // toast.warning("user info not available");
             setLoading(false);
         }
 
     } catch (error) {
         console.log("Error processing Google login:", error);
-        toast.error("Error processing Google login:", error);
+        // toast.error("Error processing Google login:", error);
         return null;
     }
 };
