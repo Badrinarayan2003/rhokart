@@ -223,7 +223,7 @@ const Payments = () => {
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
-            width: 130
+            width: 150
         },
         {
             headerName: "Order ID",
@@ -231,7 +231,7 @@ const Payments = () => {
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
-            width: 150
+            width: 190
         },
         {
             headerName: "Status",
@@ -239,7 +239,7 @@ const Payments = () => {
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
-            width: 190
+            width: 240
         },
         {
             headerName: 'Received Amount (INR)',
@@ -247,7 +247,7 @@ const Payments = () => {
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
-            width: 180,
+            width: 230,
             valueFormatter: params => params.value ? params.value.toFixed(2) : '0.00'
         },
         {
@@ -258,7 +258,7 @@ const Payments = () => {
             width: 180
         },
         {
-            headerName: 'Transit ID',
+            headerName: 'Transaction ID',
             field: 'transId',
             filter: true,
             sortable: true,

@@ -99,7 +99,9 @@
     color: #6c757d;
     cursor: not-allowed;
 }
-
+.bg-disable{
+    background: #5c605a;
+}
 @media (max-width:768px) {
     .order-status-box-one p {
         font-size: 13px;

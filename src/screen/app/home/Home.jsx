@@ -28,6 +28,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
     // Payment overview states
     const [paymentData, setPaymentData] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -35,6 +36,74 @@ const Home = () => {
     const [toDate, setToDate] = useState('');
     const [selectedDays, setSelectedDays] = useState('7days');
     const [isCustomDateSelected, setIsCustomDateSelected] = useState(false);
+
+    const [downloadUrl, setDownloadUrl] = useState('');
+    const [errMsg, setErrMsg] = useState("");
+    const [upErrMsg, setupErrMsg] = useState("");
+
+
+    useEffect(() => {
+        const fetchDownloadUrl = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/pincode/download?sellerId=${sellerId}`);
+                const data = response.data;
+
+                if (data.rcode === 0) {
+                    setDownloadUrl(data.coreData.responseData.fileRequest.url);
+                } else {
+                    setErrMsg(data.rmessage || 'Failed to fetch download URL');
+                    console.log("error not 0");
+                }
+            } catch (err) {
+                setErrMsg(err.message);
+                console.log("error");
+            }
+        };
+
+        if (sellerId) {
+            fetchDownloadUrl();
+        }
+    }, [sellerId]);
+
+
+    const handleWhitelistSubmit = async () => {
+        if (!whitelistFile) {
+            alert('Please select a file to upload');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('file', whitelistFile);
+
+            const response = await axios.post(
+                `https://upload.rhoselect.com/pincode/upload?sellerId=${sellerId}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            const data = response.data;
+            if (data.rcode === 0) {
+                alert('File uploaded successfully!');
+               console.log(data);
+            } else {
+                setupErrMsg(data.rmessage || 'Failed to upload file');
+                console.log(data.rmessage);
+            }
+        } catch (err) {
+            setupErrMsg(err.message);
+            console.log(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 
     // Fetch order status data using Axios
     useEffect(() => {
@@ -214,7 +283,7 @@ const Home = () => {
             width: 180
         },
         {
-            headerName: 'Transit ID',
+            headerName: 'Transaction ID',
             field: 'transId',
             filter: true,
             sortable: true,
@@ -350,7 +419,9 @@ const Home = () => {
                             <h6 className='fw-bold mb-3 p-text-color'>Add new delivery location(Whitelist)</h6>
                             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                                 <label className='me-2 text-dark'>Download delivery address template:</label>
-                                <a className="btn btn-sm btn-secondary">
+                                <a className="btn btn-sm btn-secondary"
+                                    href={downloadUrl}
+                                >
                                     <span className='me-1'>
                                         <FaDownload size={13} color='#fff' />
                                     </span>
@@ -381,7 +452,14 @@ const Home = () => {
                                 </div>
                             </div>
                             <div className='d-flex justify-content-center'>
-                                <button className=" my-coust-btn">Submit</button>
+                                <button
+                                     className={`my-coust-btn ${(!whitelistFile || loading) ? 'bg-disable' : ''}`}
+                                    onClick={handleWhitelistSubmit}
+                                    disabled={!whitelistFile || loading}
+                                     style={(!whitelistFile || loading) ? { cursor: 'not-allowed' } : {}}
+                                >
+                                    {loading ? 'Uploading...' : 'Submit'}
+                                </button>
                             </div>
                         </div>
 

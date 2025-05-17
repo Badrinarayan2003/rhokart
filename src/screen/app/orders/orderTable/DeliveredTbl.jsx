@@ -194,7 +194,8 @@ const DeliveredTbl = () => {
                         <div className="d-flex justify-content-center align-items-center h-100">
                             <button
                                 type="button"
-                                className="btn btn-sm btn-success"
+                                className="btn btn-sm"
+                                 style={{ border: "1px solid #1F8505", color: '#1F8505' }}
                                 data-bs-toggle="modal"
                                 data-bs-target="#paymentDetailModal"
                                 onClick={() => setSelectedOrder(payDetail)}

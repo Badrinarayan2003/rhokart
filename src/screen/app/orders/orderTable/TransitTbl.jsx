@@ -333,9 +333,9 @@ const TransitTbl = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 mt-3">
                                         <div className="form-group mb-3">
-                                            <label htmlFor="otpInput" className="form-label">
+                                            <label htmlFor="otpInput" className="form-label fw-bold">
                                                 Delivery Confirmation OTP <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -350,7 +350,7 @@ const TransitTbl = () => {
                                         </div>
 
                                         <div className="form-group mb-3">
-                                            <label className="form-label">Upload Invoice (Signed by the buyer)<span className="text-danger">*</span></label>
+                                            <label className="form-label fw-bold">Upload Invoice (Signed by the buyer)<span className="text-danger">*</span></label>
                                             <div className="upload-container">
                                                 <input
                                                     type="file"
