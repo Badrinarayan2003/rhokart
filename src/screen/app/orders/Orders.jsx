@@ -23,7 +23,7 @@ const Orders = () => {
         switch (activeTab) {
             case 'ORDERED':
                 return <OrderedTbl />;
-            case 'PACKED':
+            case 'PCKD':
                 return <PackedTbl />;
             case 'TRANSIT':
                 return <TransitTbl />;
@@ -47,13 +47,15 @@ const Orders = () => {
                         <p className={`mb-0 order-text ${activeTab === 'ORDERED' ? 'text-light' : ''}`}>Order received & waiting for packing</p>
                         <span className={`${activeTab === 'ORDERED' ? 'order-status-indecator' : ''}`}></span>
                     </div>
-                    {/* <div
-                        className={`order-status-box position-relative ${activeTab === 'PACKED' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('PACKED')}
+
+                    <div
+                        className={`order-status-box position-relative ${activeTab === 'PCKD' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('PCKD')}
                     >
-                        <p className={`mb-0 order-text ${activeTab === 'PACKED' ? 'text-light' : ''}`}>Order packed & waiting for peakup</p>
-                        <span className={`${activeTab === 'PACKED' ? 'order-status-indecator' : ''}`}></span>
-                    </div> */}
+                        <p className={`mb-0 order-text ${activeTab === 'PCKD' ? 'text-light' : ''}`}>Order packed & waiting for peckup</p>
+                        <span className={`${activeTab === 'PCKD' ? 'order-status-indecator' : ''}`}></span>
+                    </div>
+
                     <div
                         className={`order-status-box position-relative ${activeTab === 'TRANSIT' ? 'active' : ''}`}
                         onClick={() => setActiveTab('TRANSIT')}

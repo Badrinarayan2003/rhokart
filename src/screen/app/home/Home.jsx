@@ -90,7 +90,6 @@ const Home = () => {
             const data = response.data;
             if (data.rcode === 0) {
                 alert('File uploaded successfully!');
-               console.log(data);
             } else {
                 setupErrMsg(data.rmessage || 'Failed to upload file');
                 console.log(data.rmessage);
@@ -453,10 +452,10 @@ const Home = () => {
                             </div>
                             <div className='d-flex justify-content-center'>
                                 <button
-                                     className={`my-coust-btn ${(!whitelistFile || loading) ? 'bg-disable' : ''}`}
+                                    className={`my-coust-btn ${(!whitelistFile || loading) ? 'bg-disable' : ''}`}
                                     onClick={handleWhitelistSubmit}
                                     disabled={!whitelistFile || loading}
-                                     style={(!whitelistFile || loading) ? { cursor: 'not-allowed' } : {}}
+                                    style={(!whitelistFile || loading) ? { cursor: 'not-allowed' } : {}}
                                 >
                                     {loading ? 'Uploading...' : 'Submit'}
                                 </button>

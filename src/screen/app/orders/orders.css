@@ -23,6 +23,10 @@
     font-size: 14px;
 }
 
+.signal-msg {
+    color: #1F8505;
+}
+
 .order-status-box.active {
     background-color: #1F8505;
 }
@@ -41,6 +45,10 @@
     justify-content: center;
 }
 
+.ag-header-cell-sortable .ag-header-cell-label {
+    justify-content: center;
+}
+
 /* Status badges */
 .status-badge {
     padding: 4px 8px;
@@ -49,6 +57,9 @@
     font-weight: 500;
 }
 
+.box-lebel {
+    font-size: 12px;
+}
 
 
 .status-badge.packed {
@@ -84,6 +95,12 @@
 }
 
 
+
+@media (max-width:1080px) {
+    .box-lebel {
+        font-size: 11px;
+    }
+}
 
 @media (max-width:768px) {
     .order-status-box p {

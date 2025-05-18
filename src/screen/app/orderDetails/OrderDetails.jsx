@@ -11,7 +11,7 @@ import { FaEdit, FaPlus, FaSync } from "react-icons/fa";
 import { BASE_URL } from "../../../config/urls";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import { FaUpload } from "react-icons/fa";
 
 const OrderDetails = () => {
     const navigate = useNavigate();
@@ -30,6 +30,15 @@ const OrderDetails = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [showShipmentDetails, setShowShipmentDetails] = useState(false);
     const [hasPackedQuantityChanges, setHasPackedQuantityChanges] = useState(false);
+    const [fileUploads, setFileUploads] = useState({}); // Track uploaded files per box
+    const [dimensionProperties, setDimensionProperties] = useState({
+        length: { isActive: false, isEditable: false, isMandatory: false },
+        breadth: { isActive: false, isEditable: false, isMandatory: false },
+        height: { isActive: false, isEditable: false, isMandatory: false },
+        weight: { isActive: true, isEditable: true, isMandatory: true }
+    });
+    const [sampleImage, setSampleImage] = useState("");
+
 
     // Function to add new shipment box
     const addNewShipmentBox = () => {
@@ -89,7 +98,18 @@ const OrderDetails = () => {
         try {
             const response = await axios.get(`${BASE_URL}/order/info?orderId=${orderId}`);
             if (response?.data?.rcode === 0) {
-                const data = response.data.coreData.responseData;
+                const data = response?.data?.coreData?.responseData;
+                setSampleImage(data?.sampleImageUrl)
+                console.log(data?.sampleImageUrl, "image ");
+
+                setDimensionProperties({
+                    length: data.lengthProperty,
+                    breadth: data.breadthProperty,
+                    height: data.heightProperty,
+                    weight: data.weightProperty
+                });
+
+
                 const details = data.orderDataDetails || [];
                 console.log(response, "order details response")
                 // Set order details with packed units
@@ -233,6 +253,32 @@ const OrderDetails = () => {
     };
 
     const handleShipmentUpdate = async () => {
+        for (const boxNo in fileUploads) {
+            if (!fileUploads[boxNo]) {
+                toast.error(`Please upload photo for Box ${boxNo}`);
+                return;
+            }
+        }
+
+        const hasErrors = shipments.some(shipment => {
+            // Check file upload
+            if (!fileUploads[shipment.boxNo]) return true;
+
+            // Check dimension properties
+            if (dimensionProperties.length.isMandatory && !shipment.boxLength) return true;
+            if (dimensionProperties.breadth.isMandatory && !shipment.boxBreadth) return true;
+            if (dimensionProperties.height.isMandatory && !shipment.boxHeight) return true;
+            if (dimensionProperties.weight.isMandatory && !shipment.boxWeight) return true;
+
+            return false;
+        });
+
+        if (hasErrors) {
+            toast.error("Please fill all mandatory fields for all boxes");
+            return;
+        }
+
+
         setLoading(true);
         try {
             // Prepare the request payload
@@ -246,7 +292,8 @@ const OrderDetails = () => {
                     boxLength: shipment.boxLength,
                     boxBreadth: shipment.boxBreadth,
                     boxHeight: shipment.boxHeight,
-                    boxWeight: shipment.boxWeight
+                    boxWeight: shipment.boxWeight,
+                    boxImageUrl: fileUploads[shipment.boxNo] || null
                 }))
             };
 
@@ -259,6 +306,7 @@ const OrderDetails = () => {
                     }
                 }
             );
+
             console.log(response, "shipment update api response")
             if (response?.data?.rcode === 0) {
                 toast.success(response?.data?.coreData?.responseData?.message || "Shipment updated successfully!");
@@ -275,6 +323,43 @@ const OrderDetails = () => {
             setLoading(false);
         }
     };
+
+    const handleFileUpload = async (boxNo, file) => {
+        if (!file) return;
+
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append('files', file);
+
+            const response = await axios.post('https://upload.rhoselect.com/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response, "uploud res");
+
+
+            if (response?.data?.response?.rcode === 0) {
+                const fileUrl = response?.data?.response?.coreData?.responseData?.uploadedFiles[0].url;
+                setFileUploads(prev => ({
+                    ...prev,
+                    [boxNo]: fileUrl
+                }));
+                console.log(fileUrl);
+
+                toast.success("File uploaded successfully!");
+            } else {
+                toast.error("Failed to upload file");
+            }
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            toast.error("Error uploading file");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const refreshPage = () => {
         fetchOrderDetails();
@@ -427,41 +512,107 @@ const OrderDetails = () => {
                                 <div className="card-body">
                                     <h5 className="card-title">Box No: {shipment.boxNo}</h5>
                                     <div className="row g-3">
-                                        <div className="col-md-3">
-                                            <label className="form-label">Length (cm), L</label>
+                                        <div className="col-md-2">
+                                            <label className="form-label box-lebel">Length (cm), L
+                                                {dimensionProperties.length.isMandatory && <span className="text-danger">*</span>}
+                                            </label>
                                             <input
                                                 type="number"
                                                 className="form-control"
                                                 value={shipment.boxLength || ''}
                                                 onChange={(e) => handleShipmentChange(index, 'boxLength', e.target.value)}
+                                                disabled={!dimensionProperties.length.isEditable}
+                                                required={dimensionProperties.length.isMandatory}
                                             />
                                         </div>
-                                        <div className="col-md-3">
-                                            <label className="form-label">Breadth (cm), B</label>
+                                        <div className="col-md-2">
+                                            <label className="form-label box-lebel">
+                                                Breadth (cm), B
+                                                {dimensionProperties.breadth.isMandatory && <span className="text-danger">*</span>}
+                                            </label>
                                             <input
                                                 type="number"
                                                 className="form-control"
                                                 value={shipment.boxBreadth || ''}
                                                 onChange={(e) => handleShipmentChange(index, 'boxBreadth', e.target.value)}
+                                                disabled={!dimensionProperties.breadth.isEditable}
+                                                required={dimensionProperties.breadth.isMandatory}
                                             />
                                         </div>
-                                        <div className="col-md-3">
-                                            <label className="form-label">Height (cm), H</label>
+
+                                        <div className="col-md-2 ">
+                                            <label className="form-label box-lebel">Height (cm), H
+                                                {dimensionProperties.height.isMandatory && <span className="text-danger">*</span>}
+                                            </label>
                                             <input
                                                 type="number"
                                                 className="form-control"
                                                 value={shipment.boxHeight || ''}
                                                 onChange={(e) => handleShipmentChange(index, 'boxHeight', e.target.value)}
+                                                disabled={!dimensionProperties.height.isEditable}
+                                                required={dimensionProperties.height.isMandatory}
                                             />
                                         </div>
-                                        <div className="col-md-3">
-                                            <label className="form-label">Weight (kg), Wt</label>
+
+                                        <div className="col-md-2">
+                                            <label className="form-label box-lebel">Weight (kg), Wt
+                                                {dimensionProperties.weight.isMandatory && <span className="text-danger">*</span>}
+                                            </label>
                                             <input
                                                 type="number"
                                                 className="form-control"
                                                 value={shipment.boxWeight || ''}
                                                 onChange={(e) => handleShipmentChange(index, 'boxWeight', e.target.value)}
+                                                disabled={!dimensionProperties.weight.isEditable}
+                                                required={dimensionProperties.weight.isMandatory}
                                             />
+                                        </div>
+                                        {/* File upload field (always mandatory) */}
+
+                                        <div className="col-md-2">
+                                            <label className="form-label box-lebel">
+                                                Attach box photo <span className="text-danger">*</span>
+                                            </label>
+
+                                            {/* Hidden file input */}
+                                            <input
+                                                type="file"
+                                                id={`file-upload-${shipment.boxNo}`}
+                                                className="d-none"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(shipment.boxNo, e.target.files[0])}
+                                                required
+                                            />
+
+                                            {/* Custom styled upload button */}
+                                            <button
+                                                type="button"
+                                                className="btn w-100 d-flex align-items-center justify-content-center"
+                                                style={{ background: "#1F8505", color: '#fff' }}
+                                                onClick={() => document.getElementById(`file-upload-${shipment.boxNo}`).click()}
+                                            >
+                                                <FaUpload className="me-1" />
+                                                {fileUploads[shipment.boxNo] ?
+                                                    (() => {
+                                                        // Extract filename after last underscore if URL exists
+                                                        const url = fileUploads[shipment.boxNo];
+                                                        const filename = url.substring(url.lastIndexOf('_') + 1);
+                                                        return filename || 'Uploaded File';
+                                                    })()
+                                                    : 'Upload'
+                                                }
+                                            </button>
+                                        </div>
+
+                                        <div className="col-md-2">
+                                            {sampleImage && (
+                                                <img
+                                                    src={sampleImage}
+                                                    alt="Sample Box"
+                                                    className="img-thumbnail w-auto h-100"
+                                                    style={{ maxHeight: '100px' }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -521,15 +672,6 @@ export default OrderDetails;
 
 
 
-
-
-
-
-
-
-
-
-
 // import React, { useState, useEffect } from "react";
 // import { useLocation } from "react-router-dom";
 // import { AgGridReact } from "ag-grid-react";
@@ -539,35 +681,32 @@ export default OrderDetails;
 // import { toast } from "react-toastify";
 // import './orderDetails.css';
 // import Loader from "../../../components/loader/Loader";
-// import { FaEdit, FaPlus } from "react-icons/fa";
+// import { FaEdit, FaPlus, FaSync } from "react-icons/fa";
 // import { BASE_URL } from "../../../config/urls";
+// import { useNavigate } from "react-router-dom";
+// import { useSelector } from "react-redux";
+
 
 // const OrderDetails = () => {
+//     const navigate = useNavigate();
 //     const location = useLocation();
+
+//     const sellerId = useSelector((state) => state.auth?.sellerId);
+//     console.log(sellerId, "seller id in orderDetails")
+
 //     const { orderId, status } = location.state || {};
 //     const [orderDetails, setOrderDetails] = useState([]);
 //     const [loading, setLoading] = useState(true);
 //     const [shipments, setShipments] = useState([]);
 //     const [invoiceNo, setInvoiceNo] = useState("");
 //     const [totalPackedQuantity, setTotalPackedQuantity] = useState(0);
-//     const [orderDetailsSaved, setOrderDetailsSaved] = useState(false);
+//     const [totalOrderUnits, setTotalOrderUnits] = useState(0);
+//     const [totalPrice, setTotalPrice] = useState(0);
+//     const [showShipmentDetails, setShowShipmentDetails] = useState(false);
 //     const [hasPackedQuantityChanges, setHasPackedQuantityChanges] = useState(false);
 
-//     console.log(orderId, status, "orderId , status, from orders component")
 //     // Function to add new shipment box
 //     const addNewShipmentBox = () => {
-
-//         // if (!orderDetailsSaved) {
-//         //     toast.warning("Please save order details first before adding boxes");
-//         //     return;
-//         // }
-
-//         // if (totalPackedQuantity <= 0) {
-//         //     toast.warning("Cannot add boxes when total packed quantity is zero");
-//         //     return;
-//         // }
-
-//         // Calculate next box number
 //         const nextBoxNo = shipments.length > 0 ?
 //             Math.max(...shipments.map(box => box.boxNo)) + 1 : 1;
 
@@ -582,18 +721,13 @@ export default OrderDetails;
 //         setShipments([...shipments, newShipment]);
 //     };
 
-//     // Initialize with empty box if no shipments from API
-//     useEffect(() => {
-//         if (!loading && shipments.length === 0) {
-//             addNewShipmentBox();
-//         }
-//     }, [loading, shipments.length]);
-
 //     // Custom cell renderer with edit icon
 //     const cellRendererWithEditIcon = (params) => {
 //         const [isActive, setIsActive] = useState(false);
 
 //         const handleClick = (e) => {
+//             if (showShipmentDetails) return; // Disable editing when shipment details are visible
+
 //             setIsActive(true);
 //             setTimeout(() => {
 //                 params.api.startEditingCell({
@@ -613,162 +747,119 @@ export default OrderDetails;
 //                 className="d-flex align-items-center justify-content-between w-100 h-100"
 //                 onClick={handleClick}
 //                 style={{
-//                     cursor: 'pointer',
+//                     cursor: showShipmentDetails ? 'default' : 'pointer',
 //                     padding: '0 8px',
 //                     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.05)' : 'transparent'
 //                 }}
 //             >
 //                 <span>{params.value}</span>
-//                 <FaEdit className="text-primary" style={{ opacity: 0.7, fontSize: '14px' }} />
+//                 {!showShipmentDetails && <FaEdit className="text-primary" style={{ opacity: 0.7, fontSize: '14px' }} />}
 //             </div>
 //         );
 //     };
 
-//     console.log(orderDetailsSaved, "orderDetailsSaved")
-//     console.log(totalPackedQuantity, "totalPackedQuantity")
-//     // And in your useEffect for initial data:
+//     // Fetch order details
+//     const fetchOrderDetails = async () => {
+//         try {
+//             const response = await axios.get(`${BASE_URL}/order/info?orderId=${orderId}`);
+//             if (response?.data?.rcode === 0) {
+//                 const data = response.data.coreData.responseData;
+//                 const details = data.orderDataDetails || [];
+//                 console.log(response, "order details response")
+//                 // Set order details with packed units
+//                 setOrderDetails(details.map(item => ({
+//                     ...item,
+//                     lastEditedFields: []
+//                 })));
+
+//                 // Calculate totals
+//                 const totalPacked = details.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+//                 // const totalOrder = details.reduce((sum, item) => sum + (item.orderUnits || 0), 0);
+
+//                 setTotalPackedQuantity(totalPacked);
+//                 setTotalOrderUnits(data.totalUnits);
+//                 setTotalPrice(data.totalPrice || 0);
+
+//                 // Transform shipments data if exists
+//                 const apiShipments = data.shipments || [];
+//                 const transformedShipments = apiShipments.map(shipment => ({
+//                     boxNo: shipment.boxNo,
+//                     boxLength: shipment.length,
+//                     boxBreadth: shipment.breadth,
+//                     boxHeight: shipment.height,
+//                     boxWeight: shipment.weight,
+//                     shipId: shipment.shipId
+//                 }));
+
+//                 setShipments(transformedShipments);
+//                 // setInvoiceNo(data.invoiceId || "");
+
+//                 // Hide shipment details initially
+//                 setShowShipmentDetails(false);
+//                 setHasPackedQuantityChanges(false);
+//             } else {
+//                 toast.error(response?.data?.rmessage || "Failed to load order details");
+//             }
+//             setLoading(false);
+//         } catch (error) {
+//             console.error("Error fetching order details:", error);
+//             toast.error("Error loading order details");
+//             setLoading(false);
+//         }
+//     };
+
 //     useEffect(() => {
 //         if (!orderId) {
 //             console.error("No orderId found in location state");
 //             setLoading(false);
 //             return;
 //         }
-
-//         const fetchOrderDetails = async () => {
-//             try {
-//                 const response = await axios.get(`${BASE_URL}/order/info?orderId=${orderId}`);
-//                 if (response?.data?.rcode === 0) {
-//                     console.log(response, "api response for order detail")
-//                     const details = response?.data?.coreData?.responseData?.orderDataDetails || [];
-//                     const detailsWithEditTracking = details.map(item => ({
-//                         ...item,
-//                         lastEditedFields: [],
-//                         packedUnits: item?.packedUnits
-//                     }));
-//                     setOrderDetails(detailsWithEditTracking);
-//                     // Calculate total packed quantity
-//                     const totalPacked = detailsWithEditTracking.reduce(
-//                         (sum, item) => sum + (item.packedUnits || 0),
-//                         0
-//                     );
-//                     setTotalPackedQuantity(totalPacked);
-//                     // Transform API data
-//                     const apiShipments = response?.data?.coreData?.responseData?.shipments || [];
-//                     const transformedShipments = apiShipments.map(shipment => ({
-//                         boxNo: shipment.boxNo,
-//                         boxLength: shipment.length,
-//                         boxBreadth: shipment.breadth,
-//                         boxHeight: shipment.height,
-//                         boxWeight: shipment.weight,
-//                         shipId: shipment.shipId // Keep shipId from API
-//                     }));
-
-//                     // setShipments(transformedShipments.length > 0 ? transformedShipments : [{
-//                     //     boxNo: 1,
-//                     //     boxLength: null,
-//                     //     boxBreadth: null,
-//                     //     boxHeight: null,
-//                     //     boxWeight: null
-//                     //     // No shipId for initial empty box
-//                     // }]);
-//                     setShipments(transformedShipments.length > 0 ? transformedShipments : []);
-//                     // setOrderDetailsSaved(transformedShipments.length > 0); // If we have shipments, consider details saved
-//                     const hasPackedItems = detailsWithEditTracking.some(item => item.packedUnits > 0);
-//                     setOrderDetailsSaved(transformedShipments.length > 0 || hasPackedItems);
-//                     setHasPackedQuantityChanges(false); // Reset changes flag when loading new data
-//                 } else {
-//                     toast.error(response?.data?.rmessage || "Failed to load order details");
-//                     console.error("order details failed:", response?.data);
-//                 }
-//                 setLoading(false);
-//             } catch (error) {
-//                 console.error("Error fetching order details:", error);
-//                 setLoading(false);
-//             }
-//         };
-
 //         fetchOrderDetails();
 //     }, [orderId]);
 
-//     // Add this useEffect to log shipments after state updates
-//     useEffect(() => {
-//         console.log("Current shipments state:", shipments);
-//     }, [shipments]);
-
-
-//     // useEffect(() => {
-//     //     const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
-//     //     setTotalPackedQuantity(total);
-//     // }, [orderDetails]);
-
-
 //     const handlePackedUnitsChange = (params) => {
+//         // Validate that packed units don't exceed order units
+//         if (params.newValue > params.data.orderUnits) {
+//             toast.warning("Packed quantity cannot exceed order quantity");
+//             return false; // Prevent the change
+//         }
+
+//         // Show warning when changing from non-zero to zero
+//         if (params.value > 0 && params.newValue === 0) {
+//             toast.warning("Setting packed quantity to zero will cancel this order item");
+//         }
+
 //         const updatedDetails = orderDetails.map(item => {
 //             if (item.dtlId === params.data.dtlId) {
 //                 return {
 //                     ...item,
 //                     packedUnits: params.newValue,
-//                     lastEdited: new Date(),
 //                     lastEditedFields: [...new Set([...item.lastEditedFields, 'packedUnits'])]
 //                 };
 //             }
 //             return item;
 //         });
+
 //         setOrderDetails(updatedDetails);
-//         setHasPackedQuantityChanges(true); // Set changes flag when packed units are modified
+//         setHasPackedQuantityChanges(true);
+
+//         // Update total packed quantity
+//         const totalPacked = updatedDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
+//         setTotalPackedQuantity(totalPacked);
 //     };
 
 //     const handleShipmentChange = (index, field, value) => {
-
-//         if (!orderDetailsSaved) {
-//             toast.warning("Please save order details first before modifying shipment details");
-//             return;
-//         }
-
-//         if (totalPackedQuantity <= 0) {
-//             toast.warning("Cannot modify shipment details when total packed quantity is zero");
-//             return;
-//         }
-
 //         const updatedShipments = [...shipments];
 //         updatedShipments[index][field] = parseFloat(value) || 0;
 //         setShipments(updatedShipments);
 //     };
 
-//     // const handleSaveOrderDetails = async () => {
-//     //     try {
-//     //         const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
-//     //         setTotalPackedQuantity(total);
-//     //         setOrderDetailsSaved(true);
-//     //         setHasPackedQuantityChanges(false); // Reset changes flag after saving
-//     //         toast.success("Order details saved. You can now edit shipment details.");
-//     //         console.log("Updated order details:", orderDetails);
-
-//     //         if (shipments.length === 0 && totalPackedQuantity > 0) {
-//     //             addNewShipmentBox();
-//     //         }
-//     //     } catch (error) {
-//     //         console.error("Error saving order details:", error);
-//     //         toast.error("Failed to save order details");
-//     //     }
-//     // };
-
-
-
 //     const handleSaveOrderDetails = async () => {
+//         setLoading(true);
 //         try {
-//             // First validate packed quantities don't exceed order quantities
-//             const hasInvalidQuantities = orderDetails.some(item =>
-//                 item.packedUnits > item.orderUnits
-//             );
 
-//             if (hasInvalidQuantities) {
-//                 toast.error("Packed quantities cannot exceed order quantities");
-//                 return;
-//             }
-
-//             const total = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
-//             setTotalPackedQuantity(total);
+//             // First calculate what the new total packed quantity would be
+//             const newTotalPacked = orderDetails.reduce((sum, item) => sum + (item.packedUnits || 0), 0);
 
 //             // Prepare the order updates payload
 //             const orderUpdates = orderDetails.map(item => ({
@@ -794,22 +885,74 @@ export default OrderDetails;
 //             );
 
 //             if (response?.data?.rcode === 0) {
-//                 setOrderDetailsSaved(true);
-//                 setHasPackedQuantityChanges(false);
+//                 // Only update the total packed quantity after successful save
+//                 setTotalPackedQuantity(newTotalPacked);
 //                 toast.success(response?.data?.coreData?.responseData?.message || "Order details updated successfully!");
-
-//                 if (shipments.length === 0 && totalPackedQuantity > 0) {
+//                 setShowShipmentDetails(true);
+//                 setHasPackedQuantityChanges(false);
+//                 console.log(totalPackedQuantity, "this totalPackedQuantity in rcode zero")
+//                 // If no shipments exist but we have packed items, add a default box
+//                 if (shipments.length === 0 && newTotalPacked > 0) {
 //                     addNewShipmentBox();
 //                 }
 //             } else {
 //                 toast.error(response?.data?.rmessage || "Failed to update order details");
 //             }
+//             setLoading(false);
 //         } catch (error) {
 //             console.error("Error saving order details:", error);
 //             toast.error("Failed to save order details");
+//             setLoading(false);
 //         }
 //     };
 
+//     const handleShipmentUpdate = async () => {
+//         setLoading(true);
+//         try {
+//             // Prepare the request payload
+//             const payload = {
+//                 orderId: orderId,
+//                 status: status,
+//                 sellerId: sellerId,
+//                 invoiceNo: invoiceNo,
+//                 shipmentUpdates: shipments.map(shipment => ({
+//                     boxNo: shipment.boxNo,
+//                     boxLength: shipment.boxLength,
+//                     boxBreadth: shipment.boxBreadth,
+//                     boxHeight: shipment.boxHeight,
+//                     boxWeight: shipment.boxWeight
+//                 }))
+//             };
+
+//             const response = await axios.post(
+//                 `${BASE_URL}/order/shipmentupdate`,
+//                 payload,
+//                 {
+//                     headers: {
+//                         'Content-Type': 'application/json'
+//                     }
+//                 }
+//             );
+//             console.log(response, "shipment update api response")
+//             if (response?.data?.rcode === 0) {
+//                 toast.success(response?.data?.coreData?.responseData?.message || "Shipment updated successfully!");
+//                 // Refresh the data
+//                 // fetchOrderDetails();
+//                 navigate("/orders");
+//             } else {
+//                 toast.error(response?.data?.rmessage || "Failed to update shipment");
+//             }
+//             setLoading(false);
+//         } catch (error) {
+//             console.error("Error updating shipment:", error);
+//             toast.error("Error updating shipment. Please try again.");
+//             setLoading(false);
+//         }
+//     };
+
+//     const refreshPage = () => {
+//         fetchOrderDetails();
+//     };
 
 //     const [columnDefs] = useState([
 //         {
@@ -849,7 +992,7 @@ export default OrderDetails;
 //         {
 //             headerName: "Packed Qty (units)",
 //             field: "packedUnits",
-//             editable: true,
+//             editable: !showShipmentDetails, // Make editable only when shipment details are not shown
 //             sortable: true,
 //             filter: 'agNumberColumnFilter',
 //             width: 150,
@@ -870,7 +1013,10 @@ export default OrderDetails;
 //                         border: '2px solid orange'
 //                     };
 //                 }
-//                 return { backgroundColor: 'rgb(224 249 217)' };
+//                 return {
+//                     backgroundColor: 'rgb(224 249 217)',
+//                     pointerEvents: showShipmentDetails ? 'none' : 'auto'
+//                 };
 //             },
 //             singleClickEdit: true,
 //         },
@@ -886,67 +1032,18 @@ export default OrderDetails;
 //         );
 //     }
 
-
-
-//     const handleShipmentUpdate = async () => {
-//         try {
-//             // Validate invoice number
-//             if (!invoiceNo) {
-//                 toast.warning("Please enter an invoice number");
-//                 return;
-//             }
-
-//             // Prepare the request payload
-//             const payload = {
-//                 orderId: orderId,
-//                 status: status,
-//                 invoiceNo: invoiceNo,
-//                 shipmentUpdates: shipments.map(shipment => ({
-//                     boxNo: shipment.boxNo,
-//                     boxLength: shipment.boxLength,
-//                     boxBreadth: shipment.boxBreadth,
-//                     boxHeight: shipment.boxHeight,
-//                     boxWeight: shipment.boxWeight
-//                 }))
-//             };
-
-//             console.log("Sending shipment update:", payload);
-
-//             const response = await axios.post(
-//                 `${BASE_URL}/order/shipmentupdate`,
-//                 payload,
-//                 {
-//                     headers: {
-//                         'Content-Type': 'application/json'
-//                     }
-//                 }
-//             );
-
-//             if (response?.data?.rcode === 0) {
-//                 toast.success(response?.data?.coreData?.responseData?.message || "Shipment updated successfully!");
-//                 console.log("Update successful:", response.data);
-//             } else {
-//                 toast.error(response?.data?.rmessage || "Failed to update shipment");
-//                 console.error("Update failed:", response?.data);
-//             }
-//         } catch (error) {
-//             console.error("Error updating shipment:", error);
-//             toast.error("Error updating shipment. Please try again.");
-//         }
-//     };
-
-
-
-
-
-
-
 //     return (
 //         <>
-//             {loading && <Loader message="Loading order details..." />}
+//             {loading && <Loader message="Loading" />}
 //             <div className="container mt-1">
-//                 <div className="mb-4">
+//                 <div className="d-flex justify-content-between align-items-center mb-3">
 //                     <h4 className="mb-2 text-dark">Order ID: {orderId}</h4>
+//                     <div className="text-end">
+//                         <h5 className="" style={{ color: "#1F8505" }}>Total Price: ₹{totalPrice.toFixed(2)}</h5>
+//                     </div>
+//                 </div>
+
+//                 <div className={`mb-4 ${showShipmentDetails ? 'opacity-50' : ''}`}>
 //                     <div className="ag-theme-alpine" style={{ height: '300px', width: '100%' }}>
 //                         <AgGridReact
 //                             rowData={orderDetails}
@@ -958,113 +1055,127 @@ export default OrderDetails;
 //                                 filter: true
 //                             }}
 //                             suppressCellFocus={true}
-//                             stopEditingWhenCellsLoseFocus={true} // Add this line
+//                             stopEditingWhenCellsLoseFocus={true}
 //                         />
 //                     </div>
-//                     <div className="d-flex justify-content-end mb-4 mt-3">
+//                     <div className="d-flex justify-content-end gap-3 mt-2">
+//                         <h6 className="text-dark">Total Order Units: {totalOrderUnits}</h6>
+//                         <h6 className="text-dark">Total Packed Quantity: {totalPackedQuantity}</h6>
+//                     </div>
+//                     <div className="d-flex justify-content-end align-items-center mt-3">
 //                         <button
 //                             className={`save-change-btn ${!hasPackedQuantityChanges ? 'disabled-save-btn' : ''}`}
 //                             onClick={handleSaveOrderDetails}
-//                             disabled={!hasPackedQuantityChanges}
+//                             disabled={!hasPackedQuantityChanges || showShipmentDetails}
 //                         >
 //                             Save Changes
 //                         </button>
 //                     </div>
 //                 </div>
 
-//                 <div className="mb-5">
-//                     <div className="d-flex justify-content-between align-items-center mb-3">
-//                         <h5 className="fw-bold color-headline m-0">Shipment Details (for pickup & logistics)</h5>
-//                     </div>
-//                     <div className="row mb-3">
-//                         <div className="col-xxl-4 col-xl-5 col-lg-6 col-md-6">
-//                             <label className="form-label">Enter the invoice no. for this shipment</label>
-//                             <input
-//                                 type="text"
-//                                 className="form-control"
-//                                 placeholder="Enter the invoice number of your own system, if any"
-//                                 value={invoiceNo}
-//                                 onChange={(e) => setInvoiceNo(e.target.value)}
-//                                 disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                             />
+//                 {showShipmentDetails && (
+//                     <div className="mb-5">
+//                         <div className="d-flex justify-content-between align-items-center mb-3">
+//                             <h5 className="fw-bold color-headline m-0">Shipment Details (for pickup & logistics)</h5>
+//                             {/* <button
+//                                 className="btn btn-sm btn-outline-primary"
+//                                 onClick={refreshPage}
+//                             >
+//                                 <FaSync className="me-1" /> Refresh
+//                             </button> */}
 //                         </div>
-//                     </div>
-//                     {shipments.map((shipment, index) => (
-//                         <div key={index} className="card mb-3 p-0" style={{ backgroundColor: "#fff" }}>
-//                             <div className="card-body">
-//                                 <h5 className="card-title">Box No: {shipment.boxNo}</h5>
-//                                 <div className="row g-3">
-//                                     <div className="col-md-3">
-//                                         <label className="form-label">Length (cm), L</label>
-//                                         <input
-//                                             type="number"
-//                                             className="form-control"
-//                                             value={shipment.boxLength}
-//                                             onChange={(e) => handleShipmentChange(index, 'boxLength', e.target.value)}
-//                                             disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                                         />
-//                                     </div>
-//                                     <div className="col-md-3">
-//                                         <label className="form-label">Breadth (cm), B</label>
-//                                         <input
-//                                             type="number"
-//                                             className="form-control"
-//                                             value={shipment.boxBreadth}
-//                                             onChange={(e) => handleShipmentChange(index, 'boxBreadth', e.target.value)}
-//                                             disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                                         />
-//                                     </div>
-//                                     <div className="col-md-3">
-//                                         <label className="form-label">Height (cm), H</label>
-//                                         <input
-//                                             type="number"
-//                                             className="form-control"
-//                                             value={shipment.boxHeight}
-//                                             onChange={(e) => handleShipmentChange(index, 'boxHeight', e.target.value)}
-//                                             disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                                         />
-//                                     </div>
-//                                     <div className="col-md-3">
-//                                         <label className="form-label">Weight (kg), Wt</label>
-//                                         <input
-//                                             type="number"
-//                                             className="form-control"
-//                                             value={shipment.boxWeight}
-//                                             onChange={(e) => handleShipmentChange(index, 'boxWeight', e.target.value)}
-//                                             disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                                         />
+//                         <div className="row mb-3">
+//                             <div className="col-xxl-4 col-xl-5 col-lg-6 col-md-6">
+//                                 <label className="form-label">Enter the invoice no. for this shipment</label>
+//                                 <input
+//                                     type="text"
+//                                     className="form-control"
+//                                     placeholder="Enter the invoice number of your own system, if any"
+//                                     value={invoiceNo}
+//                                     onChange={(e) => setInvoiceNo(e.target.value)}
+//                                 />
+//                             </div>
+//                         </div>
+//                         {shipments.map((shipment, index) => (
+//                             <div key={index} className="card mb-3 p-0" style={{ backgroundColor: "#fff" }}>
+//                                 <div className="card-body">
+//                                     <h5 className="card-title">Box No: {shipment.boxNo}</h5>
+//                                     <div className="row g-3">
+//                                         <div className="col-md-2">
+//                                             <label className="form-label box-lebel">Length (cm), L</label>
+//                                             <input
+//                                                 type="number"
+//                                                 className="form-control"
+//                                                 value={shipment.boxLength || ''}
+//                                                 onChange={(e) => handleShipmentChange(index, 'boxLength', e.target.value)}
+//                                             />
+//                                         </div>
+//                                         <div className="col-md-2">
+//                                             <label className="form-label box-lebel">Breadth (cm), B</label>
+//                                             <input
+//                                                 type="number"
+//                                                 className="form-control"
+//                                                 value={shipment.boxBreadth || ''}
+//                                                 onChange={(e) => handleShipmentChange(index, 'boxBreadth', e.target.value)}
+//                                             />
+//                                         </div>
+//                                         <div className="col-md-2">
+//                                             <label className="form-label box-lebel">Height (cm), H</label>
+//                                             <input
+//                                                 type="number"
+//                                                 className="form-control"
+//                                                 value={shipment.boxHeight || ''}
+//                                                 onChange={(e) => handleShipmentChange(index, 'boxHeight', e.target.value)}
+//                                             />
+//                                         </div>
+//                                         <div className="col-md-2">
+//                                             <label className="form-label box-lebel">Weight (kg), Wt</label>
+//                                             <input
+//                                                 type="number"
+//                                                 className="form-control"
+//                                                 value={shipment.boxWeight || ''}
+//                                                 onChange={(e) => handleShipmentChange(index, 'boxWeight', e.target.value)}
+//                                             />
+//                                         </div>
+//                                         <div className="col-md-2">
+//                                             <label className="form-label box-lebel">Attach box photo <span className="text-danger">*</span></label>
+//                                             <input
+//                                                 type="number"
+//                                                 className="form-control"
+//                                                 value={shipment.boxWeight || ''}
+//                                                 onChange={(e) => handleShipmentChange(index, 'boxWeight', e.target.value)}
+//                                             />
+//                                         </div>
 //                                     </div>
 //                                 </div>
 //                             </div>
-//                         </div>
-//                     ))}
-//                     <button
-//                         className={`save-change-btn ${(!orderDetailsSaved || totalPackedQuantity <= 0) ? 'disabled-save-btn' : ''}`}
-//                         onClick={addNewShipmentBox}
-//                         disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                     >
-//                         <FaPlus className="me-1" /> Add more boxes for this order
-//                     </button>
-//                 </div>
+//                         ))}
+//                         <button
+//                             className="save-change-btn mb-3"
+//                             onClick={addNewShipmentBox}
+//                         >
+//                             <FaPlus className="me-1" /> Add more boxes for this order
+//                         </button>
 
-//                 <div className="d-flex justify-content-end mb-4">
-//                     <button
-//                         className={`save-change-btn ${(!orderDetailsSaved || totalPackedQuantity <= 0) ? 'disabled-save-btn' : ''}`}
-//                         onClick={handleShipmentUpdate}
-//                         disabled={!orderDetailsSaved || totalPackedQuantity <= 0}
-//                     >
-//                         Submit
-//                     </button>
-//                 </div>
+//                         <div className="d-flex justify-content-end">
+//                             <button
+//                                 className="save-change-btn mrg-in bg-secondary"
+//                                 onClick={refreshPage}
+//                             >
+//                                 <FaSync className="me-1" /> Back to update
+//                             </button>
+//                             <button
+//                                 className="save-change-btn"
+//                                 onClick={handleShipmentUpdate}
+//                             >
+//                                 Submit
+//                             </button>
+//                         </div>
+//                     </div>
+//                 )}
 //             </div>
 //         </>
 //     );
 // };
 
 // export default OrderDetails;
-
-
-
-
-
-

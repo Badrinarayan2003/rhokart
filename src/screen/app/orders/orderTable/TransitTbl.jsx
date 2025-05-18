@@ -107,10 +107,10 @@ const TransitTbl = () => {
             return;
         }
 
-        if (uploadedFiles.length === 0) {
-            alert("Please upload at least one file");
-            return;
-        }
+        // if (uploadedFiles.length === 0) {
+        //     alert("Please upload at least one file");
+        //     return;
+        // }
 
         setLoading(true);
 
@@ -302,55 +302,65 @@ const TransitTbl = () => {
                                     <div className="col-md-12 mb-2">
                                         {/* <h5 className="text-dark fw-bold">Order Details</h5> */}
                                         <div className="order-details-container">
-                                            <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Order ID:</span>
-                                                <span className="detail-value"> {selectedOrder?.orderId}</span>
+                                            <div className="detail-item mb-1 me-2">
+                                                <span className="detail-label text-dark">Order ID:</span>
+                                                <span className="detail-value text-dark"> {selectedOrder?.orderId}</span>
                                             </div>
                                             <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Buyer Name:</span>
-                                                <span className="detail-value"> {selectedOrder.buyerName}</span>
+                                                {/* <span className="detail-label text-dark">Buyer Name:</span> */}
+                                                <span className="detail-value text-dark"> {selectedOrder.buyerName},</span>
                                             </div>
                                             <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Buyer State:</span>
-                                                <span className="detail-value"> {selectedOrder.buyerState}</span>
+                                                {/* <span className="detail-label text-dark fw-bold">Buyer State:</span> */}
+                                                <span className="detail-label text-dark ">Address:</span>
+                                                <span className="detail-value text-dark"> {selectedOrder.buyerState},</span>
                                             </div>
                                             <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Buyer District:</span>
-                                                <span className="detail-value"> {selectedOrder.buyerDistrict}</span>
+                                                {/* <span className="detail-label text-dark">Buyer District:</span> */}
+                                                <span className="detail-value text-dark"> {selectedOrder.buyerDistrict},</span>
                                             </div>
                                             <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Buyer PIN:</span>
-                                                <span className="detail-value"> {selectedOrder.buyerPin}</span>
+                                                {/* <span className="detail-label text-dark">Buyer PIN:</span> */}
+                                                <span className="detail-value text-dark"> {selectedOrder.buyerPin},</span>
                                             </div>
-                                            <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Total qty:</span>
-                                                <span className="detail-value"> {selectedOrder.units}</span>
+
+                                            <div className="d-flex flex-wrap">
+                                                <div className="detail-item mb-1 me-2">
+                                                    <span className="detail-label text-dark">Total Amount (incl. GST):</span>
+                                                    <span className="detail-value text-dark"> ₹ {selectedOrder.totalAmount.toFixed(2)} </span>
+                                                </div>
+
+                                                <div className="detail-item mb-1">
+                                                    <span className="detail-label text-dark">Total qty:</span>
+                                                    <span className="detail-value text-dark">{selectedOrder.units}</span>
+                                                </div>
                                             </div>
-                                            <div className="detail-item mb-1">
-                                                <span className="detail-label text-dark fw-bold">Total Amount (incl. GST):</span>
-                                                <span className="detail-value"> ₹ {selectedOrder.totalAmount.toFixed(2)}</span>
-                                            </div>
+
                                         </div>
                                     </div>
 
                                     <div className="col-md-6 mt-3">
                                         <div className="form-group mb-3">
-                                            <label htmlFor="otpInput" className="form-label fw-bold">
+                                            <label htmlFor="otpInput" className="form-label fw-bold text-dark">
                                                 Delivery Confirmation OTP <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 className="form-control"
+                                                style={{width: "55%"}}
                                                 id="otpInput"
                                                 value={otp}
                                                 onChange={(e) => setOtp(e.target.value)}
                                                 placeholder="Enter 5 digit OTP"
                                                 required
                                             />
+                                            <small className="signal-msg">
+                                                Delivery OTP will be provided by the buyer
+                                            </small>
                                         </div>
 
                                         <div className="form-group mb-3">
-                                            <label className="form-label fw-bold">Upload Invoice (Signed by the buyer)<span className="text-danger">*</span></label>
+                                            <label className="form-label fw-bold text-dark">Upload Invoice (Signed by the buyer)</label>
                                             <div className="upload-container">
                                                 <input
                                                     type="file"

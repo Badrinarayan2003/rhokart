@@ -183,7 +183,7 @@ const OrderedTbl = () => {
         // },
         {
             headerName: "Invoice",
-            headerClass: "badri",
+            headerClass: "justify-content-center",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.hasDocuments ? (
