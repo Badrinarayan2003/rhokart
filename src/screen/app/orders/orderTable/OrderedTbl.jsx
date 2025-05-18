@@ -37,6 +37,7 @@ const OrderedTbl = () => {
                         buyerState: order.buyerState,
                         buyerDistrict: order.buyerDistrict,
                         buyerPin: order.buyerPin,
+                        shippingAddress: order.shippingAddress,
                         units: order.units,
                         totalAmount: order.totalAmount,
                         status: order.status,
@@ -137,6 +138,13 @@ const OrderedTbl = () => {
             filter: 'agNumberColumnFilter',
             valueFormatter: params => params.value.toFixed(2),
             width: 150
+        },
+        {
+            headerName: "Shipping Address",
+            field: "shippingAddress",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
         },
         {
             headerName: "Take Action",

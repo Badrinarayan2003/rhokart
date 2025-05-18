@@ -296,6 +296,7 @@ const OrderDetails = () => {
                     boxImageUrl: fileUploads[shipment.boxNo] || null
                 }))
             };
+            console.log(payload, "this payload");
 
             const response = await axios.post(
                 `${BASE_URL}/order/shipmentupdate`,
@@ -348,7 +349,7 @@ const OrderDetails = () => {
                 }));
                 console.log(fileUrl);
 
-                toast.success("File uploaded successfully!");
+                // toast.success("File uploaded successfully!");
             } else {
                 toast.error("Failed to upload file");
             }
@@ -510,7 +511,7 @@ const OrderDetails = () => {
                         {shipments.map((shipment, index) => (
                             <div key={index} className="card mb-3 p-0" style={{ backgroundColor: "#fff" }}>
                                 <div className="card-body">
-                                    <h5 className="card-title">Box No: {shipment.boxNo}</h5>
+                                    <h5 className="card-title">Box No: {shipment.boxNo}<span className="text-danger"> (Attach the photograph of this box packing. RHOKART invoice should be clearly visible in the box picture.)</span></h5>
                                     <div className="row g-3">
                                         <div className="col-md-2">
                                             <label className="form-label box-lebel">Length (cm), L
@@ -583,7 +584,6 @@ const OrderDetails = () => {
                                                 onChange={(e) => handleFileUpload(shipment.boxNo, e.target.files[0])}
                                                 required
                                             />
-
                                             {/* Custom styled upload button */}
                                             <button
                                                 type="button"
@@ -597,7 +597,7 @@ const OrderDetails = () => {
                                                         // Extract filename after last underscore if URL exists
                                                         const url = fileUploads[shipment.boxNo];
                                                         const filename = url.substring(url.lastIndexOf('_') + 1);
-                                                        return filename || 'Uploaded File';
+                                                        return filename || 'File Uploaded';
                                                     })()
                                                     : 'Upload'
                                                 }

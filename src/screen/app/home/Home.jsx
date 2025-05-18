@@ -21,6 +21,7 @@ const Home = () => {
     // State for order status counts
     const [orderStatus, setOrderStatus] = useState({
         ORDERED: 0,
+        PCKD: 0,
         TRNST: 0,
         DLVRD: 0,
         CANCEL: 0
@@ -89,7 +90,7 @@ const Home = () => {
 
             const data = response.data;
             if (data.rcode === 0) {
-                alert('File uploaded successfully!');
+                console.log(data, "up");
             } else {
                 setupErrMsg(data.rmessage || 'Failed to upload file');
                 console.log(data.rmessage);
@@ -215,6 +216,7 @@ const Home = () => {
         // Map the status from Home to Orders component's tab names
         const tabMap = {
             'ORDERED': 'ORDERED',
+            'PCKD': 'PCKD',
             'TRNST': 'TRANSIT',
             'DLVRD': 'DELIVERED',
             'CANCEL': 'CANCEL'
@@ -318,8 +320,17 @@ const Home = () => {
                             onClick={() => handleStatusClick('ORDERED')}
                             style={{ cursor: 'pointer' }}
                         >
-                            <p className='mb-2 text-center order-status-box-one-text'>Order received & waiting for packup</p>
+                            <p className='mb-2 text-center order-status-box-one-text'>Order received & waiting for packing</p>
                             <p className='mb-0 home-count text-end'>{orderStatus.ORDERED}</p>
+                        </div>
+                        {/* Order Received (PCKD) */}
+                        <div
+                            className="order-status-box-one position-relative flex-column"
+                            onClick={() => handleStatusClick('PCKD')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <p className='mb-2 text-center order-status-box-one-text'>Order packed & waiting for pickup</p>
+                            <p className='mb-0 home-count text-end'>{orderStatus.PCKD}</p>
                         </div>
 
                         {/* In Transit (TRNST) */}

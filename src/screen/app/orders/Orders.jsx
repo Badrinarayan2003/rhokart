@@ -52,7 +52,7 @@ const Orders = () => {
                         className={`order-status-box position-relative ${activeTab === 'PCKD' ? 'active' : ''}`}
                         onClick={() => setActiveTab('PCKD')}
                     >
-                        <p className={`mb-0 order-text ${activeTab === 'PCKD' ? 'text-light' : ''}`}>Order packed & waiting for peckup</p>
+                        <p className={`mb-0 order-text ${activeTab === 'PCKD' ? 'text-light' : ''}`}>Order packed & waiting for pickup</p>
                         <span className={`${activeTab === 'PCKD' ? 'order-status-indecator' : ''}`}></span>
                     </div>
 

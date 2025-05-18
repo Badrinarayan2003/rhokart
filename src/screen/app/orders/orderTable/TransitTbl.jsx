@@ -26,6 +26,7 @@ const TransitTbl = () => {
         try {
             const response = await axios.get(`${BASE_URL}/order/detail?sellerId=${sellerId}&status=TRNST`);
             if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.sellerOrders) {
+                console.log(response, "transit response");
                 const mappedData = response?.data?.coreData?.responseData?.sellerOrders.map((order, index) => ({
                     slNo: index + 1,
                     orderId: order.orderId,
@@ -33,6 +34,7 @@ const TransitTbl = () => {
                     buyerState: order.buyerState,
                     buyerDistrict: order.buyerDistrict,
                     buyerPin: order.buyerPin,
+                    shippingAddress: order.shippingAddress,
                     units: order.units,
                     totalAmount: order.totalAmount,
                     status: order.status,
@@ -225,6 +227,13 @@ const TransitTbl = () => {
             width: 150
         },
         {
+            headerName: "Shipping Address",
+            field: "shippingAddress",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
             headerName: "Take Action",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
@@ -347,7 +356,7 @@ const TransitTbl = () => {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                style={{width: "55%"}}
+                                                style={{ width: "55%" }}
                                                 id="otpInput"
                                                 value={otp}
                                                 onChange={(e) => setOtp(e.target.value)}
