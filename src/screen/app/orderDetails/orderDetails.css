@@ -19,6 +19,12 @@
 .mrg-in{
     margin-right: 5rem;
 }
+.delete-box-icon{
+    position: absolute;
+    right: 1%;
+    top: 0%;
+    cursor: pointer;
+}
 
 @media (max-width:560px) {
     .mrg-in{
