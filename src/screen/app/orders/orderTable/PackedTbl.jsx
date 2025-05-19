@@ -28,8 +28,24 @@ const PackedTbl = () => {
     });
     const [uploading, setUploading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({
+        transportEmail: '',
+        transportMobile: '',
+        driverMobile: ''
+    });
+
     const sellerId = useSelector((state) => state.auth?.sellerId);
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validatePhone = (phone) => {
+        // Indian phone number validation (10 digits starting with 6-9)
+        const re = /^[6-9]\d{9}$/;
+        return re.test(phone);
+    };
     // Fetch data from API
     useEffect(() => {
         const fetchData = async () => {
@@ -43,6 +59,7 @@ const PackedTbl = () => {
                     const mappedData = response?.data?.coreData?.responseData?.pickups.map((order, index) => ({
                         slNo: index + 1,
                         orderId: order.orderId,
+                        buyerName: order.buyerName,
                         orderAmount: order.orderAmount,
                         packedAmount: order.packedAmount,
                         fillRate: order.fillRate,
@@ -94,6 +111,14 @@ const PackedTbl = () => {
             ...prev,
             [name]: value
         }));
+
+        // Clear validation error when user starts typing
+        if (validationErrors[name]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
     };
 
     // Handle file upload button click
@@ -133,8 +158,32 @@ const PackedTbl = () => {
 
     // Handle form submission
     const handleSubmitTransportDetails = async () => {
-        if (!transportDetails.transportName || !transportDetails.transportMobile || !transportDetails.driverMobile) {
-            alert("Please fill all mandatory fields (Transporter Name, Transporter Mobile, and Driver Mobile)");
+        console.log("click")
+        // First validate all fields
+        const errors = {};
+
+        if (!transportDetails.transportName) {
+            errors.transportName = 'Transporter Name is required';
+        }
+
+        if (!transportDetails.transportMobile) {
+            errors.transportMobile = 'Transporter Mobile is required';
+        } else if (!validatePhone(transportDetails.transportMobile)) {
+            errors.transportMobile = 'Please enter a valid 10-digit mobile number';
+        }
+
+        if (!transportDetails.driverMobile) {
+            errors.driverMobile = 'Driver Mobile is required';
+        } else if (!validatePhone(transportDetails.driverMobile)) {
+            errors.driverMobile = 'Please enter a valid 10-digit mobile number';
+        }
+
+        if (transportDetails.transportEmail && !validateEmail(transportDetails.transportEmail)) {
+            errors.transportEmail = 'Please enter a valid email address';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
             return;
         }
 
@@ -155,7 +204,7 @@ const PackedTbl = () => {
             if (response.data?.rcode === 0) {
                 // alert("Transport details submitted successfully!");
                 console.log(response, "submit transport");
-
+                setModalShow(false);
             } else {
                 throw new Error(response.data?.rmessage || "Failed to submit transport details");
             }
@@ -337,118 +386,136 @@ const PackedTbl = () => {
                         </div>
                         <div className="modal-body d-flex flex-column">
                             {/* Order Information Section */}
-                            <div className="mb-4 p-3 border rounded">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <p className="mb-1"><strong>Order Number:</strong> {currentOrder?.orderId}</p>
-                                    </div>
-                                    <div className="col-12">
-                                        <p><strong>Buyer Name:</strong> {currentOrder?.buyerName}</p>
-                                    </div>
-                                    <div className="col-12">
-                                        <p><strong>Shipping Address:</strong> {currentOrder?.shippingAddress}</p>
-                                    </div>
+                            <div className="mt-5 mb-2 row border rounded">
+                                <div className="col-12">
+                                    <p className="mb-1"><strong>Order Number:</strong> {currentOrder?.orderId}</p>
+                                </div>
+                                <div className="col-12">
+                                    <p><strong>Buyer Name:</strong> {currentOrder?.buyerName}</p>
+                                </div>
+                                <div className="col-12">
+                                    <p><strong>Shipping Address:</strong> {currentOrder?.shippingAddress}</p>
                                 </div>
                             </div>
 
                             {/* Transport Details Form */}
-                            <div className="p-3 border rounded w-100">
-                                <h6>Transport Details</h6>
-                                <div className="row mb-3">
-                                    <div className="col-md-6">
-                                        <label className="form-label text-dark fw-bold">Transporter Name <span className="text-danger">*</span></label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="transportName"
-                                            value={transportDetails.transportName}
-                                            onChange={handleTransportChange}
-                                            disabled={uploading}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className="form-label text-dark fw-bold">Transporter Mobile No. <span className="text-danger">*</span></label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            name="transportMobile"
-                                            value={transportDetails.transportMobile}
-                                            onChange={handleTransportChange}
-                                            disabled={uploading}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row mb-3">
-                                    <div className="col-md-6">
-                                        <label className="form-label text-dark fw-bold">Vehicle No.</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="vehicleNo"
-                                            value={transportDetails.vehicleNo}
-                                            onChange={handleTransportChange}
-                                            disabled={uploading}
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className="form-label text-dark fw-bold">Driver Mobile No. <span className="text-danger">*</span></label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            name="driverMobile"
-                                            value={transportDetails.driverMobile}
-                                            onChange={handleTransportChange}
-                                            disabled={uploading}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row mb-3">
-                                    <div className="col-12 mb-4 d-flex align-items-center">
-                                        <div className="row">
-                                            <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
-                                                <label className="form-label text-dark fw-bold">Transport Challan Photo</label>
-                                                <div className="d-flex align-items-start flex-column">
-                                                    <input
-                                                        type="file"
-                                                        id="challanUpload"
-                                                        accept="image/*"
-                                                        onChange={handleFileUpload}
-                                                        className="d-none"
-                                                        disabled={uploading}
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        className="btn me-2 d-flex align-items-center"
-                                                        style={{ background: "rgb(31, 133, 5)", color: "rgb(255, 255, 255)" }}
-                                                        onClick={handleUploadButtonClick}
-                                                        disabled={uploading}
-                                                    >
-                                                        <FaUpload className="me-1" />
-                                                        {uploading ? 'Uploading...' : 'Choose File'}
-                                                    </button>
-                                                    {transportDetails.challanImageUrl && (
-                                                        <span className="text-success">{transportDetails.challanImageUrl.split('_').pop()}</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="col-xxl-7 col-xl-7 col-lg-7 col-md-7 col-sm-7 col-12 d-flex align-items-center">
-                                                <p className="text-danger mb-0 fw-bold">Attach the photograph of this box packing. RHOKART invoice should be clearly visible in the box picture</p>
-                                            </div>
+                            <div className="row  border rounded">
+                                <div className="col-12">
+
+
+                                    <h6>Transport Details</h6>
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <label className="form-label text-dark fw-bold">Transporter Name <span className="text-danger">*</span></label>
+
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="transportName"
+                                                value={transportDetails.transportName}
+                                                onChange={handleTransportChange}
+                                                disabled={uploading}
+                                                required
+                                            />
+                                            {validationErrors.transportName && (
+                                                <small className="text-danger">{validationErrors.transportName}</small>
+                                            )}
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label text-dark fw-bold">Transporter Mobile No. <span className="text-danger">*</span></label>
+
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                name="transportMobile"
+                                                value={transportDetails.transportMobile}
+                                                onChange={handleTransportChange}
+                                                disabled={uploading}
+                                                required
+                                            />
+                                            {validationErrors.transportMobile && (
+                                                <small className=" text-danger">{validationErrors.transportMobile}</small>
+                                            )}
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
-                                        <label className="form-label text-dark fw-bold">Transporter Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            name="transportEmail"
-                                            value={transportDetails.transportEmail}
-                                            onChange={handleTransportChange}
-                                            disabled={uploading}
-                                        />
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <label className="form-label text-dark fw-bold">Vehicle No.</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="vehicleNo"
+                                                value={transportDetails.vehicleNo}
+                                                onChange={handleTransportChange}
+                                                disabled={uploading}
+                                            />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label text-dark fw-bold">Driver Mobile No. <span className="text-danger">*</span></label>
+
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                name="driverMobile"
+                                                value={transportDetails.driverMobile}
+                                                onChange={handleTransportChange}
+                                                disabled={uploading}
+                                                required
+                                            />
+                                            {validationErrors.driverMobile && (
+                                                <small className="text-danger">{validationErrors.driverMobile}</small>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-12 mb-4 d-flex align-items-center">
+                                            <div className="row">
+                                                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
+                                                    <label className="form-label text-dark fw-bold">Transport Challan Photo</label>
+                                                    <div className="d-flex align-items-start flex-column">
+                                                        <input
+                                                            type="file"
+                                                            id="challanUpload"
+                                                            accept="image/*"
+                                                            onChange={handleFileUpload}
+                                                            className="d-none"
+                                                            disabled={uploading}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="btn me-2 d-flex align-items-center"
+                                                            style={{ background: "rgb(31, 133, 5)", color: "rgb(255, 255, 255)" }}
+                                                            onClick={handleUploadButtonClick}
+                                                            disabled={uploading}
+                                                        >
+                                                            <FaUpload className="me-1" />
+                                                            {uploading ? 'Uploading...' : 'Choose File'}
+                                                        </button>
+                                                        {transportDetails.challanImageUrl && (
+                                                            <span className="text-success">{transportDetails.challanImageUrl.split('_').pop()}</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="col-xxl-7 col-xl-7 col-lg-7 col-md-7 col-sm-7 col-12 d-flex align-items-center">
+                                                    <p className="text-danger mb-0 fw-bold">Attach the photograph of this box packing. RHOKART invoice should be clearly visible in the box picture</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label text-dark fw-bold">Transporter Email</label>
+
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                name="transportEmail"
+                                                value={transportDetails.transportEmail}
+                                                onChange={handleTransportChange}
+                                                disabled={uploading}
+                                            />
+                                            {validationErrors.transportEmail && (
+                                                <small className="text-danger">{validationErrors.transportEmail}</small>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
