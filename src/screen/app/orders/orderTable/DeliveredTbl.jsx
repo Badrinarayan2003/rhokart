@@ -145,8 +145,8 @@ const DeliveredTbl = () => {
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.hasDocuments ? (
                         <button
-                            className="btn btn-sm"
-                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            className="btn btn-sm invoice-btn"
+                            // style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
                             onClick={() => handleDownload(params.data.orderId)}
                         >
                             <FaDownload /> {params.data.invoiceNo}
@@ -166,8 +166,8 @@ const DeliveredTbl = () => {
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     <button
-                        style={{ border: "1px solid #1F8505", color: '#1F8505' }}
-                        className="btn btn-sm"
+                        // style={{ border: "1px solid #1F8505", color: '#1F8505' }}
+                        className="btn btn-sm invoice-btn"
                     >
                         <FaDownload /> {params.data.slamId}
                     </button>
@@ -192,16 +192,16 @@ const DeliveredTbl = () => {
                 if (payStatus === "Paid") {
                     return (
                         <div className="d-flex justify-content-center align-items-center h-100">
-                            <button
-                                type="button"
-                                className="btn btn-sm"
-                                style={{ border: "1px solid #1F8505", color: '#1F8505' }}
+                            <p
+                                // type="button"
+                                className="mb-0 fw-bold"
+                                style={{ textDecoration: "underline", color: '#1F8505' }}
                                 data-bs-toggle="modal"
                                 data-bs-target="#paymentDetailModal"
                                 onClick={() => setSelectedOrder(payDetail)}
                             >
                                 {payStatus}
-                            </button>
+                            </p>
                         </div>
                     );
                 } else {

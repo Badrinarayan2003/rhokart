@@ -237,13 +237,13 @@ const TransitTbl = () => {
             headerName: "Take Action",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        className="btn btn-sm"
-                        style={{ background: "#1F8505", color: "#fff" }}
+                    <p
+                        className="mb-0 text-danger fw-bold"
+                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
                         onClick={() => handleConfirmDeliveryClick(params.data)}
                     >
                         Confirm delivery
-                    </button>
+                    </p>
                 </div>
             ),
             width: 150

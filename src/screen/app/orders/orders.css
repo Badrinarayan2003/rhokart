@@ -18,6 +18,17 @@
     transition: 0.2s linear;
 }
 
+.invoice-btn {
+    font-size: 12px;
+    border: 1px solid #1F8505;
+    color: #1F8505;
+}
+
+.invoice-btn:hover {
+    background: #1F8505;
+    color: #fff;
+}
+
 .order-text {
     color: #1F8505;
     font-size: 14px;

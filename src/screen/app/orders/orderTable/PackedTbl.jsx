@@ -33,6 +33,8 @@ const PackedTbl = () => {
         transportMobile: '',
         driverMobile: ''
     });
+    const [uploadError, setUploadError] = useState('');
+    const [transportError, setTransportError] = useState('');
 
     const sellerId = useSelector((state) => state.auth?.sellerId);
 
@@ -111,7 +113,7 @@ const PackedTbl = () => {
             ...prev,
             [name]: value
         }));
-
+        setTransportError('');
         // Clear validation error when user starts typing
         if (validationErrors[name]) {
             setValidationErrors(prev => ({
@@ -123,6 +125,8 @@ const PackedTbl = () => {
 
     // Handle file upload button click
     const handleUploadButtonClick = () => {
+        setUploadError('');
+        setTransportError('');
         document.getElementById('challanUpload').click();
     };
 
@@ -131,6 +135,8 @@ const PackedTbl = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // Reset any previous error
+        setUploadError('');
         setUploading(true);
         const formData = new FormData();
         formData.append('files', file);
@@ -147,10 +153,12 @@ const PackedTbl = () => {
                     ...prev,
                     challanImageUrl: imageUrl
                 }));
+            } else {
+                setUploadError(response.data?.response?.rmessage || 'Failed to upload file. Please try again.');
             }
         } catch (error) {
             console.error("Error uploading file:", error);
-            alert("Failed to upload transport challan. Please try again.");
+            setUploadError('Failed to upload transport challan. Please try again.');
         } finally {
             setUploading(false);
         }
@@ -206,11 +214,12 @@ const PackedTbl = () => {
                 console.log(response, "submit transport");
                 setModalShow(false);
             } else {
-                throw new Error(response.data?.rmessage || "Failed to submit transport details");
+                console.log(response.data?.rmessage || "Failed to submit transport details");
+                setTransportError(response.data?.rmessage || "Failed to submit transport details")
             }
         } catch (error) {
             console.error("Error submitting transport details:", error);
-            alert(error.message);
+            setTransportError(error.message || "Error submitting transport details:");
         } finally {
             setSubmitLoading(false);
         }
@@ -273,6 +282,21 @@ const PackedTbl = () => {
             width: 240
         },
         {
+            headerName: "Take Action",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    <p
+                        className="mb-0 text-danger fw-bold"
+                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                        onClick={() => handleDetailsClick(params.data.orderId, params.data.buyerName, params.data.shippingAddress)}
+                    >
+                        Enter Transport Info
+                    </p>
+                </div>
+            ),
+            width: 180
+        },
+        {
             headerName: "Pack Date Time",
             field: "packDateTime",
             sortable: true,
@@ -285,7 +309,7 @@ const PackedTbl = () => {
             field: "rts",
             sortable: true,
             filter: 'agNumberColumnFilter',
-            width: 220
+            width: 120
         },
         {
             headerName: "Packed Quantity",
@@ -295,7 +319,7 @@ const PackedTbl = () => {
         {
             headerName: "No. Of Boxes",
             field: "noOfBoxes",
-            width: 300
+            width: 150
         },
         {
             headerName: "Rhokart Invoice No.",
@@ -325,21 +349,7 @@ const PackedTbl = () => {
             filter: true,
             width: 180
         },
-        {
-            headerName: "Take Action",
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        className="btn btn-sm"
-                        style={{ background: "#1F8505", color: "#fff" }}
-                        onClick={() => handleDetailsClick(params.data.orderId, params.data.buyerName, params.data.shippingAddress)}
-                    >
-                        Enter Transport Info
-                    </button>
-                </div>
-            ),
-            width: 180
-        },
+
     ]);
 
     // Check if submit button should be disabled
@@ -494,6 +504,9 @@ const PackedTbl = () => {
                                                         {transportDetails.challanImageUrl && (
                                                             <span className="text-success">{transportDetails.challanImageUrl.split('_').pop()}</span>
                                                         )}
+                                                        {uploadError && (
+                                                            <small className="text-danger">{uploadError}</small>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="col-xxl-7 col-xl-7 col-lg-7 col-md-7 col-sm-7 col-12 d-flex align-items-center">
@@ -520,31 +533,40 @@ const PackedTbl = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => setModalShow(false)}
-                                disabled={submitLoading || uploading}
-                            >
-                                Close
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={handleSubmitTransportDetails}
-                                disabled={isSubmitDisabled}
-                                style={{
-                                    cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
-                                    background: "rgb(31, 133, 5)",
-                                    color: "rgb(255, 255, 255)"
-                                }}
-                            >
-                                {submitLoading ? (
-                                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                ) : null}
-                                Submit
-                            </button>
+                        <div className="modal-footer flex-column align-items-end">
+                            <div className="">
+                                {
+                                    transportError && (
+                                        <small className="text-danger">{transportError}</small>
+                                    )
+                                }
+                            </div>
+                            <div className="gap-3 d-flex justify-content-end">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => setModalShow(false)}
+                                    disabled={submitLoading || uploading}
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={handleSubmitTransportDetails}
+                                    disabled={isSubmitDisabled}
+                                    style={{
+                                        cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
+                                        background: "rgb(31, 133, 5)",
+                                        color: "rgb(255, 255, 255)"
+                                    }}
+                                >
+                                    {submitLoading ? (
+                                        <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                    ) : null}
+                                    Submit
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
