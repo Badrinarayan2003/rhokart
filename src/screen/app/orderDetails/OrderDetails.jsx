@@ -40,6 +40,8 @@ const OrderDetails = () => {
         weight: { isActive: true, isEditable: true, isMandatory: true }
     });
     const [sampleImage, setSampleImage] = useState("");
+    const [showSaveModal, setShowSaveModal] = useState(false);
+    const [imgUrlDownload, setImgUrlDownload] = useState("");
 
 
     // Function to add new shipment box
@@ -221,6 +223,7 @@ const OrderDetails = () => {
             const response = await axios.post(
                 `${BASE_URL}/order/orderupdate`,
                 {
+                    sellerId: sellerId,
                     orderId: orderId,
                     status: status,
                     orderUpdates: orderUpdates
@@ -231,13 +234,14 @@ const OrderDetails = () => {
                     }
                 }
             );
-
+            console.log(response, "save chhange")
             if (response?.data?.rcode === 0) {
                 // Only update the total packed quantity after successful save
                 setTotalPackedQuantity(newTotalPacked);
-                toast.success(response?.data?.coreData?.responseData?.message || "Order details updated successfully!");
+                // toast.success(response?.data?.coreData?.responseData?.message || "Order details updated successfully!");
                 setShowShipmentDetails(true);
                 setHasPackedQuantityChanges(false);
+                setImgUrlDownload(response?.data?.coreData?.responseData?.invoiceUrl)
                 console.log(totalPackedQuantity, "this totalPackedQuantity in rcode zero")
                 // If no shipments exist but we have packed items, add a default box
                 if (shipments.length === 0 && newTotalPacked > 0) {
@@ -493,7 +497,7 @@ const OrderDetails = () => {
                     <div className="d-flex justify-content-end align-items-center mt-3">
                         <button
                             className={`save-change-btn ${!hasPackedQuantityChanges ? 'disabled-save-btn' : ''}`}
-                            onClick={handleSaveOrderDetails}
+                            onClick={() => setShowSaveModal(true)}
                             disabled={!hasPackedQuantityChanges || showShipmentDetails}
                         >
                             Save Changes
@@ -512,16 +516,27 @@ const OrderDetails = () => {
                                 <FaSync className="me-1" /> Refresh
                             </button> */}
                         </div>
-                        <div className="row mb-3">
-                            <div className="col-xxl-4 col-xl-5 col-lg-6 col-md-6">
-                                <label className="form-label">Enter the invoice no. for this shipment</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Enter the invoice number of your own system, if any"
-                                    value={invoiceNo}
-                                    onChange={(e) => setInvoiceNo(e.target.value)}
-                                />
+                        <div className="row mb-4">
+                            <div className="col-6 col-md-6 d-flex flex-column">
+                                <label className="form-label text-dark">Rhokart invoice printout to be pasted on all the packing boxes</label>
+                                <div className="mt-2">
+                                    <a className="down-btn" href={imgUrlDownload}>
+                                        Download RHOKART invoice for shipment
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="col-6 col-md-6">
+                                <label className="form-label text-dark">Do you want to record your own system invoice for easy reconciliation?</label>
+                                <div>
+                                    <input
+                                        style={{ width: "84%" }}
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Enter the invoice number of your own system, if any"
+                                        value={invoiceNo}
+                                        onChange={(e) => setInvoiceNo(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
                         {shipments.map((shipment, index) => (
@@ -666,6 +681,43 @@ const OrderDetails = () => {
                     </div>
                 )}
             </div>
+
+
+
+            {/* Confirmation Modal */}
+            <div className={`modal fade ${showSaveModal ? 'show' : ''}`} style={{ display: showSaveModal ? 'block' : 'none' }} >
+                {/* ... rest of modal JSX ... */}
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header justify-content-center">
+                            <h5 className="modal-title text-dark" style={{ fontWeight: '500', fontSize: '14px' }}>Have you packed these products in the quantity that you mentioned for each SKU?</h5>
+                        </div>
+
+                        <div className="modal-footer gap-5 d-flex justify-content-center">
+                            <button
+                                type="button"
+                                className="go-back-btn"
+                                onClick={() => setShowSaveModal(false)}
+                            >
+                                Go back & edit
+                            </button>
+                            <button
+                                type="button"
+                                className="gen-invc-btn"
+                                onClick={() => {
+                                    setShowSaveModal(false);
+                                    handleSaveOrderDetails();
+                                }}
+                            >
+                                Yes, generate invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {showSaveModal && (
+                <div className="modal-backdrop fade show"></div>
+            )}
         </>
     );
 };

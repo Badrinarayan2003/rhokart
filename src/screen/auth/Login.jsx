@@ -106,6 +106,7 @@ const Login = () => {
 
                 <div className="row login-container d-flex align-items-center justify-content-between">
                     {/* Left Section */}
+                   
                     <div className="col-lg-6 col-md-6 left-section position-relative" id="first-section">
                         <div className="logo-container">
                             <div className='logo-box'>
@@ -116,11 +117,12 @@ const Login = () => {
 
                     {/* Right Section */}
                     <div className="col-lg-6 col-md-6 col-12 d-flex flex-column justify-content-center align-items-center form-section" id='form-section-unique'>
+                        <h3 className='c-name'>Sell on Rhokart</h3>
                         <div>
                             <img src={logo1} alt="Company Logo" className="img-fluid logo-two" />
                         </div>
                         <div className="mb-3 w-75 d-flex flex-column align-items-start">
-                            <h4 className="form-label mb-3">Email id</h4>
+                            <h5 className="form-label label-emain mb-3">Email id</h5>
                             {
                                 errMsg ? <small className='err-msg'>{errMsg}</small> : ""
                             }

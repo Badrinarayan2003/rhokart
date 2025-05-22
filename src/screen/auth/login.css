@@ -86,7 +86,14 @@
 .logo-one {
     width: 17rem;
 }
-
+.c-name{
+        color: rgb(31, 133, 5);
+    margin-bottom: 6rem;
+    font-weight: 700;
+}
+.label-emain{
+    font-weight: 500;
+}
 @media (max-width: 992px) {
     .logo-one {
         width: 14rem;

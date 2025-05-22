@@ -83,7 +83,7 @@ const OrderedTbl = () => {
     // Column definitions for the orders table
     const [columnDefs] = useState([
         {
-            headerName: "SL No.",
+            headerName: "S. No.",
             field: "slNo",
             sortable: true,
             width: 90
@@ -125,18 +125,36 @@ const OrderedTbl = () => {
         //     width: 120
         // },
         {
-            headerName: "No. of Items/sku",
+            headerName: "Total Quantity",
             field: "units",
             sortable: true,
             filter: 'agNumberColumnFilter',
             width: 150
         },
         {
-            headerName: "Total Amount (₹)",
+            headerName: "Payable Amount, tentative",
             field: "totalAmount",
             sortable: true,
             filter: 'agNumberColumnFilter',
             valueFormatter: params => params.value.toFixed(2),
+            width: 240
+        },
+        {
+            headerName: "Take Action",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    <p
+                        className="mb-0 text-danger fw-bold"
+                        style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: "700" }}
+                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status)}
+                    >
+                        {
+                            params.data.hasDocuments ?
+                                "Enter shipment details" : "Order details"
+                        }
+                    </p>
+                </div>
+            ),
             width: 150
         },
         {
@@ -146,21 +164,7 @@ const OrderedTbl = () => {
             filter: 'agNumberColumnFilter',
             width: 220
         },
-        {
-            headerName: "Take Action",
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    <p
-                        className="mb-0 text-danger fw-bold"
-                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                        onClick={() => handleDetailsClick(params.data.orderId, params.data.status)}
-                    >
-                        Order details
-                    </p>
-                </div>
-            ),
-            width: 150
-        },
+
         // {
         //     headerName: "Status",
         //     field: "status",
@@ -203,29 +207,29 @@ const OrderedTbl = () => {
                             <FaDownload /> {params.data.invoiceNo}
                         </button>
                     ) : (
-                        <span className="text-muted">No Invoice</span>
+                        <span className="text-muted">invoice available after order packed</span>
                     )}
                 </div>
             ),
             width: 300
         },
-        {
-            headerName: "Shipping Label",
-            field: "slamId",
-            sortable: true,
-            filter: true,
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                        className="btn btn-sm"
-                    >
-                        <FaDownload /> {params.data.slamId}
-                    </button>
-                </div>
-            ),
-            width: 150
-        },
+        // {
+        //     headerName: "Shipping Label",
+        //     field: "slamId",
+        //     sortable: true,
+        //     filter: true,
+        //     cellRenderer: (params) => (
+        //         <div className="d-flex justify-content-center align-items-center h-100">
+        //             <button
+        //                 style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+        //                 className="btn btn-sm"
+        //             >
+        //                 <FaDownload /> {params.data.slamId}
+        //             </button>
+        //         </div>
+        //     ),
+        //     width: 150
+        // },
         // {
         //     headerName: "RTS ID",
         //     field: "rtsId",

@@ -16,18 +16,48 @@
     background-color: #8b8b8b;
     cursor: not-allowed;
 }
-.mrg-in{
+
+.mrg-in {
     margin-right: 5rem;
 }
-.delete-box-icon{
+
+.delete-box-icon {
     position: absolute;
     right: 1%;
     top: 0%;
     cursor: pointer;
 }
 
+.down-btn {
+    background: #1F8505;
+    padding: 6px 15px;
+    outline: none;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.go-back-btn {
+    border: 1.5px solid #414141;
+    background: #b9b9b9;
+    outline: none;
+    color: #1c1c1c;
+    padding: 6px 15px;
+    border-radius: 5px;
+}
+
+.gen-invc-btn {
+    background: #1F8505;
+    outline: none;
+    color: #fff;
+    padding: 7px 15px;
+    border-radius: 5px;
+    border: none;
+}
+
 @media (max-width:560px) {
-    .mrg-in{
+    .mrg-in {
         margin-right: 10px;
     }
 }

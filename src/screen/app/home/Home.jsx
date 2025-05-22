@@ -42,6 +42,28 @@ const Home = () => {
     const [errMsg, setErrMsg] = useState("");
     const [upErrMsg, setupErrMsg] = useState("");
 
+    // Add this to your existing state declarations
+    const [manualUrls, setManualUrls] = useState([]);
+
+    // Add this useEffect to fetch the manual images
+    useEffect(() => {
+        const fetchManualImages = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/pincode/manual`);
+                const data = response.data;
+                console.log(response, "image api")
+                if (data.rcode === 0) {
+                    setManualUrls(data.coreData.responseData.manualUrls || []);
+                } else {
+                    console.error('Failed to fetch manual images:', data.rmessage);
+                }
+            } catch (err) {
+                console.error('Error fetching manual images:', err);
+            }
+        };
+
+        fetchManualImages();
+    }, []);
 
     useEffect(() => {
         const fetchDownloadUrl = async () => {
@@ -244,7 +266,7 @@ const Home = () => {
     // AG-Grid configuration
     const [columnDefs] = useState([
         {
-            headerName: "Date",
+            headerName: "Payment date",
             field: 'payDate',
             filter: true,
             sortable: true,
@@ -252,23 +274,21 @@ const Home = () => {
             width: 130
         },
         {
-            headerName: "Order ID",
-            field: 'orderId',
+            headerName: 'Payment mode',
+            field: 'paymentMode',
             filter: true,
             sortable: true,
-            cellStyle: { fontWeight: 'bold' },
-            width: 150
+            width: 180
         },
+
         {
-            headerName: "Status",
-            field: 'status',
+            headerName: 'Transaction ID',
+            field: 'transId',
             filter: true,
             sortable: true,
-            cellStyle: { fontWeight: 'bold' },
-            width: 190
         },
         {
-            headerName: 'Received Amount (INR)',
+            headerName: 'Transaction amount(INR)',
             field: 'amount',
             filter: true,
             sortable: true,
@@ -276,19 +296,24 @@ const Home = () => {
             width: 180,
             valueFormatter: params => params.value ? params.value.toFixed(2) : '0.00'
         },
-        {
-            headerName: 'Payment Mode',
-            field: 'paymentMode',
-            filter: true,
-            sortable: true,
-            width: 180
-        },
-        {
-            headerName: 'Transaction ID',
-            field: 'transId',
-            filter: true,
-            sortable: true,
-        },
+        // {
+        //     headerName: "Order ID",
+        //     field: 'orderId',
+        //     filter: true,
+        //     sortable: true,
+        //     cellStyle: { fontWeight: 'bold' },
+        //     width: 150
+        // },
+        // {
+        //     headerName: "Status",
+        //     field: 'status',
+        //     filter: true,
+        //     sortable: true,
+        //     cellStyle: { fontWeight: 'bold' },
+        //     width: 190
+        // },
+
+
     ]);
 
     // File upload state
@@ -422,24 +447,24 @@ const Home = () => {
                     </div>
 
                     <div className='col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-12 '>
-                        <h5 className='text-dark fw-bold loction-header'>Your delivery location</h5>
+                        <h5 className='text-dark fw-bold loction-header'>Seller fulfilled delivery locations</h5>
 
                         {/* First Section - Whitelist */}
                         <div className="delivery-location-section mb-0 p-3">
-                            <h6 className='fw-bold mb-3 p-text-color'>Add new delivery location(Whitelist)</h6>
-                            <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                                <label className='me-2 text-dark'>Download delivery address template:</label>
-                                <a className="btn btn-sm btn-secondary"
+                            {/* <h6 className='fw-bold mb-3 p-text-color'>Add new delivery location(Whitelist)</h6> */}
+                            <div className="d-flex gap-3 align-items-center mb-3 flex-wrap">
+                                <label className='me-2 text-dark'>Download seller fulfilled locations excel template</label>
+                                <a className="up-down-btn"
                                     href={downloadUrl}
                                 >
                                     <span className='me-1'>
-                                        <FaDownload size={13} color='#fff' />
+                                        <FaDownload size={13} color='#1f8505' />
                                     </span>
                                     Download
                                 </a>
                             </div>
-                            <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap">
-                                <label className='d-block mb-2 text-dark'>Upload your delivery addresses:</label>
+                            <div className="mb-3 d-flex gap-3 align-items-center flex-wrap">
+                                <label className='d-block mb-2 text-dark'>Upload seller fulfilled locations excel template</label>
                                 <div className="d-flex align-items-end flex-column">
                                     <div>
                                         <input
@@ -449,9 +474,9 @@ const Home = () => {
                                             onChange={handleWhitelistFileChange}
                                             className="d-none"
                                         />
-                                        <label htmlFor="whitelist-upload" className="btn btn-sm btn-secondary text-end" style={{ padding: "4px 17px" }}>
+                                        <label htmlFor="whitelist-upload" className="up-down-btn text-end" style={{ padding: "4px 17px" }}>
                                             <span className='me-1'>
-                                                <FaUpload size={13} color='#fff' />
+                                                <FaUpload size={13} color='#1f8505' />
                                             </span>
                                             Upload
                                         </label>
@@ -513,17 +538,55 @@ const Home = () => {
                             </div>
                         </div> */}
 
-                        {/* Third Section - Video */}
+                        {/* Third Section - Carousel */}
                         <div className="delivery-location-section p-3 border rounded">
-                            <h6 className='fw-bold mb-3 p-text-color'>Guide: How to add or block delivery location check here</h6>
-                            <div className="ratio ratio-16x9">
-                                <iframe
-                                    src="https://www.youtube.com/embed/RRMpWijZMGo"
-                                    title="YouTube video player"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
-                            </div>
+                            <h6 className='fw-bold mb-3  p-text-style'>
+                                For seller fulfilled delivery, you will have to specify the pincodes/geographies where
+                                you can deliver yourself, ie activate the geographies for delivery. Refer to below screenshots
+                                for a simple explanation to understand how to activate the geographies.
+                            </h6>
+
+                            {manualUrls.length > 0 ? (
+                                <div id="manualCarousel" className="carousel slide" data-bs-ride="carousel">
+                                    <div className="carousel-inner">
+                                        {manualUrls.map((url, index) => (
+                                            <div
+                                                key={index}
+                                                className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                                            >
+                                                <img
+                                                    src={url}
+                                                    className="d-block w-100"
+                                                    alt={`Manual ${index + 1}`}
+                                                    style={{ maxHeight: '500px', objectFit: 'contain' }}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button
+                                        className="carousel-control-prev text-dark"
+                                        type="button"
+                                        data-bs-target="#manualCarousel"
+                                        data-bs-slide="prev"
+                                    >
+                                        <span className="carousel-control-prev-icon text-dark" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button
+                                        className="carousel-control-next text-dark"
+                                        type="button"
+                                        data-bs-target="#manualCarousel"
+                                        data-bs-slide="next"
+                                    >
+                                        <span className="carousel-control-next-icon text-dark" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="text-center py-4">
+                                    <p>Loading manual images...</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

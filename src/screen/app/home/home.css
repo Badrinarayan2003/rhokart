@@ -15,6 +15,18 @@
     transition: 0.2s linear;
 }
 
+.up-down-btn {
+    border: 1.5px solid #1f8505;
+    background: #fff;
+    color: #1f8505;
+    outline: none;
+    border-radius: 4px;
+    padding: 4px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
 .order-status-box-one:hover {
     background: #1F8505;
 
@@ -63,6 +75,12 @@
     border-radius: 4px;
 }
 
+.p-text-style {
+    font-weight: 400;
+    color: #3d3d3d;
+    font-size: 14px;
+}
+
 .p-text-color {
     color: #1F8505;
 }
@@ -99,9 +117,11 @@
     color: #6c757d;
     cursor: not-allowed;
 }
-.bg-disable{
+
+.bg-disable {
     background: #5c605a;
 }
+
 @media (max-width:768px) {
     .order-status-box-one p {
         font-size: 13px;

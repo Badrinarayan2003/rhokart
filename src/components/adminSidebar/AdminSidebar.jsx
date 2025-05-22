@@ -60,7 +60,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                 <div className='sidebar-brand mt-0' onClick={() => navigate("/home")}>
                     <img src={logo2} />
                 </div>
-                <h5 className="text-light fw-bold mb-0" id='well-come'>Seller Corner</h5>
+                <h5 className="text-light fw-bold mb-0" style={{fontSize: "18px"}}  id='well-come'>Sell on Rhokart</h5>
                 <span className='icon close_icon' onClick={OpenSidebar}>
                     <CgClose size={25} color='#fff' />
                 </span>
@@ -163,7 +163,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
                                 style={{ textWrap: 'auto', padding: "5px 5px", marginLeft: "10px" }}
                                 onClick={(e) => e.stopPropagation()} // Prevents dropdown from closing
                             >
-                                My Product
+                                My Products
                             </NavLink>
                         </a>
                     </div>
