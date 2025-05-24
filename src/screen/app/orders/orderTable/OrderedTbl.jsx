@@ -60,8 +60,8 @@ const OrderedTbl = () => {
 
 
     // Handle download button click
-    const handleDownload = (orderId) => {
-        console.log(`Downloading documents for order ${orderId}`);
+    const handleDownload = (invoiceId) => {
+        console.log(`Downloading documents for order ${invoiceId}`);
         // Add your download logic here
         // Example: window.open(`/api/documents/${orderId}`, '_blank');
     };
@@ -202,7 +202,7 @@ const OrderedTbl = () => {
                         <button
                             className="btn btn-sm"
                             style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                            onClick={() => handleDownload(params.data.orderId)}
+                            onClick={() => handleDownload(params.data.invoiceNo)}
                         >
                             <FaDownload /> {params.data.invoiceNo}
                         </button>

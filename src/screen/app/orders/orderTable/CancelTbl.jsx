@@ -26,24 +26,31 @@ const CancelTbl = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`${BASE_URL}/order/detail?sellerId=${sellerId}&status=CANCEL`);
+                const response = await axios.get(`https://sellerapi.rhoselect.com/orderprocess/cancel?sellerId=${sellerId}`);
                 console.log(response, "CANCEL tab response")
-                if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.sellerOrders) {
-                    const mappedData = response?.data?.coreData?.responseData?.sellerOrders.map((order, index) => ({
+                if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.cancelDetails) {
+                    const mappedData = response?.data?.coreData?.responseData?.cancelDetails.map((order, index) => ({
                         slNo: index + 1,
-                        orderId: order.orderId,
-                        buyerName: order.buyerName,
-                        buyerState: order.buyerState,
-                        buyerDistrict: order.buyerDistrict,
-                        buyerPin: order.buyerPin,
-                        units: order.units,
-                        totalAmount: order.totalAmount,
-                        status: order.status,
-                        invoiceNo: order.invoiceNo,
-                        hasDocuments: order.invoiceNo && order.invoiceNo.trim() !== "",
-                        slamId: order.slamId,
-                        rtsId: order.shipId,
-                        payStatus: order.payStatus
+                        orderId: order.order.orderId,
+                        buyerName: order.order.buyerName,
+                        fillRate: order.order.fillRate,
+                        noOfBoxes: order.order.noOfBoxes,
+                        orderDate: order.order.orderDate,
+                        orderPackedDate: order.order.orderPackedDate,
+                        orderPackedTime: order.order.orderPackedTime,
+                        orderTime: order.order.orderTime,
+                        orderValue: order.order.orderValue,
+                        packedValue: order.order.packedValue,
+                        rhokartBuyerInvoice: order.order.rhokartBuyerInvoice,
+                        rhokartSellerInvoiceNumber: order.order.rhokartSellerInvoiceNumber,
+                        rtsTime: order.order.rtsTime,
+                        sellerInvoiceNumber: order.order.sellerInvoiceNumber,
+                        shippingAddress: order.order.shippingAddress,
+                        totalPackedQty: order.order.totalPackedQty,
+                        transportMode: order.transportMode,
+                        cancelDate: order.cancelDate,
+                        cancelReason: order.cancelReason,
+                        cancelTime: order.cancelTime,
                     }));
                     setRowData(mappedData);
                     setLoading(false);
@@ -58,8 +65,8 @@ const CancelTbl = () => {
     }, [sellerId]);
 
 
-    const handleDownload = (orderId) => {
-        console.log(`Downloading documents for order ${orderId}`);
+    const handleDownload = (invoiceId) => {
+        console.log(`Downloading documents for order ${invoiceId}`);
     };
 
     const handleDetailsClick = (orderId, status, invoiceNo) => {
@@ -88,113 +95,174 @@ const CancelTbl = () => {
             width: 150
         },
         {
-            headerName: "Buyer Name",
-            field: "buyerName",
+            headerName: "Order value (INR)",
+            field: "orderValue",
             sortable: true,
             filter: true,
             width: 150
         },
         {
-            headerName: "Buyer State",
-            field: "buyerState",
-            sortable: true,
-            filter: true,
-            width: 140
-        },
-        {
-            headerName: "Buyer District",
-            field: "buyerDistrict",
+            headerName: "Packed value (INR)",
+            field: "packedValue",
             sortable: true,
             filter: true,
             width: 140
         },
         {
-            headerName: "No. of Items/sku",
-            field: "units",
+            headerName: "Fill rate",
+            field: "fillRate",
+            sortable: true,
+            filter: true,
+            width: 140
+        },
+        {
+            headerName: "Order date",
+            field: "orderDate",
             sortable: true,
             filter: 'agNumberColumnFilter',
             width: 150
         },
         {
-            headerName: "Total Amount (₹)",
-            field: "totalAmount",
+            headerName: "Order time",
+            field: "orderTime",
             sortable: true,
             filter: 'agNumberColumnFilter',
-            valueFormatter: params => params.value.toFixed(2),
+            // valueFormatter: params => params.value.toFixed(2),
             width: 150
         },
-        // {
-        //     headerName: "Take Action",
-        //     cellRenderer: (params) => (
-        //         <div className="d-flex justify-content-center align-items-center h-100">
-        //             <button
-        //                 className="btn btn-sm"
-        //                 style={{ background: "#1F8505", color: "#fff" }}
-        //             >
-        //                 Confirm delivery
-        //             </button>
-        //         </div>
-        //     ),
-        //     width: 150
-        // },
         {
-            headerName: "Invoice",
-            headerClass: "badri",
+            headerName: "Order pack date",
+            field: "orderPackedDate",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "Order pack time",
+            field: "orderPackedTime",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "RTS time (days)",
+            field: "rtsTime",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "Total packed qty",
+            field: "totalPackedQty",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "No. of boxes",
+            field: "noOfBoxes",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "Rhokart buyer invoice",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
-                    {params.data.hasDocuments ? (
+                    {params.data.rhokartBuyerInvoice ? (
                         <button
                             className="btn btn-sm"
                             style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                            onClick={() => handleDownload(params.data.orderId)}
+                            onClick={() => handleDownload(params.data.rhokartBuyerInvoice)}
                         >
-                            <FaDownload /> {params.data.invoiceNo}
+                            <FaDownload /> {params.data.rhokartBuyerInvoice}
                         </button>
                     ) : (
-                        <span className="text-muted">No Invoice</span>
+                        <span className="text-muted">Invoice is not available</span>
                     )}
                 </div>
             ),
-            width: 300
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
         },
         {
-            headerName: "Shipping Label",
-            field: "slamId",
+            headerName: "Shipping address",
+            field: "shippingAddress",
             sortable: true,
-            filter: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "Transport mode",
+            field: "transportMode",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 220
+        },
+        {
+            headerName: "Seller invoice number (if any)",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        style={{ border: "1px solid #1F8505", color: '#1F8505' }}
-                        className="btn btn-sm"
-                    >
-                        <FaDownload /> {params.data.slamId}
-                    </button>
+                    {params.data.sellerInvoiceNumber ? (
+                        <button
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            onClick={() => handleDownload(params.data.sellerInvoiceNumber)}
+                        >
+                            <FaDownload /> {params.data.sellerInvoiceNumber}
+                        </button>
+                    ) : (
+                        <span className="text-muted">Invoice is not available</span>
+                    )}
                 </div>
             ),
-            width: 150
+            sortable: true,
+            filter: true,
+            width: 240
         },
         {
-            headerName: "Ready To Ship (RTS) ID",
-            field: "rtsId",
+            headerName: "Rhokart seller invoice",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.data.rhokartSellerInvoiceNumber ? (
+                        <button
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            onClick={() => handleDownload(params.data.rhokartSellerInvoiceNumber)}
+                        >
+                            <FaDownload /> {params.data.rhokartSellerInvoiceNumber}
+                        </button>
+                    ) : (
+                        <span className="text-muted">Invoice is not available</span>
+                    )}
+                </div>
+            ),
+            sortable: true,
+            filter: true,
+            width: 200
+        },
+        {
+            headerName: "Cancel date",
+            field: "cancelDate",
             sortable: true,
             filter: true,
             width: 150
         },
         {
-            headerName: "Payment Status",
-            cellRenderer: (params) => (
-                <div className="d-flex justify-content-center align-items-center h-100">
-                    <button
-                        className="btn btn-sm"
-                        style={{ background: "#1F8505", color: "#fff" }}
-                    >
-                        Verification pending
-                    </button>
-                </div>
-            ),
+            headerName: "Cancel time",
+            field: "cancelTime",
+            sortable: true,
+            filter: true,
             width: 150
         },
+        {
+            headerName: "Cancel Reason",
+            field: "cancelReason",
+            sortable: true,
+            filter: true,
+            width: 250
+        }
     ]);
 
     return (

@@ -59,7 +59,9 @@
 .ag-header-cell-sortable .ag-header-cell-label {
     justify-content: center;
 }
-
+.transport-status-info{
+    color: #1F8505;
+}
 /* Status badges */
 .status-badge {
     padding: 4px 8px;
@@ -128,4 +130,8 @@
         width: 24%;
         padding: 6px 4px;
     }
+}
+
+.transport-input::placeholder{
+    font-size: 13px;
 }

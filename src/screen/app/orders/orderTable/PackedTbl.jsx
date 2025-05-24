@@ -53,27 +53,30 @@ const PackedTbl = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`https://sellerapi.rhoselect.com/order/pickup?sellerId=${sellerId}`);
+                const response = await axios.get(`https://sellerapi.rhoselect.com/orderprocess/packed?sellerId=${sellerId}`);
                 console.log(response, "packed");
 
-                if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.pickups) {
+                if (response?.data?.rcode === 0 && response?.data?.coreData?.responseData?.packingDetails) {
                     setLoading(false);
-                    const mappedData = response?.data?.coreData?.responseData?.pickups.map((order, index) => ({
+                    const mappedData = response?.data?.coreData?.responseData?.packingDetails.map((order, index) => ({
                         slNo: index + 1,
-                        orderId: order.orderId,
-                        buyerName: order.buyerName,
-                        orderAmount: order.orderAmount,
-                        packedAmount: order.packedAmount,
-                        fillRate: order.fillRate,
-                        orderDateTime: order.orderDateTime,
-                        packDateTime: order.packDateTime,
-                        rts: order.rts,
-                        packedQuantity: order.packedQuantity,
-                        noOfBoxes: order.noOfBoxes,
-                        rhokartInvoiceNo: order.rhokartInvoiceNo,
-                        sellerInvoiceNo: order.sellerInvoiceNo,
-                        shippingAddress: order.shippingAddress,
-                        transportMode: order.transportMode,
+                        orderId: order.order?.orderId,
+                        buyerName: order.order?.buyerName,
+                        fillRate: order.order?.fillRate,
+                        noOfBoxes: order.order?.noOfBoxes,
+                        orderDate: order.order?.orderDate,
+                        orderPackedDate: order.order?.orderPackedDate,
+                        orderPackedTime: order.order?.orderPackedTime,
+                        orderTime: order.order?.orderTime,
+                        orderValue: order.order?.orderValue,
+                        packedValue: order.order?.packedValue,
+                        rhokartBuyerInvoice: order.order?.rhokartBuyerInvoice,
+                        rhokartSellerInvoiceNumber: order.order?.rhokartSellerInvoiceNumber,
+                        rtsTime: order.order?.rtsTime,
+                        sellerInvoiceNumber: order.order?.sellerInvoiceNumber,
+                        shippingAddress: order.order?.shippingAddress,
+                        totalPackedQty: order.order?.totalPackedQty,
+                        transportStatus: order.transportStatus,
                         isChanged: false
                     }));
                     setRowData(mappedData);
@@ -226,8 +229,8 @@ const PackedTbl = () => {
     };
 
     // Handle download button click
-    const handleDownload = (orderId) => {
-        console.log(`Downloading documents for order ${orderId}`);
+    const handleDownload = (invoiceId) => {
+        console.log(`Downloading documents for order ${invoiceId}`);
     };
 
     // Handle submit changes
@@ -254,35 +257,28 @@ const PackedTbl = () => {
             width: 180
         },
         {
-            headerName: "Order Amount",
-            field: "orderAmount",
+            headerName: "Order value (INR)",
+            field: "orderValue",
             sortable: true,
             filter: true,
             width: 180
         },
         {
-            headerName: "Packed Amount",
-            field: "packedAmount",
+            headerName: "Packed value (INR)",
+            field: "packedValue",
             sortable: true,
             filter: true,
             width: 180
         },
         {
-            headerName: "Fill Rate",
+            headerName: "Fill rate",
             field: "fillRate",
             sortable: true,
             filter: true,
             width: 140
         },
         {
-            headerName: "Order Date Time",
-            field: "orderDateTime",
-            sortable: true,
-            filter: 'agNumberColumnFilter',
-            width: 240
-        },
-        {
-            headerName: "Take Action",
+            headerName: "Take action",
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     <p
@@ -290,65 +286,150 @@ const PackedTbl = () => {
                         style={{ textDecoration: 'underline', cursor: 'pointer' }}
                         onClick={() => handleDetailsClick(params.data.orderId, params.data.buyerName, params.data.shippingAddress)}
                     >
-                        Enter Transport Info
+                        Enter transport Info
                     </p>
                 </div>
             ),
             width: 180
         },
         {
-            headerName: "Pack Date Time",
-            field: "packDateTime",
+            headerName: "Order date",
+            field: "orderDate",
+            sortable: true,
+            filter: 'agNumberColumnFilter',
+            width: 240
+        },
+        {
+            headerName: "Order time",
+            field: "orderTime",
             sortable: true,
             filter: 'agNumberColumnFilter',
             // valueFormatter: params => params.value.toFixed(2),
             width: 240
         },
         {
-            headerName: "RTS",
-            field: "rts",
+            headerName: "Order pack date",
+            field: "orderPackedDate",
             sortable: true,
             filter: 'agNumberColumnFilter',
-            width: 120
+            width: 160
         },
         {
-            headerName: "Packed Quantity",
-            field: "packedQuantity",
+            headerName: "Order pack time",
+            field: "orderPackedTime",
             width: 150
         },
         {
-            headerName: "No. Of Boxes",
+            headerName: "RTS time (days)",
+            field: "rtsTime",
+            width: 150
+        },
+        {
+            headerName: "Total packed qty",
+            field: "totalPackedQty",
+            sortable: true,
+            filter: true,
+            width: 160
+        },
+        {
+            headerName: "No. of boxes",
             field: "noOfBoxes",
-            width: 150
-        },
-        {
-            headerName: "Rhokart Invoice No.",
-            field: "rhokartInvoiceNo",
             sortable: true,
             filter: true,
-            width: 250
+            width: 160
         },
         {
-            headerName: "Seller Invoice No.",
-            field: "sellerInvoiceNo",
+            headerName: "Rhokart buyer invoice",
             sortable: true,
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.data.rhokartBuyerInvoice ? (
+                        <button
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            onClick={() => handleDownload(params.data.rhokartBuyerInvoice)}
+                        >
+                            <FaDownload /> {params.data.rhokartBuyerInvoice}
+                        </button>
+                    ) : (
+                        <span className="text-muted">Invoice is not available</span>
+                    )}
+                </div>
+            ),
             filter: true,
-            width: 220
+            width: 260
         },
         {
-            headerName: "Shipping Address",
+            headerName: "Shipping address",
             field: "shippingAddress",
             sortable: true,
             filter: true,
-            width: 250
+            width: 400
         },
+        // {
+        //     headerName: "Take action",
+        //     cellRenderer: (params) => (
+        //         <div className="d-flex justify-content-center align-items-center h-100">
+        //             {
+        //                 params.data.transportStatus === "Enter transport Info" ?
+        //                     <p
+        //                         className="mb-0 text-danger fw-bold"
+        //                         style={{ textDecoration: 'underline', cursor: 'pointer' }}
+        //                         onClick={() => handleDetailsClick(params.data.orderId, params.data.buyerName, params.data.shippingAddress)}
+        //                     >
+        //                         {params.data.transportStatus}
+        //                     </p>
+        //                     :
+        //                     <p className="transport-status-info mb-0 text-danger">{params.data.transportStatus}</p>
+        //             }
+
+        //         </div>
+        //     ),
+        //     width: 180
+        // },
         {
-            headerName: "Transport Mode",
-            field: "transportMode",
+            headerName: "Seller invoice number (if any)",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.data.sellerInvoiceNumber ? (
+                        <button
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            onClick={() => handleDownload(params.data.sellerInvoiceNumber)}
+                        >
+                            <FaDownload /> {params.data.sellerInvoiceNumber}
+                        </button>
+                    ) : (
+                        <span className="text-muted">Invoice is not available</span>
+                    )}
+                </div>
+            ),
             sortable: true,
             filter: true,
             width: 180
         },
+        {
+            headerName: "Rhokart seller invoice",
+            cellRenderer: (params) => (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                    {params.data.rhokartSellerInvoiceNumber ? (
+                        <button
+                            className="btn btn-sm"
+                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
+                            onClick={() => handleDownload(params.data.rhokartSellerInvoiceNumber)}
+                        >
+                            <FaDownload /> {params.data.rhokartSellerInvoiceNumber}
+                        </button>
+                    ) : (
+                        <span className="text-muted">Invoice is not available</span>
+                    )}
+                </div>
+            ),
+            sortable: true,
+            filter: true,
+            width: 180
+        },
+
 
     ]);
 
@@ -409,18 +490,19 @@ const PackedTbl = () => {
                             </div>
 
                             {/* Transport Details Form */}
-                            <div className="row  border rounded">
+                            <div className="row border mt-2 rounded">
                                 <div className="col-12">
 
 
-                                    <h6>Transport Details</h6>
-                                    <div className="row mb-3">
+                                    <h6 className="fw-bold">Transport Details</h6>
+                                    <div className="row mb-2">
                                         <div className="col-md-6">
                                             <label className="form-label text-dark fw-bold">Transporter Name <span className="text-danger">*</span></label>
 
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className="form-control transport-input"
+                                                placeholder="Enter transporter name"
                                                 name="transportName"
                                                 value={transportDetails.transportName}
                                                 onChange={handleTransportChange}
@@ -436,7 +518,8 @@ const PackedTbl = () => {
 
                                             <input
                                                 type="number"
-                                                className="form-control"
+                                                className="form-control transport-input"
+                                                placeholder="Enter transporter mobile no."
                                                 name="transportMobile"
                                                 value={transportDetails.transportMobile}
                                                 onChange={handleTransportChange}
@@ -448,12 +531,13 @@ const PackedTbl = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="row mb-3">
+                                    <div className="row mb-2">
                                         <div className="col-md-6">
                                             <label className="form-label text-dark fw-bold">Vehicle No.</label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className="form-control transport-input"
+                                                placeholder="Enter vehicle no."
                                                 name="vehicleNo"
                                                 value={transportDetails.vehicleNo}
                                                 onChange={handleTransportChange}
@@ -465,7 +549,8 @@ const PackedTbl = () => {
 
                                             <input
                                                 type="number"
-                                                className="form-control"
+                                                placeholder="Enter driver mobile no."
+                                                className="form-control transport-input"
                                                 name="driverMobile"
                                                 value={transportDetails.driverMobile}
                                                 onChange={handleTransportChange}
@@ -477,8 +562,8 @@ const PackedTbl = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="row mb-3">
-                                        <div className="col-12 mb-4 d-flex align-items-center">
+                                    <div className="row mb-2">
+                                        <div className="col-12 mb-2 d-flex align-items-center">
                                             <div className="row">
                                                 <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
                                                     <label className="form-label text-dark fw-bold">Transport Challan Photo</label>
@@ -519,7 +604,8 @@ const PackedTbl = () => {
 
                                             <input
                                                 type="email"
-                                                className="form-control"
+                                                className="form-control transport-input"
+                                                placeholder="Enter transporter email"
                                                 name="transportEmail"
                                                 value={transportDetails.transportEmail}
                                                 onChange={handleTransportChange}
