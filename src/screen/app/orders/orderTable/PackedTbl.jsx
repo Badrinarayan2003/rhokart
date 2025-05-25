@@ -228,9 +228,36 @@ const PackedTbl = () => {
         }
     };
 
-    // Handle download button click
-    const handleDownload = (invoiceId) => {
-        console.log(`Downloading documents for order ${invoiceId}`);
+    const handleDownload = async (invoiceId) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `https://sellerapi.rhoselect.com/order/invoicedownload?invoiceId=${invoiceId}`,
+                {
+                    headers: {
+                        // Add any required headers here
+                        // 'Authorization': `Bearer ${yourToken}`
+                    }
+                }
+            );
+            console.log(response, "download ")
+            if (response.data.rcode === 0 && response.data.coreData.responseData.invoiceUrl) {
+                const downloadUrl = response.data.coreData.responseData.invoiceUrl;
+
+                // Create a temporary anchor element to trigger the download
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = `${invoiceId}.pdf`; // This forces the download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        } catch (error) {
+            console.error("Error downloading invoice:", error);
+            // You might want to show an error message to the user here
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Handle submit changes

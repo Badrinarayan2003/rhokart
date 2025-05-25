@@ -44,12 +44,16 @@ const Payments = () => {
 
         // Define columns
         worksheet.columns = [
-            { header: 'Date', key: 'payDate', width: 15 },
             { header: 'Order ID', key: 'orderId', width: 15 },
-            { header: 'Status', key: 'status', width: 20 },
-            { header: 'Amount (INR)', key: 'amount', width: 15 },
-            { header: 'Payment Mode', key: 'paymentMode', width: 15 },
-            { header: 'Transit ID', key: 'transId', width: 20 }
+            { header: 'Order date', key: 'orderDate', width: 20 },
+            { header: 'Order pack date', key: 'orderPackedDate', width: 15 },
+            { header: 'Order delivered date', key: 'orderDeliveredDate', width: 20 },
+            { header: 'Payable amount (INR)', key: 'payableAmount', width: 20 },
+            { header: 'Paid amount (INR)', key: 'paidAmount', width: 20 },
+            { header: 'Payment date', key: 'paymentDate', width: 20 },
+            { header: 'Payment mode', key: 'paymentMode', width: 20 },
+            { header: 'Transaction ID', key: 'transactionId', width: 20 },
+            { header: 'Transaction amount', key: 'transactionAmount', width: 20 },
         ];
 
         // Style the header row
@@ -79,12 +83,15 @@ const Payments = () => {
         // Add data rows
         paymentData.forEach(payment => {
             worksheet.addRow({
-                payDate: payment.payDate,
+                orderDate: payment.orderDate,
                 orderId: payment.orderId,
-                status: payment.status,
-                amount: payment.amount ? payment.amount.toFixed(2) : '0.00',
+                orderDeliveredDate: payment.orderDeliveredDate,
+                orderPackedDate: payment.orderPackedDate,
+                paidAmount: payment.paidAmount,
+                payableAmount: payment.payableAmount,
                 paymentMode: payment.paymentMode,
-                transId: payment.transId
+                transactionAmount: payment.transactionAmount,
+                transactionId: payment.transactionId,
             });
         });
 
@@ -165,7 +172,7 @@ const Payments = () => {
                     console.log(actualFromDate, "this is actual from date");
                 }
 
-                const response = await axios.get(`${BASE_URL}/report/payment`, {
+                const response = await axios.get(`https://sellerapi.rhoselect.com/report/paymentdetails`, {
                     params: {
                         sellerId: sellerId,
                         fromDate: actualFromDate,
@@ -177,11 +184,11 @@ const Payments = () => {
                 const data = response.data;
 
                 if (data.rcode === 0) {
-                    setPaymentData(data.coreData.responseData.sellerPayments || []);
+                    setPaymentData(data.coreData.responseData.paymentReports || []);
 
                     // Calculate total amount
-                    const total = data.coreData.responseData.sellerPayments.reduce(
-                        (sum, payment) => sum + (payment.amount || 0), 0
+                    const total = data.coreData.responseData.paymentReports.reduce(
+                        (sum, payment) => sum + (payment.paidAmount || 0), 0
                     );
                     setTotalAmount(total);
                 } else {
@@ -218,14 +225,6 @@ const Payments = () => {
     // AG-Grid configuration
     const [columnDefs] = useState([
         {
-            headerName: "Date",
-            field: 'payDate',
-            filter: true,
-            sortable: true,
-            cellStyle: { fontWeight: 'bold' },
-            width: 150
-        },
-        {
             headerName: "Order ID",
             field: 'orderId',
             filter: true,
@@ -234,32 +233,63 @@ const Payments = () => {
             width: 190
         },
         {
-            headerName: "Status",
-            field: 'status',
+            headerName: "Order date",
+            field: 'orderDate',
+            filter: true,
+            sortable: true,
+            cellStyle: { fontWeight: 'bold' },
+            width: 150
+        },
+        {
+            headerName: "Order pack date",
+            field: 'orderPackedDate',
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
             width: 240
         },
         {
-            headerName: 'Received Amount (INR)',
-            field: 'amount',
+            headerName: 'Order delivered date',
+            field: 'orderDeliveredDate',
             filter: true,
             sortable: true,
             cellStyle: { fontWeight: 'bold' },
-            width: 230,
-            valueFormatter: params => params.value ? params.value.toFixed(2) : '0.00'
+            width: 230
         },
         {
-            headerName: 'Payment Mode',
-            field: 'paymentMode',
+            headerName: 'Payable amount (INR)',
+            field: 'payableAmount',
             filter: true,
             sortable: true,
             width: 180
         },
         {
+            headerName: 'Paid amount (INR)',
+            field: 'paidAmount',
+            filter: true,
+            sortable: true,
+        },
+        {
+            headerName: 'Payment date',
+            field: 'paymentDate',
+            filter: true,
+            sortable: true,
+        },
+        {
+            headerName: 'Payment mode',
+            field: 'paymentMode',
+            filter: true,
+            sortable: true,
+        },
+        {
             headerName: 'Transaction ID',
-            field: 'transId',
+            field: 'transactionId',
+            filter: true,
+            sortable: true,
+        },
+        {
+            headerName: 'Transaction amount',
+            field: 'transactionAmount',
             filter: true,
             sortable: true,
         },
@@ -312,7 +342,8 @@ const Payments = () => {
                         </p>
                         <button
                             onClick={exportToExcel}
-                            className="btn btn-success d-flex align-items-center"
+                            className="btn d-flex align-items-center text-light"
+                            id='download-to-excel-btn'
                             disabled={paymentData.length === 0}
                         >
                             <span className='d-flex'>
