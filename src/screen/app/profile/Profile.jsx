@@ -26,6 +26,7 @@ const Profile = () => {
                 );
                 setApiData(response.data.response.coreData.responseData);
                 setLoading(false);
+                console.log(response, "profile resoponse")
             } catch (error) {
                 console.error("Error fetching registration details:", error);
                 toast.error("Failed to fetch registration details");
