@@ -21,6 +21,11 @@ const TransitTbl = () => {
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const sellerId = useSelector((state) => state.auth?.sellerId);
 
+    const [uploadError, setUploadError] = useState("");
+    const [otpError, setOtpError] = useState("");
+    const [deliveryError, setDeliveryError] = useState("");
+    const [deliverySuccess, setDeliverySuccess] = useState("");
+
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -82,7 +87,7 @@ const TransitTbl = () => {
         if (!file) return;
 
         setLoading(true);
-
+        setUploadError(""); // Clear previous errors
         try {
             const formData = new FormData();
             formData.append('files', file);
@@ -97,11 +102,12 @@ const TransitTbl = () => {
                 const uploadedFile = response.data.response.coreData.responseData.uploadedFiles[0];
                 setUploadedFiles(prev => [...prev, uploadedFile]);
             } else {
-                alert("Failed to upload file");
+                // alert("Failed to upload file");
+                setUploadError("Failed to upload file. Please try again.");
             }
         } catch (error) {
             console.error("Error uploading file:", error);
-            alert("Error uploading file");
+            setUploadError("Error uploading file. Please try again.");
         } finally {
             setLoading(false);
             e.target.value = ''; // Reset file input
@@ -110,9 +116,13 @@ const TransitTbl = () => {
 
 
     const handleSubmitDelivery = async () => {
+        setDeliveryError("");
+        setDeliverySuccess("");
         if (!otp) {
-            alert("Please enter OTP");
+            setOtpError("Please enter OTP");
             return;
+        } else {
+            setOtpError("");
         }
 
         // if (uploadedFiles.length === 0) {
@@ -145,21 +155,21 @@ const TransitTbl = () => {
             console.log("Delivery confirmation response:", response);
 
             if (response.data?.rcode === 0) {
-                // Success case
-                alert(response.data.coreData?.responseData?.message || "Delivery confirmed successfully!");
 
-                // Close the modal and reset form
-                handleCloseModal();
-                fetchData();
-                // Optionally, refresh the order data
-                // You might want to add a refresh function here
+                setDeliverySuccess(response.data.coreData?.responseData?.message || "Delivery confirmed successfully!");
+                setTimeout(() => {
+                    handleCloseModal();
+                    fetchData();
+                    setDeliverySuccess("")
+                }, 2000);
+
             } else {
                 // Handle API error
-                alert(response.data?.rmessage || "Failed to confirm delivery");
+                setDeliveryError(response.data?.rmessage || "Failed to confirm delivery");
             }
         } catch (error) {
             console.error("Error confirming delivery:", error);
-            alert("An error occurred while confirming delivery");
+            setDeliveryError("An error occurred while confirming delivery");
         } finally {
             setLoading(false);
         }
@@ -349,13 +359,7 @@ const TransitTbl = () => {
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.sellerInvoiceNumber ? (
-                        <button
-                            className="btn btn-sm"
-                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                            onClick={() => handleDownload(params.data.sellerInvoiceNumber)}
-                        >
-                            <FaDownload /> {params.data.sellerInvoiceNumber}
-                        </button>
+                        <span className="text-muted">{params.data.sellerInvoiceNumber}</span>
                     ) : (
                         <span className="text-muted">Invoice is not available</span>
                     )}
@@ -363,7 +367,7 @@ const TransitTbl = () => {
             ),
             sortable: true,
             filter: true,
-            width: 240
+            width: 250
         },
         {
             headerName: "Rhokart seller invoice",
@@ -457,10 +461,14 @@ const TransitTbl = () => {
                                                 style={{ width: "55%" }}
                                                 id="otpInput"
                                                 value={otp}
-                                                onChange={(e) => setOtp(e.target.value)}
+                                                onChange={(e) => {
+                                                    setOtp(e.target.value);
+                                                    setOtpError(""); // Clear error when typing
+                                                }}
                                                 placeholder="Enter 5 digit OTP"
                                                 required
                                             />
+                                            {otpError && <div className="text-danger">{otpError}</div>}
                                             <small className="signal-msg">
                                                 Delivery OTP will be provided by the buyer
                                             </small>
@@ -481,6 +489,9 @@ const TransitTbl = () => {
                                                     <FaUpload /> {loading ? 'Uploading...' : 'Upload'}
                                                 </label>
                                             </div>
+                                            {uploadError && (
+                                                <div className="text-danger mt-1">{uploadError}</div>
+                                            )}
 
                                             {uploadedFiles.length > 0 && (
                                                 <div className="mt-2">
@@ -511,6 +522,20 @@ const TransitTbl = () => {
                                             )}
                                         </div>
                                     </div>
+
+
+                                    {deliveryError && (
+                                        <div className="col-md-12">
+                                            <div className="alert alert-danger">{deliveryError}</div>
+                                        </div>
+                                    )}
+                                    {deliverySuccess && (
+                                        <div className="col-md-12">
+                                            <div className="alert alert-success">{deliverySuccess}</div>
+                                        </div>
+                                    )}
+
+
                                 </div>
                             )}
                         </div>

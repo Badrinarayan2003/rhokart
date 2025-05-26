@@ -233,13 +233,7 @@ const CancelTbl = () => {
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.sellerInvoiceNumber ? (
-                        <button
-                            className="btn btn-sm"
-                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                            onClick={() => handleDownload(params.data.sellerInvoiceNumber)}
-                        >
-                            <FaDownload /> {params.data.sellerInvoiceNumber}
-                        </button>
+                        <span className="text-muted">{params.data.sellerInvoiceNumber}</span>
                     ) : (
                         <span className="text-muted">Invoice is not available</span>
                     )}

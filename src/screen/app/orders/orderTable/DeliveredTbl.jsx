@@ -269,13 +269,7 @@ const DeliveredTbl = () => {
             cellRenderer: (params) => (
                 <div className="d-flex justify-content-center align-items-center h-100">
                     {params.data.sellerInvoiceNumber ? (
-                        <button
-                            className="btn btn-sm"
-                            style={{ fontSize: "12px", border: "1px solid #1F8505", color: '#1F8505' }}
-                            onClick={() => handleDownload(params.data.sellerInvoiceNumber)}
-                        >
-                            <FaDownload /> {params.data.sellerInvoiceNumber}
-                        </button>
+                        <span className="text-muted">{params.data.sellerInvoiceNumber}</span>
                     ) : (
                         <span className="text-muted">Invoice is not available</span>
                     )}
@@ -283,7 +277,7 @@ const DeliveredTbl = () => {
             ),
             sortable: true,
             filter: true,
-            width: 240
+            width: 250
         },
         {
             headerName: "Rhokart seller invoice",
@@ -360,14 +354,14 @@ const DeliveredTbl = () => {
                                 aria-label="Close"
                             ></button>
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body gap-3">
                             {selectedOrder ? (
                                 <>
-                                    <p><strong>Status</strong> <span>{selectedOrder.status || "N/A"}</span></p>
-                                    <p><strong>Amount</strong> <span>₹{selectedOrder.amount?.toFixed(2) || "N/A"}</span></p>
-                                    <p><strong>Payment Mode</strong> <span>{selectedOrder.paymentMode || "N/A"}</span></p>
-                                    <p><strong>Transaction ID</strong> <span>{selectedOrder.transactionId || "N/A"}</span></p>
-                                    <p><strong>Payment Date </strong> <span>{selectedOrder.payDate || "N/A"}</span></p>
+                                    <p className="pay-details"><strong>Status</strong> <span>{selectedOrder.status || "N/A"}</span></p>
+                                    <p className="pay-details"><strong>Amount</strong> <span>₹{selectedOrder.amount?.toFixed(2) || "N/A"}</span></p>
+                                    <p className="pay-details"><strong>Payment Mode</strong> <span>{selectedOrder.paymentMode || "N/A"}</span></p>
+                                    <p className="pay-details"><strong>Transaction ID</strong> <span>{selectedOrder.transactionId || "N/A"}</span></p>
+                                    <p className="pay-details"><strong>Payment Date </strong> <span>{selectedOrder.payDate || "N/A"}</span></p>
                                 </>
                             ) : (
                                 <p>No details available.</p>

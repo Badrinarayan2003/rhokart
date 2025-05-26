@@ -135,3 +135,7 @@
 .transport-input::placeholder{
     font-size: 13px;
 }
+.pay-details{
+    display: flex;
+    flex-direction: column;
+}
