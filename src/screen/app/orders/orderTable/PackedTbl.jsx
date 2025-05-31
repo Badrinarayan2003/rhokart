@@ -568,7 +568,7 @@ const PackedTbl = () => {
                                     </div>
                                     <div className="row mb-2">
                                         <div className="col-md-6">
-                                            <label className="form-label text-dark fw-bold">Transport charges <span className="text-danger">*</span></label>
+                                            <label className="form-label text-dark fw-bold">Transport charges (incl. gst) <span className="text-danger">*</span></label>
                                             <input
                                                 type="number"
                                                 className={`form-control transport-input `}

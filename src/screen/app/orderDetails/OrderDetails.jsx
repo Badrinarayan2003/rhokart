@@ -42,7 +42,7 @@ const OrderDetails = () => {
     const [sampleImage, setSampleImage] = useState("");
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [imgUrlDownload, setImgUrlDownload] = useState("");
-
+    const [showImageModal, setShowImageModal] = useState(false);
 
     // Function to add new shipment box
     const addNewShipmentBox = () => {
@@ -542,7 +542,7 @@ const OrderDetails = () => {
                         {shipments.map((shipment, index) => (
                             <div key={index} className="card mb-3 p-0" style={{ backgroundColor: "#fff" }}>
                                 <div className="card-body position-relative">
-                                    <h5 className="card-title d-flex align-items-center">Box No: {shipment.boxNo}<span className="text-danger" style={{ fontSize: "14px" }}> (Attach the photograph of this box packing. RHOKART invoice should be clearly visible in the box picture.)</span></h5>
+                                    <h5 className="card-title d-flex align-items-center">Box No: {shipment.boxNo} <span className="text-danger" style={{ fontSize: "14px" }}> (Attach the photograph of this box packing. RHOKART invoice should be clearly visible in the box picture.)</span></h5>
                                     <span
                                         className="text-danger delete-box-icon"
                                         onClick={() => handleDeleteBox(shipment.boxNo)}
@@ -627,7 +627,7 @@ const OrderDetails = () => {
                                                 onClick={() => document.getElementById(`file-upload-${shipment.boxNo}`).click()}
                                             >
                                                 <FaUpload className="me-1" />
-                                                {fileUploads[shipment.boxNo] ?
+                                                {/* {fileUploads[shipment.boxNo] ?
                                                     (() => {
                                                         // Extract filename after last underscore if URL exists
                                                         const url = fileUploads[shipment.boxNo];
@@ -635,11 +635,22 @@ const OrderDetails = () => {
                                                         return filename || 'File Uploaded';
                                                     })()
                                                     : 'Upload'
-                                                }
+                                                } */}
+                                                Upload
                                             </button>
+                                            {/* Display file name below the button */}
+                                            {fileUploads[shipment.boxNo] && (
+                                                <div className="mt-1 text-center small">
+                                                    {(() => {
+                                                        const url = fileUploads[shipment.boxNo];
+                                                        const filename = url.substring(url.lastIndexOf('_') + 1);
+                                                        return filename || 'File Uploaded';
+                                                    })()}
+                                                </div>
+                                            )}
                                         </div>
 
-                                        <div className="col-md-2">
+                                        {/* <div className="col-md-2">
                                             {sampleImage && (
                                                 <img
                                                     src={sampleImage}
@@ -648,7 +659,24 @@ const OrderDetails = () => {
                                                     style={{ maxHeight: '100px' }}
                                                 />
                                             )}
+                                        </div> */}
+
+                                        <div className="col-md-2">
+                                            {sampleImage && (
+                                                <div
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => setShowImageModal(true)}
+                                                >
+                                                    <img
+                                                        src={sampleImage}
+                                                        alt="Sample Box"
+                                                        className="img-thumbnail w-auto h-100"
+                                                        style={{ maxHeight: '100px' }}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -681,6 +709,41 @@ const OrderDetails = () => {
                     </div>
                 )}
             </div>
+
+            {/* Image Preview Modal */}
+            <div className={`modal fade ${showImageModal ? 'show' : ''}`} style={{ display: showImageModal ? 'block' : 'none' }}>
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Sample Box Image</h5>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                onClick={() => setShowImageModal(false)}
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div className="modal-body text-center">
+                            <img
+                                src={sampleImage}
+                                alt="Sample Box Preview"
+                                className="img-fluid"
+                                style={{ maxHeight: '70vh' }}
+                            />
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={() => setShowImageModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {showImageModal && <div className="modal-backdrop fade show"></div>}
 
 
 
